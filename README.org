@@ -398,6 +398,20 @@ at some point.
   (yas-global-mode 1)
 #+END_SRC
 
+*** TODO =.snip= extension for yasnippet templates -- move to custom??
+#+BEGIN_SRC elisp
+  (setq auto-mode-alist
+        (cons '("\\.snip$" . snippet-mode)
+              auto-mode-alist))
+#+END_SRC
+
+*** =M-<TAB>= for snippets within snippets
+See https://joaotavora.github.io/yasnippet/snippet-expansion.html
+
+#+BEGIN_SRC elisp
+  (define-key yas-minor-mode-map (kbd "M-TAB") 'yas-expand)
+#+END_SRC
+
 *** TODO Make auto-complete play nicely with YAS
 Not sure if I actually need this given that I don't think I use ~auto-complete~
 anymore. I'll comment this out for now, and if I need it, I'll know where to
