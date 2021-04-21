@@ -16,12 +16,16 @@ If you need to go back to the old configuration...
 
 * General interface & minor modes
 ** Package
-#+BEGIN_SRC emacs-lisp
-  (require 'package)
-  (package-initialize)
-#+END_SRC
+Actually, I think =dotemacs.el= takes care of ~package~, ~use-package~, MELPA, and
+the ~org-babel~ stuff necessary to evaluate the Emacs Lisp blocks in this
+file; see https://cestlaz.github.io/posts/using-emacs-10-org-init/
 
-Note: all the ~package-archives~ stuff for MELPA was moved over to =emacs-custom=.
+# #+BEGIN_SRC emacs-lisp
+#   (require 'package)
+#   (package-initialize)
+# #+END_SRC
+
+# Note: all the ~package-archives~ stuff for MELPA was moved over to =emacs-custom=.
 
 ** Customize
 There are probably a number of settings you can/should move into this, although
