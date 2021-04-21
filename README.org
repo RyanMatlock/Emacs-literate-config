@@ -90,7 +90,7 @@ Python's PEP 8 is right.
   (add-hook 'after-init-hook #'global-emojify-mode)
 #+END_SRC
 
-*** TODO Highlight indentation guides for programming modes -- move to custom??
+*** Highlight indentation guides for programming modes
 This apparently doesn't use ~customize-variable~, but according to some uncited
 documentation (which is likely at least a few years old at this point), ~setq~ is
 the way to do this.
@@ -304,9 +304,9 @@ See http://www.emacswiki.org/emacs/AutoIndentation
 
 *** Python: company-jedi
 #+BEGIN_SRC elisp
-(defun my:python-company-jedi-hook ()
-  (add-to-list 'company-backends 'company-jedi))
-(add-hook 'python-mode-hook 'my:python-company-jedi-hook)
+  (defun python-company-jedi-hook ()
+    (add-to-list 'company-backends 'company-jedi))
+  (add-hook 'python-mode-hook 'python-company-jedi-hook)
 #+END_SRC
 
 ** TODO Flycheck
@@ -349,8 +349,8 @@ See https://masteringemacs.org/article/introduction-to-ido-mode
 See http://www.emacswiki.org/emacs/ParEdit
 
 #+BEGIN_SRC elisp
-  (autoload 'enable-paredit-mode 
-    "paredit" 
+  (autoload 'enable-paredit-mode
+    "paredit"
     "Turn on pseudo-structural editing of Lisp code." t)
   (add-hook 'emacs-lisp-mode-hook #'enable-paredit-mode)
   (add-hook 'eval-expression-minibuffer-setup-hook #'enable-paredit-mode)
@@ -387,6 +387,7 @@ https://www.gnu.org/software/emacs/manual/html_node/tramp/Default-Method.html
 #+END_SRC
 
 ** TODO yasnippet
+*** General configuration
 Pretty sure I have other snippet directories; probably should consolidate those
 at some point.
 
@@ -619,6 +620,9 @@ for recent addition to determine operating system.
 #+END_SRC
 
 ** TODO Clojure
+It's been awhile since I've used Clojure. If/when I get back to it, I can look
+for a modern configuration.
+
 ** TODO Common Lisp
 *** TODO SLIME, SBCL & quicklisp -- move to custom?
 #+BEGIN_SRC elisp
@@ -967,7 +971,7 @@ Also, listen to Ethan, and start using this!!
 
 *** Org-ebib
 #+BEGIN_SRC elisp
-(require 'org-ebib)
+  (require 'org-ebib)
 #+END_SRC
 
 *** Toggle ~:eval no~ on source block with =C-c t=
