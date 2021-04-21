@@ -135,6 +135,21 @@ sure if this is still necessary, but it's been working :shrug:
     (set-fontset-font t 'symbol "Symbola" nil 'append))
 #+END_SRC
 
+*** ~emojify-user-emojis~
+I was going to use ~customize-variable~ for this, but it actually seems more
+straightforward to put it here.
+
+Note that the =gitmoji= =:​memo:= symbol is the same as ~emojify~'s =:​pencil:=, and
+=gitmoji='s =:​pencil:= symbol is the same as ~emojify~'s =:​pencil2:=.
+
+#+BEGIN_SRC elisp
+  (setq emojify-user-emojis
+        '((":memo:" . (("name" . "Memo")
+                       ("image" .
+                        "~/.emacs.d/emojis/emojione-v2.2.6-22/1f4dd.png")
+                       ("style" . "github")))))
+#+END_SRC
+
 ** GUI
 - no menu bar; see see http://emacswiki.org/emacs/MenuBar#toc1
 - no tool bar
