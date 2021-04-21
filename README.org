@@ -853,6 +853,27 @@ of habit from using it for ~TeX-command-master~ in AUCTeX.
 (setq org-babel-no-eval-on-ctrl-c-ctrl-c t)
 #+END_SRC
 
+**** Load languages for syntax highlighting
+See
+http://stackoverflow.com/questions/10642888/syntax-highlighting-within-begin-src-block-in-emacs-orgmode-not-working
+and
+http://superuser.com/questions/429981/org-mode-is-there-a-way-i-can-make-emacs-treat-a-region-to-be-of-a-given-mode
+
+#+BEGIN_SRC elisp
+  (org-babel-do-load-languages 'org-babel-load-languages
+                               '((shell . t)
+                                 (python . t)
+                                 (clojure . t)
+                                 (C . t) ;; note that C is capitalized
+                                 (emacs-lisp . t)
+                                 (js . t)
+                                 (latex . t)
+                                 (gnuplot . t)
+                                 (haskell . t)
+                                 (org . t)))
+  (setq org-src-fontify-natively t)
+#+END_SRC
+
 *** Scale image width
 #+BEGIN_SRC elisp
   (defun my:insert-attr-html-width (arg)
