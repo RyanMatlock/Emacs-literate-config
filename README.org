@@ -115,7 +115,6 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Font-Lock.html
 #+END_SRC
 
 ** GUI
-Features
 - no menu bar; see see http://emacswiki.org/emacs/MenuBar#toc1
 - no tool bar
 - no scroll bar
@@ -197,8 +196,7 @@ Features
                  [double-mouse-5] [triple-mouse-5]))
       (global-unset-key k))
     (global-unset-key (kbd "C-z"))
-    (setq visible-bell nil)
-    )
+    (setq visible-bell nil))
 #+END_SRC
 
 ** TODO Preferred global keybindings
