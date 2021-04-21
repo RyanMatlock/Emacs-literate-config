@@ -469,6 +469,25 @@ and http://www.gnu.org/software/auctex/manual/auctex/Indenting.html
   (setq LaTeX-indent-level 2)
 #+END_SRC
 
+*** Word count using =TeXcount= shell command (=C-c w=)
+See http://superuser.com/questions/125027/word-count-for-latex-within-emacs and
+http://stackoverflow.com/questions/8507695/using-texcount-in-emacs-to-determine-word-count-of-latex-or-tex-file-wanting-op
+
+#+BEGIN_SRC elisp
+  (defun latex-word-count ()
+    "Call texcount on current LaTeX document"
+    (interactive)
+    (shell-command (concat "texcount "
+                           ;; options
+                           "-brief "
+                           ;; use shell-quote-argument to handle buffer names
+                           ;; with spaces or other weirdness
+                           (shell-quote-argument buffer-file-name))))
+  (add-hook 'LaTeX-mode-hook 'latex-word-count)
+  (eval-after-load 'latex
+    '(define-key LaTeX-mode-map (kbd "C-c w") 'latex-word-count))
+#+END_SRC
+
 ** TODO C
 *** Allman-style indentation
 #+BEGIN_SRC elisp
