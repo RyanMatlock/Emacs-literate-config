@@ -1037,6 +1037,34 @@ See https://millejoh.github.io/emacs-ipython-notebook/ for more info.
   (setq ein:use-company-backend t)
 #+END_SRC
 
+*** Flycheck
+**** General
+This appeared after ~flycheck-define-checker~ in legacy =.emacs=, but it seems like
+I can add it first.
+
+#+BEGIN_SRC elisp
+  (add-hook 'python-mode-hook 'flycheck-mode)
+#+END_SRC
+
+**** Silence import warnings
+See https://www.reddit.com/r/spacemacs/comments/8ifrzn/how_to_get_mypy_working/
+
+#+BEGIN_SRC elisp
+  (flycheck-define-checker
+      python-mypy ""
+      :command ("mypy"
+                "--ignore-missing-imports"
+                "--python-version" "3.7"
+                source-original)
+      :error-patterns ((error line-start
+                              (file-name) ":" line
+                              ": error:" (message)
+                              line-end))
+      :modes python-mode)
+  (add-to-list 'flycheck-checkers 'python-mypy t)
+  (flycheck-add-next-checker 'python-pylint 'python-mypy t)
+#+END_SRC
+
 ** TODO Rust
 #+BEGIN_SRC elisp
   (require 'toml-mode)
