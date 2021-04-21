@@ -715,15 +715,91 @@ See http://www.emacswiki.org/emacs/MakefileMode
 
 ** TODO Org mode
 *** TODO Symbol shortcuts
-**** TODO Section sign (§ -- =U+00A7=)
-**** TODO Left corner bracket (「 -- =U+300C=)
-**** TODO Right corner bracket (」 -- =U+300D=)
-**** TODO Left & right corner brackets (「」)
-With cursor in between.
-**** TODO Bullet (• -- =U+2022=)
-**** TODO Open box (as visible space) (␣ -- =U+2423=)
-**** TODO Zero width space (=U+200B=)
-=C-c z= ??
+Consider finding new bindings for this---maybe something like =C-b <letter>=. The
+=C-c <letter>= space is kinda crowded, and there are probably better uses.
+
+**** Section sign (§ -- =U+00A7=)
+#+BEGIN_SRC elisp
+  (defun org-insert-symbol-section-sign ()
+    "Shortcut for inserting section sign (§)"
+    (local-set-key (kbd "C-c S")
+                   (lambda ()
+                     (interactive)
+                     (insert "§"))))
+  (add-hook 'org-mode-hook 'org-insert-symbol-section-sign)
+#+END_SRC
+
+**** Left corner bracket (「 -- =U+300C=)
+#+BEGIN_SRC elisp
+  (defun org-insert-symbol-left-corner-bracket ()
+    "Insert left corner bracket (「)"
+    (local-set-key (kbd "C-c l")
+                   (lambda ()
+                     (interactive)
+                     (insert "「"))))
+  (add-hook 'org-mode-hook 'org-insert-symbol-left-corner-bracket)
+#+END_SRC
+
+**** Right corner bracket (」 -- =U+300D=)
+#+BEGIN_SRC elisp
+  (defun org-insert-symbol-right-corner-bracket ()
+    "Insert left corner bracket (」)"
+    (local-set-key (kbd "C-c r")
+                   (lambda ()
+                     (interactive)
+                     (insert "「"))))
+  (add-hook 'org-mode-hook 'org-insert-symbol-right-corner-bracket)
+#+END_SRC
+
+**** Left & right corner brackets (「」)
+Insert brackets, then place cursor in between.
+
+#+BEGIN_SRC elisp
+  (defun org-insert-symbol-corner-brackets ()
+    "Insert 「<cursor>」"
+    (local-set-key (kbd "C-c e")
+                   (lambda ()
+                     (interactive)
+                     (insert "「」")
+                     ; need to move cursor back a space
+                     (left-char))))
+  (add-hook 'org-mode-hook 'org-insert-symbol-corner-brackets)
+#+END_SRC
+
+**** Bullet (• -- =U+2022=)
+#+BEGIN_SRC elisp
+  (defun org-insert-symbol-bullet ()
+    "Insert a bullet (•) followed by a space"
+    (local-set-key (kbd "C-c b")
+                   (lambda ()
+                     (interactive)
+                     (insert "• "))))
+  (add-hook 'text-mode-hook 'org-insert-symbol-bullet)
+#+END_SRC
+
+**** Open box (as visible space) (␣ -- =U+2423=)
+#+BEGIN_SRC elisp
+  (defun org-insert-symbol-open-box-for-visible-space ()
+    "Insert open box character (␣) to represent a visible space (similar to
+    LaTeX documenation)"
+    (local-set-key (kbd "C-c b")
+                   (lambda ()
+                     (interactive)
+                     (insert "␣"))))
+  (add-hook 'text-mode-hook 'org-insert-symbol-open-box-for-visible-space)
+#+END_SRC
+
+**** Zero width space (=U+200B=)
+#+BEGIN_SRC elisp
+  (defun org-insert-symbol-zero-width-space ()
+    "Insert zero-width space character (U+200B), which is sometimes needed in
+    Org mode for escaping certain strings"
+    (local-set-key (kbd "C-c z")
+                   (lambda ()
+                     (interactive)
+                     (insert "​"))))
+  (add-hook 'text-mode-hook 'org-insert-symbol-zero-width-space)
+#+END_SRC
 
 *** TODO TODO state colors -- move to custom?
 See http://cjohansen.no/en/emacs/emacs_org_mode_todo_colors
