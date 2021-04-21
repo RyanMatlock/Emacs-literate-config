@@ -95,6 +95,7 @@
                                      (lambda nil
                                        (hs-minor-mode))
                                      org-journal-update-auto-mode-alist))
+ '(org-pretty-entities t)
  '(package-archives
    '(("melpa" . "https://melpa.org/packages/")
      ("gnu" . "https://elpa.gnu.org/packages/")))
