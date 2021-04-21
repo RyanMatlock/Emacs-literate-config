@@ -716,7 +716,8 @@ See http://www.emacswiki.org/emacs/MakefileMode
 ** TODO Org mode
 *** TODO Symbol shortcuts
 Consider finding new bindings for this---maybe something like =C-b <letter>=. The
-=C-c <letter>= space is kinda crowded, and there are probably better uses.
+=C-c <letter>= space is kinda crowded, and there are probably better
+uses. Another option is to look into [[https://github.com/abo-abo/hydra][hydra]].
 
 **** Section sign (§ -- =U+00A7=)
 #+BEGIN_SRC elisp
