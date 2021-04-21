@@ -16,7 +16,7 @@ If you need to go back to the old configuration...
 
 * General interface & minor modes
 ** Package
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (require 'package)
   (package-initialize)
 #+END_SRC
@@ -28,7 +28,7 @@ There are probably a number of settings you can/should move into this, although
 I'm curious how much of a pressing need there is given that with a literate
 =.emacs= config, I can explain my reasoning for a setting.
 
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (setq custom-file "/Users/matlock/config/emacs/custom.el")
   (load custom-file)
 #+END_SRC
@@ -40,7 +40,7 @@ http://emacsredux.com/blog/2013/05/31/highlight-lines-that-exceed-a-certain-leng
 and
 http://stackoverflow.com/questions/6344474/how-can-i-make-emacs-highlight-lines-that-go-over-80-chars 
 
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (require 'whitespace)
   (setq whitespace-line-column 80)
   (setq whitespace-style '(face lines-tail))
@@ -53,7 +53,7 @@ http://stackoverflow.com/questions/6344474/how-can-i-make-emacs-highlight-lines-
 #+END_SRC
 
 *** TODO Turn off welcome screen -- move to custom??
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (setq inhibit-startup-message t)
 #+END_SRC
 
@@ -61,7 +61,7 @@ http://stackoverflow.com/questions/6344474/how-can-i-make-emacs-highlight-lines-
 Except for makefiles, which require tabs. See
 http://stackoverflow.com/questions/24832699/emacs-24-untabify-on-save-for-everything-except-makefiles/24857101#24857101
 
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (setq-default indent-tabs-mode nil)
   (setq-default tab-width 4)
   (defun untabify-except-makefiles ()
@@ -75,18 +75,18 @@ http://stackoverflow.com/questions/24832699/emacs-24-untabify-on-save-for-everyt
 to have multiple windows side-by-side in a relatively compact space, plus
 Python's PEP 8 is right.
 
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
 (add-hook 'text-mode-hook 'turn-on-auto-fill)
 (setq-default fill-column 79)
 #+END_SRC
 
 *** TODO Turn on ~column-number-mode~ -- move to custom??
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (setq column-number-mode t)
 #+END_SRC
 
 *** Global emojify
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (add-hook 'after-init-hook #'global-emojify-mode)
 #+END_SRC
 
@@ -95,7 +95,7 @@ This apparently doesn't use ~customize-variable~, but according to some uncited
 documentation (which is likely at least a few years old at this point), ~setq~ is
 the way to do this.
 
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
   (setq highlight-indent-guides-method 'character)
   (setq highlight-indent-guides-character ?\|)
@@ -104,7 +104,7 @@ the way to do this.
 *** Auto-indentation on =RET= for various modes
 See http://www.emacswiki.org/emacs/AutoIndentation
 
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (defun set-newline-and-indent ()
     (local-set-key (kbd "RET") 'newline-and-indent))
   (add-hook 'html-mode-hook 'set-newline-and-indent)
@@ -118,7 +118,7 @@ This basically enables syntax highlighting by allowing for different faces for
 keywords, comments, etc.; see
 https://www.gnu.org/software/emacs/manual/html_node/emacs/Font-Lock.html
 
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (global-font-lock-mode 1)
 #+END_SRC
 
@@ -127,7 +127,7 @@ See
 https://www.reddit.com/r/emacs/comments/ggd90c/color_emoji_in_emacs_27/. Not
 sure if this is still necessary, but it's been working :shrug:
 
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (when (eq system-type 'darwin)
     (set-fontset-font t 'symbol "Apple Color Emoji")
     (set-fontset-font t 'symbol "Noto Color Emoji" nil 'append)
@@ -142,7 +142,7 @@ straightforward to put it here.
 Note that the =gitmoji= =:​memo:= symbol is the same as ~emojify~'s =:​pencil:=, and
 =gitmoji='s =:​pencil:= symbol is the same as ~emojify~'s =:​pencil2:=.
 
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (setq emojify-user-emojis
         '((":memo:" . (("name" . "Memo")
                        ("image" .
@@ -172,7 +172,7 @@ Note that the =gitmoji= =:​memo:= symbol is the same as ~emojify~'s =:​penci
 - disable ~visible-bell~; see
   http://stackoverflow.com/questions/36805713/emacs-blank-square-on-mac-os-x/36813418#36813418
 
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (when window-system
     (menu-bar-mode -1)  ;; not working?
     (tool-bar-mode -1)
@@ -242,7 +242,7 @@ Note that the =gitmoji= =:​memo:= symbol is the same as ~emojify~'s =:​penci
 See
 http://stackoverflow.com/questions/24810079/key-binding-to-reload-emacs-after-changing-it
 
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (defun reload-dotemacs ()
     (interactive)
     (load-file "~/.emacs"))
@@ -254,21 +254,21 @@ See
 http://stackoverflow.com/questions/3158484/emacs-copying-text-without-killing-it
 and http://www.emacswiki.org/emacs/KeyboardMacros
 
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (global-set-key (kbd "M-w") 'kill-ring-save)
 #+END_SRC
 
 *** Switch focus to previous window with =C-x p=
 This complements ~other-window~, which is bound to =C-x o=.
 
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
 (global-set-key (kbd "C-x p") 'previous-multiframe-window)
 #+END_SRC
 
 *** Count words in region
 Documented in old =.emacs= as "~count-words-region~ \to ~count-words~" :shrug:
 
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (global-set-key (kbd "M-=") 'count-words)
   (put 'narrow-to-region 'disabled nil)
 #+END_SRC
@@ -278,7 +278,7 @@ All occurrences of a string are highlighted and then editable; cursor/region
 goes back to normal on second activation of ~iedit-mode~. See
 https://www.emacswiki.org/emacs/Iedit
 
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (define-key global-map (kbd "C-c ;") 'iedit-mode)
 #+END_SRC
 
@@ -286,7 +286,7 @@ https://www.emacswiki.org/emacs/Iedit
 *** Fix auto-identation for multiple modes
 See http://www.emacswiki.org/emacs/AutoIndentation
 
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (defun set-newline-and-indent ()
     (local-set-key (kbd "RET") 'newline-and-indent))
   (add-hook 'html-mode-hook 'set-newline-and-indent)
@@ -297,13 +297,13 @@ See http://www.emacswiki.org/emacs/AutoIndentation
 #+END_SRC
 
 ** Company (COMPlete ANYthing)
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (add-hook 'after-init-hook 'global-company-mode)
   (global-set-key (kbd "C-c C-<tab>") 'company-complete)
 #+END_SRC
 
 *** Python: company-jedi
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (defun python-company-jedi-hook ()
     (add-to-list 'company-backends 'company-jedi))
   (add-hook 'python-mode-hook 'python-company-jedi-hook)
@@ -314,7 +314,7 @@ See http://www.emacswiki.org/emacs/AutoIndentation
 See
 http://unix.stackexchange.com/questions/38916/how-do-i-configure-emacs-to-use-ispell-on-mac-os-x
 
-# #+BEGIN_SRC elisp
+# #+BEGIN_SRC emacs-lisp
 # (setq ispell-program-name "/usr/local/bin/ispell")
 # #+END_SRC
 
@@ -326,13 +326,13 @@ and
 http://emacs-fu.blogspot.com/2009/12/automatically-checking-your-spelling.html
 and http://blog.binchen.org/posts/effective-spell-check-in-emacs.html
 
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (setq ispell-program-name "aspell"
         ispell-extra-args '("--sug-mode=ultra"))
 #+END_SRC
 
 ** TODO Magit
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (global-set-key (kbd "C-c 0") 'magit-status)
 #+END_SRC
 
@@ -340,7 +340,7 @@ and http://blog.binchen.org/posts/effective-spell-check-in-emacs.html
 ** IDO (Interactively Do Things)
 See https://masteringemacs.org/article/introduction-to-ido-mode
 
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (require 'ido)
   (ido-mode 1)
 #+END_SRC
@@ -348,7 +348,7 @@ See https://masteringemacs.org/article/introduction-to-ido-mode
 ** Paredit
 See http://www.emacswiki.org/emacs/ParEdit
 
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (autoload 'enable-paredit-mode
     "paredit"
     "Turn on pseudo-structural editing of Lisp code." t)
@@ -363,14 +363,14 @@ See http://www.emacswiki.org/emacs/ParEdit
 #+END_SRC
 
 ** LSP (Language Server Protocol)
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (require 'lsp-mode)
   (require 'lsp-ui)
 #+END_SRC
 
 ** TODO TRAMP
 *** TODO Fix problem with hanging -- confused about this/move to custom?
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
 (eval-after-load 'tramp '(setenv "SHELL" "/bin/bash"))
 #+END_SRC
 
@@ -382,7 +382,7 @@ to symlink =/usr/local/bin/bash= to =/bin/bash=; if so, the above
 See
 https://www.gnu.org/software/emacs/manual/html_node/tramp/Default-Method.html
 
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (setq tramp-default-method "ssh")
 #+END_SRC
 
@@ -391,7 +391,7 @@ https://www.gnu.org/software/emacs/manual/html_node/tramp/Default-Method.html
 Pretty sure I have other snippet directories; probably should consolidate those
 at some point.
 
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (require 'yasnippet)
   (yas-global-mode 1)
   (setq yas-snippet-dirs (append yas-snippet-dirs
@@ -400,7 +400,7 @@ at some point.
 #+END_SRC
 
 *** TODO =.snip= extension for yasnippet templates -- move to custom??
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (setq auto-mode-alist
         (cons '("\\.snip$" . snippet-mode)
               auto-mode-alist))
@@ -409,7 +409,7 @@ at some point.
 *** =M-<TAB>= for snippets within snippets
 See https://joaotavora.github.io/yasnippet/snippet-expansion.html
 
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (define-key yas-minor-mode-map (kbd "M-TAB") 'yas-expand)
 #+END_SRC
 
@@ -419,7 +419,7 @@ anymore. I'll comment this out for now, and if I need it, I'll know where to
 look later. It also looks like a setting I could potentially move to
 =emacs-custom=.
 
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (setq ac-source-yasnippet nil)
 #+END_SRC
 
@@ -428,12 +428,12 @@ look later. It also looks like a setting I could potentially move to
 (possibly needed in the past to get ~cider-jack-in~ to work because it couldn't
 find =lein= :shrug:
 
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (setq exec-path (append exec-path '("/usr/local/bin")))
 #+END_SRC
 
 *** Shrug emoticon
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (defun shrug-emoticon ()
     "insert ¯\\_(ツ)_/¯ anywhere in your code (preferably comments)"
     (interactive)
@@ -451,7 +451,7 @@ point.
 Note that the prefix, =C-u=, changes the behavior (by adding "[​=<timestamp>=​]
 =<question>= =<response>=" to the ~kill ring~, I think).
 
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (add-to-list 'load-path "~/eight-ball")
   (require 'eight-ball)
   (global-set-key (kbd "C-c 8") 'eight-ball)
@@ -461,7 +461,7 @@ Note that the prefix, =C-u=, changes the behavior (by adding "[​=<timestamp>=�
 The latter was hanging out in my Python configuration section for some
 reason :shrug:
 
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (put 'downcase-region 'disabled nil)
   (put 'upcase-region 'disabled nil)
 #+END_SRC
@@ -479,7 +479,7 @@ https://stackoverflow.com/questions/3964715/what-is-the-correct-way-to-join-mult
 
 It looks like I don't even need to do anything with ~concat~ or ~expand-file-name~.
 
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (setq default-directory (getenv "HOME"))
 #+END_SRC
 
@@ -488,7 +488,7 @@ See https://github.com/kiwanami/emacs-epc/issues/35. Might be a good idea to
 investigate this at some point and actually fix it instead of applying a
 bandaid.
 
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (setq byte-compile-warnings '(cl-functions))
 #+END_SRC
 
@@ -498,20 +498,20 @@ bandaid.
 See
 http://stackoverflow.com/questions/18278310/emacs-ansi-term-not-tab-completing
 
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (add-hook 'term-mode-hook (lambda() (setq yas-dont-activate t)))
 #+END_SRC
 
 *** TODO Set shell to homebrew bash -- move to custom?
 See https://stackoverflow.com/a/12679864
 
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (setq explicit-shell-file-name "/usr/local/bin/bash")
 #+END_SRC
 
 ** TODO AUCTeX
 *** TODO General (La)TeX config -- move to custom??
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (setq TeX-auto-save t)
   (setq TeX-parse-self t)
   (setq-default TeX-master nil)
@@ -528,7 +528,7 @@ See
 http://stackoverflow.com/questions/2477195/latex-indentation-formatting-in-emacs
 and http://www.gnu.org/software/auctex/manual/auctex/Indenting.html
 
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (setq LaTeX-item-indent 0)
   (setq LaTeX-indent-level 2)
 #+END_SRC
@@ -537,7 +537,7 @@ and http://www.gnu.org/software/auctex/manual/auctex/Indenting.html
 See http://superuser.com/questions/125027/word-count-for-latex-within-emacs and
 http://stackoverflow.com/questions/8507695/using-texcount-in-emacs-to-determine-word-count-of-latex-or-tex-file-wanting-op
 
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (defun latex-word-count ()
     "Call texcount on current LaTeX document"
     (interactive)
@@ -558,7 +558,7 @@ some commend about SyncTeX setup via =~/.latexmkrc=, but that file doesn't seem
 to exist, so I think that's probably ancient history.] I'm not totally
 convinced this is the best implementation, but it's been working :shrug:
 
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (add-hook 'LaTeX-mode-hook
             (lambda ()
               (push
@@ -578,10 +578,10 @@ convinced this is the best implementation, but it's been working :shrug:
 Use =Skim.app= as default PDF viewer in OSX. =displayline= is used for forward
 search, option =-b= highlights current line, and option =-g= opens =Skim.app= in the
 background. See
-https://stackoverflow.com/questions/1817257/how-to-determine-operating-system-in-elisp
+https://stackoverflow.com/questions/1817257/how-to-determine-operating-system-in-emacs-lisp
 for recent addition to determine operating system.
 
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (when (eq system-type 'darwin)
     (setq TeX-view-program-selection '((output-pdf "PDF Viewer")))
     (setq TeX-view-program-list
@@ -591,7 +591,7 @@ for recent addition to determine operating system.
 #+END_SRC
 
 *** Add =pdftex= to ~TeX-command-list~
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (eval-after-load "tex"
     '(add-to-list 'TeX-command-list
                   '("pdftex" "pdftex %s" TeX-run-command t t
@@ -601,13 +601,13 @@ for recent addition to determine operating system.
 
 ** TODO C
 *** Allman-style indentation
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (setq c-default-style "bsd"
         c-basic-offset 4)
 #+END_SRC
 
 *** Allman C minor mode
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (define-minor-mode allman-c-mode
     "allman-c-mode allows the use of Allman-
      style friendly snippets."
@@ -625,7 +625,7 @@ for a modern configuration.
 
 ** TODO Common Lisp
 *** TODO SLIME, SBCL & quicklisp -- move to custom?
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (setq inferior-lisp-program "/usr/local/bin/sbcl")
   (setq slime-contribs '(slime-fancy
                          slime-tramp
@@ -635,7 +635,7 @@ for a modern configuration.
 ** CSS
 2-space indent
 
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
 (defun my:css-2-space-indent ()
   (setq css-indent-offset 2))
 (add-hook 'css-mode-hook 'my:css-2-space-indent)
@@ -644,7 +644,7 @@ for a modern configuration.
 ** TODO Emacs Lisp
 ** TODO Haskell
 *** TODO Old Haskell config -- mostly/all relevant?
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
   (add-hook 'haskell-mode-hook 'paredit-mode)
   (add-hook 'haskell-mode-hook 'interactive-haskell-mode)
@@ -672,7 +672,7 @@ for a modern configuration.
 #+END_SRC
 
 *** Keybindings that still seem relevant
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (eval-after-load 'haskell-mode
     '(progn
        (define-key haskell-mode-map (kbd "C-c C-l")
@@ -690,7 +690,7 @@ for a modern configuration.
 #+END_SRC
 
 *** TODO Not sure about the ~haskell-cabal~ stuff??
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
 (eval-after-load 'haskell-cabal
   '(progn
      (define-key haskell-cabal-mode-map (kbd "C-c C-z")
@@ -704,7 +704,7 @@ for a modern configuration.
 #+END_SRC
 
 *** TODO More ~cabal~ stuff??
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (eval-after-load 'haskell-mode
     '(define-key haskell-mode-map [f8] 'haskell-navigate-imports))
   (let ((my-cabal-path (expand-file-name "~/.cabal/bin")))
@@ -713,7 +713,7 @@ for a modern configuration.
 #+END_SRC
 
 *** ~lsp-haskell~
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (add-hook 'haskell-mode-hook #'lsp)
   (add-hook 'haskell-literate-mode-hook #'lsp)
 #+END_SRC
@@ -721,7 +721,7 @@ for a modern configuration.
 ** Makefile
 See http://www.emacswiki.org/emacs/MakefileMode
 
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (require 'make-mode)
 
   (defconst makefile-nmake-statements
@@ -742,7 +742,7 @@ See http://www.emacswiki.org/emacs/MakefileMode
 #+END_SRC
 
 ** Markdown
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
 (defun markdown-set-markdown-preview-key ()
   (local-set-key (kbd "C-c p") 'markdown-preview))
 (add-hook 'markdown-mode-hook 'markdown-set-markdown-preview-key)
@@ -755,7 +755,7 @@ Consider finding new bindings for this---maybe something like =C-b <letter>=. Th
 uses. Another option is to look into [[https://github.com/abo-abo/hydra][hydra]].
 
 **** Section sign (§ -- =U+00A7=)
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (defun org-insert-symbol-section-sign ()
     "Shortcut for inserting section sign (§)"
     (local-set-key (kbd "C-c S")
@@ -766,7 +766,7 @@ uses. Another option is to look into [[https://github.com/abo-abo/hydra][hydra]]
 #+END_SRC
 
 **** Left corner bracket (「 -- =U+300C=)
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (defun org-insert-symbol-left-corner-bracket ()
     "Insert left corner bracket (「)"
     (local-set-key (kbd "C-c l")
@@ -777,7 +777,7 @@ uses. Another option is to look into [[https://github.com/abo-abo/hydra][hydra]]
 #+END_SRC
 
 **** Right corner bracket (」 -- =U+300D=)
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (defun org-insert-symbol-right-corner-bracket ()
     "Insert left corner bracket (」)"
     (local-set-key (kbd "C-c r")
@@ -790,7 +790,7 @@ uses. Another option is to look into [[https://github.com/abo-abo/hydra][hydra]]
 **** Left & right corner brackets (「」)
 Insert brackets, then place cursor in between.
 
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (defun org-insert-symbol-corner-brackets ()
     "Insert 「<cursor>」"
     (local-set-key (kbd "C-c e")
@@ -803,7 +803,7 @@ Insert brackets, then place cursor in between.
 #+END_SRC
 
 **** Bullet (• -- =U+2022=)
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (defun org-insert-symbol-bullet ()
     "Insert a bullet (•) followed by a space"
     (local-set-key (kbd "C-c b")
@@ -814,7 +814,7 @@ Insert brackets, then place cursor in between.
 #+END_SRC
 
 **** Open box (as visible space) (␣ -- =U+2423=)
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (defun org-insert-symbol-open-box-for-visible-space ()
     "Insert open box character (␣) to represent a visible space (similar to
     LaTeX documenation)"
@@ -826,7 +826,7 @@ Insert brackets, then place cursor in between.
 #+END_SRC
 
 **** Zero width space (=U+200B=)
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (defun org-insert-symbol-zero-width-space ()
     "Insert zero-width space character (U+200B), which is sometimes needed in
     Org mode for escaping certain strings"
@@ -840,7 +840,7 @@ Insert brackets, then place cursor in between.
 *** TODO TODO state colors -- move to custom?
 See http://cjohansen.no/en/emacs/emacs_org_mode_todo_colors
 
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (setq org-todo-keyword-faces
         '(("TODO" . (:foreground "red" :weight bold))
           ("DONE" . (:foreground "green" :weight bold))
@@ -860,7 +860,7 @@ like it.)
 
 Now using ▼ (black down-pointing triangle =U+25BC=)
 
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
 (setq org-ellipsis " ▼")
 #+END_SRC
 
@@ -869,7 +869,7 @@ Now using ▼ (black down-pointing triangle =U+25BC=)
 I think I began using this setting because I would mindlessly press =C-c C-c= out
 of habit from using it for ~TeX-command-master~ in AUCTeX.
 
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
 (setq org-babel-no-eval-on-ctrl-c-ctrl-c t)
 #+END_SRC
 
@@ -879,7 +879,7 @@ http://stackoverflow.com/questions/10642888/syntax-highlighting-within-begin-src
 and
 http://superuser.com/questions/429981/org-mode-is-there-a-way-i-can-make-emacs-treat-a-region-to-be-of-a-given-mode
 
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (org-babel-do-load-languages 'org-babel-load-languages
                                '((shell . t)
                                  (python . t)
@@ -895,7 +895,7 @@ http://superuser.com/questions/429981/org-mode-is-there-a-way-i-can-make-emacs-t
 #+END_SRC
 
 *** Scale image width
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (defun my:insert-attr-html-width (arg)
     (insert (format"#+ATTR_HTML: width=\"%Spx\"" arg)))
   (setq my:default-attr-html-width 600)
@@ -913,7 +913,7 @@ http://superuser.com/questions/429981/org-mode-is-there-a-way-i-can-make-emacs-t
 *** Fancy HTML5 export
 Note: didn't work in Emacs 7.9 but began working with upgrade to 8.2.10.
 
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (setq org-html-doctype "html5")
   (setq org-html-html5-fancy t)
 #+END_SRC
@@ -922,7 +922,7 @@ Note: didn't work in Emacs 7.9 but began working with upgrade to 8.2.10.
 See http://comments.gmane.org/gmane.emacs.orgmode/72865 and
 http://orgmode.org/manual/Plain-lists.html
 
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (setq org-list-allow-alphabetical t)
 #+END_SRC
 
@@ -930,7 +930,7 @@ http://orgmode.org/manual/Plain-lists.html
 I think this is something I did ages ago because it's ugly enough that I doubt
 anyone else is responsible
 
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (define-minor-mode org-extra-yas-mode
     "org-extra-yas-mode adds snippets in
      such a way that it's unlikely to
@@ -954,13 +954,13 @@ anyone else is responsible
 #+END_SRC
 
 *** TODO Disable sub/superscripts without curly braces -- move to custom?
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (setq org-use-sub-superscripts '{})
 #+END_SRC
 
 You need the following for HTML (and LaTeX?) export to work as you'd expect:
 
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (setq org-export-with-sub-superscripts '{})
 #+END_SRC
 
@@ -970,7 +970,7 @@ Uses, and Benefits (Spacemacs) -- Abraham Peters [2020-09-10]) for more info.
 Also, listen to Ethan, and start using this!!
 
 *** Org-ebib
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (require 'org-ebib)
 #+END_SRC
 
@@ -978,7 +978,7 @@ Also, listen to Ethan, and start using this!!
 Stolen from stackexchange user [[https://emacs.stackexchange.com/users/8486/gjstein][GJStein]]; see
 https://emacs.stackexchange.com/a/13897/9013
 
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (defun org-toggle-src-eval-no ()
     "Will toggle ':eval no' on the src block begin line"
 
@@ -1015,7 +1015,7 @@ Basic configuration that's been in my =.emacs= since the beginning of time
 longer relevant, so those parts will be commented out. If I need them again,
 they'll be easy to find.
 
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   ;; (add-to-list 'load-path "~/.emacs.d/plugins/python-mode/")
   ;; (setq py-install-directory "~/.emacs.d/plugins/python-mode/")
   (require 'python-mode)
@@ -1034,7 +1034,7 @@ settings are doing in here. I think they ought to
 *** Jupyter: EIN (Emacs IPython Notebook)
 See https://millejoh.github.io/emacs-ipython-notebook/ for more info.
 
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (require 'ein)
   (require 'ein-notebook)
   (setq ein:worksheet-enable-undo t)
@@ -1046,14 +1046,14 @@ See https://millejoh.github.io/emacs-ipython-notebook/ for more info.
 This appeared after ~flycheck-define-checker~ in legacy =.emacs=, but it seems like
 I can add it first.
 
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (add-hook 'python-mode-hook 'flycheck-mode)
 #+END_SRC
 
 **** Silence import warnings
 See https://www.reddit.com/r/spacemacs/comments/8ifrzn/how_to_get_mypy_working/
 
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (flycheck-define-checker
       python-mypy ""
       :command ("mypy"
@@ -1070,7 +1070,7 @@ See https://www.reddit.com/r/spacemacs/comments/8ifrzn/how_to_get_mypy_working/
 #+END_SRC
 
 ** TODO Rust
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (require 'toml-mode)
   (require 'rust-mode)
 #+END_SRC
@@ -1078,7 +1078,7 @@ See https://www.reddit.com/r/spacemacs/comments/8ifrzn/how_to_get_mypy_working/
 *** Flycheck
 See https://github.com/flycheck/flycheck-rust
 
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (with-eval-after-load 'rust-mode
     (add-hook 'flycheck-mode-hook #'flycheck-rust-setup))
 #+END_SRC
@@ -1087,25 +1087,25 @@ See https://github.com/flycheck/flycheck-rust
 Creates matching delimiters, e.g. ={}=; see
 https://www.emacswiki.org/emacs/ElectricPair
 
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (add-hook 'rust-mode-hook 'electric-pair-mode)
 #+END_SRC
 
 ** SQL
 *** Upcase SQL keywords
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (add-hook 'sql-mode-hook #'sqlup-mode)
   (add-hook 'sql-interactive-mode-hook #'sqlup-mode)
 #+END_SRC
 
 *** SQL indent
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (add-hook 'sql-mode-hook #'slqind-minor-mode)
 #+END_SRC
 
 ** YAML
 *** Cocktail recipes minor mode
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (define-minor-mode yaml-cocktail-mode
     "cocktail-mode provides a minor mode for
      yasnippet to hook onto in order to make
