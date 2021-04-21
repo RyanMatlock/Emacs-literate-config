@@ -11,7 +11,7 @@ manage. It's time to start over---with Org mode!
 If you need to go back to the old configuration...
 
 #+BEGIN_SRC sh :eval no
-  ln -s /path/to/legacy-dotemacs.el ~/emacs.test
+  ln -s /path/to/legacy-dotemacs.el ~/emacs.test && touch ~/Deskop/DOTEMACS-ERR
 #+END_SRC
 
 * General interface & minor modes
@@ -457,6 +457,19 @@ See https://stackoverflow.com/a/12679864
 #+END_SRC
 
 ** TODO AUCTeX
+*** TODO General (La)TeX config -- move to custom??
+#+BEGIN_SRC elisp
+  (setq TeX-auto-save t)
+  (setq TeX-parse-self t)
+  (setq-default TeX-master nil)
+  (add-hook 'LaTeX-mode-hook 'visual-line-mode)
+  (add-hook 'LaTeX-mode-hook 'flyspell-mode)
+  (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
+  (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
+  (setq reftex-plug-into-AUCTeX t)
+  (setq TeX-PDF-mode t)
+#+END_SRC
+
 *** TODO Indentation -- move to custom??
 See
 http://stackoverflow.com/questions/2477195/latex-indentation-formatting-in-emacs
@@ -484,6 +497,53 @@ http://stackoverflow.com/questions/8507695/using-texcount-in-emacs-to-determine-
   (add-hook 'LaTeX-mode-hook 'latex-word-count)
   (eval-after-load 'latex
     '(define-key LaTeX-mode-map (kbd "C-c w") 'latex-word-count))
+#+END_SRC
+
+*** Get =latexmk= to work with =Skim.app= (OSX)
+Add =latexmk= to ~TeX-command-default~ (bound to =C-c C-c=). [Note: old config had
+some commend about SyncTeX setup via =~/.latexmkrc=, but that file doesn't seem
+to exist, so I think that's probably ancient history.] I'm not totally
+convinced this is the best implementation, but it's been working :shrug:
+
+#+BEGIN_SRC elisp
+  (add-hook 'LaTeX-mode-hook
+            (lambda ()
+              (push
+               '("latexmk" "latexmk -pdf %s" TeX-run-TeX nil t
+                 :help "Run latexmk on file")
+               TeX-command-list)))
+  (add-hook 'LaTeX-mode-hook
+            (lambda ()
+              (push
+               '("xelatexmk" "latexmk -xelatex -pdf %s" TeX-run-TeX nil t
+                 :help "Run latexmk -xelatex on file")
+               TeX-command-list)))
+  (add-hook 'TeX-mode-hook
+            '(lambda () (setq TeX-command-default "latexmk")))
+#+END_SRC
+
+Use =Skim.app= as default PDF viewer in OSX. =displayline= is used for forward
+search, option =-b= highlights current line, and option =-g= opens =Skim.app= in the
+background. See
+https://stackoverflow.com/questions/1817257/how-to-determine-operating-system-in-elisp
+for recent addition to determine operating system.
+
+#+BEGIN_SRC elisp
+  (when (eq system-type 'darwin)
+    (setq TeX-view-program-selection '((output-pdf "PDF Viewer")))
+    (setq TeX-view-program-list
+          '(("PDF Viewer"
+             (concat "/Applications/Skim.app/Contents/SharedSupport/"
+                     "displayline -b -g %n %o %b")))))
+#+END_SRC
+
+*** Add =pdftex= to ~TeX-command-list~
+#+BEGIN_SRC elisp
+  (eval-after-load "tex"
+    '(add-to-list 'TeX-command-list
+                  '("pdftex" "pdftex %s" TeX-run-command t t
+                    :help "Run pdftex on file")
+                  t))
 #+END_SRC
 
 ** TODO C
