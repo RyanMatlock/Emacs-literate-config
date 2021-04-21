@@ -122,6 +122,19 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Font-Lock.html
   (global-font-lock-mode 1)
 #+END_SRC
 
+*** Color emojis in Emacs 27/OS X
+See
+https://www.reddit.com/r/emacs/comments/ggd90c/color_emoji_in_emacs_27/. Not
+sure if this is still necessary, but it's been working :shrug:
+
+#+BEGIN_SRC elisp
+  (when (eq system-type 'darwin)
+    (set-fontset-font t 'symbol "Apple Color Emoji")
+    (set-fontset-font t 'symbol "Noto Color Emoji" nil 'append)
+    (set-fontset-font t 'symbol "Segoe UI Emoji" nil 'append)
+    (set-fontset-font t 'symbol "Symbola" nil 'append))
+#+END_SRC
+
 ** GUI
 - no menu bar; see see http://emacswiki.org/emacs/MenuBar#toc1
 - no tool bar
