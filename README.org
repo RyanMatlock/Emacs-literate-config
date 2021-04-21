@@ -6,7 +6,7 @@ seven years ago, is over 1700 lines long, full of cruft, and difficult to
 manage. It's time to start over---with Org mode!
 
 * TODO Usage
-** TODO Org file -> =.emacs=
+** TODO Org file \to =.emacs=
 ** TODO Escape hatch
 If you need to go back to the old configuration...
 
@@ -228,7 +228,7 @@ This complements ~other-window~, which is bound to =C-x o=.
 #+END_SRC
 
 *** Count words in region
-Documented in old =.emacs= as "~count-words-region~ -> ~count-words~" :shrug:
+Documented in old =.emacs= as "~count-words-region~ \to ~count-words~" :shrug:
 
 #+BEGIN_SRC elisp
   (global-set-key (kbd "M-=") 'count-words)
