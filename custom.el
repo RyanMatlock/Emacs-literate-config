@@ -81,20 +81,36 @@
      ("colorlinks=true" "hyperref" nil nil)
      ("" "siunitx" nil nil)))
  '(org-mode-hook
-   '(hookify:my:org-list-note-prompt org-extra-yas-mode-activation-kludge hookify:my:org-html-image-width ob-ipython-auto-configure-kernels hookify:my:org-insert-visible-space-char hookify:my:org-insert-checkbox-item my:org-insert-bullet my:insert-corner-brackets my:insert-right-corner-bracket my:insert-left-corner-bracket my:insert-micro-sign my:insert-section-sign my:org-priority-key my:org-time-stamp-key flyspell-mode org-tempo-setup
-                                     #[0 "\300\301\302\303\304$\207"
-                                         [add-hook change-major-mode-hook org-show-all append local]
-                                         5]
-                                     #[0 "\300\301\302\303\304$\207"
-                                         [add-hook change-major-mode-hook org-babel-show-result-all append local]
-                                         5]
-                                     org-babel-result-hide-spec org-babel-hide-all-hashes
-                                     #[0 "\301\211\207"
-                                         [imenu-create-index-function org-imenu-get-tree]
-                                         2]
-                                     (lambda nil
-                                       (hs-minor-mode))
-                                     org-journal-update-auto-mode-alist))
+   '(;; hookify:my:org-list-note-prompt
+     ;; org-extra-yas-mode-activation-kludge
+     ;; hookify:my:org-html-image-width
+     ob-ipython-auto-configure-kernels
+     ;; hookify:my:org-insert-visible-space-char
+     ;; hookify:my:org-insert-checkbox-item
+     ;; my:org-insert-bullet
+     ;; my:insert-corner-brackets
+     ;; my:insert-right-corner-bracket
+     ;; my:insert-left-corner-bracket
+     ;; my:insert-micro-sign
+     ;; my:insert-section-sign
+     ;; my:org-priority-key
+     ;; my:org-time-stamp-key
+     flyspell-mode
+     org-tempo-setup
+     #[0 "\300\301\302\303\304$\207"
+         [add-hook change-major-mode-hook org-show-all append local]
+         5]
+     #[0 "\300\301\302\303\304$\207"
+         [add-hook change-major-mode-hook org-babel-show-result-all append local]
+         5]
+     org-babel-result-hide-spec
+     org-babel-hide-all-hashes
+     #[0 "\301\211\207"
+         [imenu-create-index-function org-imenu-get-tree]
+         2]
+     (lambda nil
+       (hs-minor-mode))
+     org-journal-update-auto-mode-alist))
  '(org-pretty-entities t)
  '(package-archives
    '(("melpa" . "https://melpa.org/packages/")
@@ -113,7 +129,13 @@
  '(term-default-bg-color "#002b36")
  '(term-default-fg-color "#839496")
  '(text-mode-hook
-   '(turn-on-flyspell my:org-insert-bullet my:insert-corner-brackets my:insert-right-corner-bracket my:insert-left-corner-bracket turn-on-auto-fill text-mode-hook-identify))
+   '(turn-on-flyspell
+     ;; my:org-insert-bullet
+     ;; my:insert-corner-brackets
+     ;; my:insert-right-corner-bracket
+     ;; my:insert-left-corner-bracket
+     turn-on-auto-fill
+     text-mode-hook-identify))
  '(vc-annotate-background nil)
  '(vc-annotate-color-map
    '((20 . "#dc322f")
