@@ -163,6 +163,7 @@ Note that the =gitmoji= =:​memo:= symbol is the same as ~emojify~'s =:​penci
 - define ~lrg-frame~, which accommodates two side-by-side windows
 - define ~xl-frame~, which accommodates three side-by-side-by-side windows
 - use Inconsolata size 15 font
+- set unicode font to Unifont
 - use Solarized Dark theme; see
   https://emacs.stackexchange.com/questions/10246/emacs-always-ask-to-trust-colour-theme-at-startup
 - disable mouse inputs (except scrolling?); see
@@ -218,6 +219,7 @@ Note that the =gitmoji= =:​memo:= symbol is the same as ~emojify~'s =:​penci
                         (floor (* my:frame-height height-multiplier)))))
     (defvar my:font-face "Inconsolata")
     (defvar my:font-size 15)
+    (set-fontset-font t 'unicode "Unifont" nil 'prepend)
     (set-frame-font (concat my:font-face
                               "-"
                               (number-to-string my:font-size)))
