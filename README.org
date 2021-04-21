@@ -845,8 +845,10 @@ Now using ▼ (black down-pointing triangle =U+25BC=)
 #+END_SRC
 
 *** TODO Org-babel
-
 **** TODO No eval on =C-c C-c= -- move to custom??
+I think I began using this setting because I would mindlessly press =C-c C-c= out
+of habit from using it for ~TeX-command-master~ in AUCTeX.
+
 #+BEGIN_SRC elisp
 (setq org-babel-no-eval-on-ctrl-c-ctrl-c t)
 #+END_SRC
