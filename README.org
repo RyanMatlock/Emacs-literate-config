@@ -15,6 +15,14 @@ If you need to go back to the old configuration...
 #+END_SRC
 
 * General interface & minor modes
+** Package
+#+BEGIN_SRC elisp
+  (require 'package)
+  (package-initialize)
+#+END_SRC
+
+Note: all the ~package-archives~ stuff for MELPA was moved over to =emacs-custom=.
+
 ** Customize
 There are probably a number of settings you can/should move into this, although
 I'm curious how much of a pressing need there is given that with a literate
