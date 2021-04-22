@@ -84,7 +84,7 @@
    '(;; hookify:my:org-list-note-prompt
      ;; org-extra-yas-mode-activation-kludge
      ;; hookify:my:org-html-image-width
-     ob-ipython-auto-configure-kernels
+     ;; ob-ipython-auto-configure-kernels
      ;; hookify:my:org-insert-visible-space-char
      ;; hookify:my:org-insert-checkbox-item
      ;; my:org-insert-bullet
