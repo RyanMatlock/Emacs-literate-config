@@ -15,59 +15,6 @@ If you need to go back to the old configuration...
 #+END_SRC
 
 * Problems
-** TODO Fix =PATH= variable
-=iTerm2.app= with =bash-5.0.18(1)= in =/usr/local/bin/bash=:
-
-#+BEGIN_SRC sh
-  $ echo $PATH
-/Users/matlock/.cabal/bin:/Users/matlock/.ghcup/bin:/Users/matlock/.cargo/bin:/Users/matlock/.pyenv/shims:/usr/local/opt/openssl@1.1/bin:/usr/local/sbin:/opt/local/bin:/opt/local/sbin:/Users/matlock/.nexustools:/Users/matlock/Library/Haskell/bin:/usr/local/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Library/TeX/texbin:/opt/X11/bin
-#+END_SRC
-
-=eshell=:
-
-#+BEGIN_SRC eshell
-$ echo $PATH
-/Users/matlock/.cabal/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Applications/Emacs.app/Contents/MacOS/bin-x86_64-10_14:/Applications/Emacs.app/Contents/MacOS/libexec-x86_64-10_14
-#+END_SRC
-
-=ansi-term= with =bash-5.0.18(1)= in =/usr/local/bin/bash=:
-
-#+BEGIN_SRC sh
-$ echo $PATH
-/Users/matlock/.cabal/bin:/Users/matlock/.ghcup/bin:/Users/matlock/.cabal/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Applications/Emacs.app/Contents/MacOS/bin-x86_64-10_14:/Applications/Emacs.app/Contents/MacOS/libexec-x86_64-10_14
-#+END_SRC
-
-I bet this has something to do with Emacs starting from somewhere in
-=/Applications/Emacs.app/=, so =PWD= is set to there, therefore my =~/.bash_profile=
-and =~/.bashrc= aren't =source=​d, leading to the issue with =PATH=.
-
-The solution is probably to set =CWD= to =/Users/matlock= and then set =PATH= based
-on that (possibly by =source=​ing =~/.bash_profile= and =~/.bashrc=). You'll need to
-find out just when and how =PATH= is set. I wouldn't be surprised if this happens
-to fix the =aspell= problem given that ~$ which aspell~ produces nothing in =eshell=,
-but in =iTerm.app=, ~$ which aspell~ correctly reports =/usr/local/bin/aspell=.
-
-Note that
-#+BEGIN_SRC emacs-lisp :eval no
-  (message (getenv "PWD"))
-#+END_SRC
-
-#+RESULTS:
-produced no output. :thinking:
-
-** TODO Flyspell can't find =aspell=
-From =*Messages*= on startup:
-
-#+BEGIN_SRC fundamental
-  Loading /Users/matlock/config/emacs/README.el (source)...
-  Loading /Users/matlock/config/emacs/custom.el (source)...done
-  [yas] Prepared just-in-time loading of snippets successfully. [2 times]
-  Loading /Users/matlock/config/emacs/README.el (source)...done
-  Loaded /Users/matlock/config/emacs/README.el
-  Error enabling Flyspell mode:
-  (Searching for program No such file or directory aspell)
-#+END_SRC
-
 * Features to add/look into & changes to make [0/3]
 - [ ] oBnOxIoUs CaSe region command (this may already exist, but I'm going
   to 1) respect other Emacs users enough to assume that it doesn't, and 2) try
@@ -94,14 +41,6 @@ I'm curious how much of a pressing need there is given that with a literate
 #+END_SRC
 
 ** Environment variables
-*** COMMENT Get ~exec-path~ to behave like =$PATH=
-# (possibly needed in the past to get ~cider-jack-in~ to work because it couldn't
-# find =lein= :shrug:
-
-# #+BEGIN_SRC emacs-lisp
-#   (setq exec-path (append exec-path '("/usr/local/bin")))
-# #+END_SRC
-
 *** ~exec-path-from-shell~ to fix ~exec-path~​/​~PATH~ behavior in OS X
 See https://github.com/purcell/exec-path-from-shell. Ensure ~exec-path~ works
 whether Emacs is launched from OS X GUI or a =systemd=-style daemon; also ensure
@@ -117,17 +56,18 @@ whether Emacs is launched from OS X GUI or a =systemd=-style daemon; also ensure
 
 Note: this method of detecting being in OS X is different than what I've used
 elsewhere in this document, but it may be the right way to do it.
-*** TODO Set default path for find file -- move to custom??
-# See https://stackoverflow.com/questions/6464003/emacs-find-file-default-path
-See
-https://stackoverflow.com/questions/60464/changing-the-default-folder-in-emacs
-and
-https://stackoverflow.com/questions/3964715/what-is-the-correct-way-to-join-multiple-path-components-into-a-single-complete
+*** Set ~default-directory~ for ~find-file~
+Note that this also appears to affect default directory for ~eshell~.
 
-It looks like I don't even need to do anything with ~concat~ or ~expand-file-name~.
+Update: it seems like ~(getenv "HOME")~ wasn't working (at least on OS X), so I'm
+manually setting the directory. I suspect Linux plays a little nicer with
+~(getenv "HOME")~, so I'm keeping that.
 
 #+BEGIN_SRC emacs-lisp
-  (setq default-directory (getenv "HOME"))
+  (setq default-directory
+        (if (eq system-type 'darwin)
+            "/Users/matlock"
+          (getenv "HOME")))
 #+END_SRC
 
 ** TODO General look & feel
@@ -1210,3 +1150,66 @@ https://www.emacswiki.org/emacs/ElectricPair
 * Settings moved to =emacs-custom=
 There are probably a few things that deserve to be moved rather than hard-coded
 into the init file.
+
+* Solutions
+** Fix =PATH= variable
+*** Problem
+=iTerm2.app= with =bash-5.0.18(1)= in =/usr/local/bin/bash=:
+
+#+BEGIN_SRC sh
+  $ echo $PATH
+/Users/matlock/.cabal/bin:/Users/matlock/.ghcup/bin:/Users/matlock/.cargo/bin:/Users/matlock/.pyenv/shims:/usr/local/opt/openssl@1.1/bin:/usr/local/sbin:/opt/local/bin:/opt/local/sbin:/Users/matlock/.nexustools:/Users/matlock/Library/Haskell/bin:/usr/local/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Library/TeX/texbin:/opt/X11/bin
+#+END_SRC
+
+=eshell=:
+
+#+BEGIN_SRC eshell
+$ echo $PATH
+/Users/matlock/.cabal/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Applications/Emacs.app/Contents/MacOS/bin-x86_64-10_14:/Applications/Emacs.app/Contents/MacOS/libexec-x86_64-10_14
+#+END_SRC
+
+=ansi-term= with =bash-5.0.18(1)= in =/usr/local/bin/bash=:
+
+#+BEGIN_SRC sh
+$ echo $PATH
+/Users/matlock/.cabal/bin:/Users/matlock/.ghcup/bin:/Users/matlock/.cabal/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Applications/Emacs.app/Contents/MacOS/bin-x86_64-10_14:/Applications/Emacs.app/Contents/MacOS/libexec-x86_64-10_14
+#+END_SRC
+
+I bet this has something to do with Emacs starting from somewhere in
+=/Applications/Emacs.app/=, so =PWD= is set to there, therefore my =~/.bash_profile=
+and =~/.bashrc= aren't =source=​d, leading to the issue with =PATH=.
+
+The solution is probably to set =CWD= to =/Users/matlock= and then set =PATH= based
+on that (possibly by =source=​ing =~/.bash_profile= and =~/.bashrc=). You'll need to
+find out just when and how =PATH= is set. I wouldn't be surprised if this happens
+to fix the =aspell= problem given that ~$ which aspell~ produces nothing in =eshell=,
+but in =iTerm.app=, ~$ which aspell~ correctly reports =/usr/local/bin/aspell=.
+
+Note that
+#+BEGIN_SRC emacs-lisp :eval no
+  (message (getenv "PWD"))
+#+END_SRC
+
+#+RESULTS:
+produced no output. :thinking:
+
+*** Solution
+Use ~exec-path-from-shell~ in OS X. Setting ~default-directory~ also made things a
+little nicer.
+
+** Flyspell can't find =aspell=
+*** Problem
+From =*Messages*= on startup:
+
+#+BEGIN_SRC fundamental
+  Loading /Users/matlock/config/emacs/README.el (source)...
+  Loading /Users/matlock/config/emacs/custom.el (source)...done
+  [yas] Prepared just-in-time loading of snippets successfully. [2 times]
+  Loading /Users/matlock/config/emacs/README.el (source)...done
+  Loaded /Users/matlock/config/emacs/README.el
+  Error enabling Flyspell mode:
+  (Searching for program No such file or directory aspell)
+#+END_SRC
+
+*** Solution
+Fixing ~exec-path~​/​=PATH= environment variables seemed to do the trick.
