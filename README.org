@@ -241,10 +241,18 @@ Note that the =gitmoji= =:​memo:= symbol is the same as ~emojify~'s =:​penci
 
 #+BEGIN_SRC emacs-lisp
   (setq emojify-user-emojis
-        '((":memo:" . (("name" . "Memo")
-                       ("image" .
-                        "~/.emacs.d/emojis/emojione-v2.2.6-22/1f4dd.png")
-                       ("style" . "github")))))
+        '((":memo:" .
+           (("name" . "Memo")
+            ("image" .
+             "~/.emacs.d/emojis/emojione-v2.2.6-22/1f4dd.png")
+            ("style" . "github")))
+          (":adhesive_bandage:" .
+           (("name" . "Adhesive Bandage")
+            ("image" .
+             "~/.emacs.d/emojis/user-added/adhesive_bandage.png")
+            ("style" . "github")))))
+  (when (featurep 'emojify)
+    (emojify-set-emoji-data))
 #+END_SRC
 
 ** GUI
