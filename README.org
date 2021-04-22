@@ -5,14 +5,22 @@ As of [2021-04-19], my Emacs configuration file, which probably began life
 around seven years ago, is over 1700 lines long, full of cruft, and difficult
 to manage. It's time to start over---with Org mode!
 
-* TODO Usage
-** TODO Org file \to =.emacs=
-** TODO Escape hatch
-If you need to go back to the old configuration...
+* Usage
+** Escape hatch
+In case you need to go back to your old configuration:
 
 #+BEGIN_SRC sh :eval no
-  ln -s /path/to/legacy-dotemacs.el ~/emacs.test && touch ~/Deskop/DOTEMACS-ERR
+  ln -s /path/to/legacy-dotemacs.el ~/.emacs
 #+END_SRC
+
+Then either reload =.emacs= or restart Emacs. Looks like you shouldn't need to do
+this though.
+
+** How this works
+=.emacs= is symlinked to =dotemacs.el=, which loads the necessary ~package~ and
+~use-package~ packages in order for ~org-babel-load-file~ to process this file,
+=README.org=, which contains all the Emacs Lisp configuration goodness (excluding
+the stuff handled by ~customize-variable~).
 
 * Problems
 * Features to add/look into & changes to make [0/3]
