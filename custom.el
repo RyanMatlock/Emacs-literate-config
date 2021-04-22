@@ -96,7 +96,7 @@
      ;; my:org-priority-key
      ;; my:org-time-stamp-key
      flyspell-mode
-     org-tempo-setup
+     ;; org-tempo-setup
      #[0 "\300\301\302\303\304$\207"
          [add-hook change-major-mode-hook org-show-all append local]
          5]
