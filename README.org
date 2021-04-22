@@ -1,9 +1,9 @@
 #+title: Literate Emacs configuration with Org mode
 #+author: Ryan Matlock
 
-As of 2021-04-19, my Emacs configuration file, which probably began life around
-seven years ago, is over 1700 lines long, full of cruft, and difficult to
-manage. It's time to start over---with Org mode!
+As of [2021-04-19], my Emacs configuration file, which probably began life
+around seven years ago, is over 1700 lines long, full of cruft, and difficult
+to manage. It's time to start over---with Org mode!
 
 * TODO Usage
 ** TODO Org file \to =.emacs=
@@ -14,18 +14,74 @@ If you need to go back to the old configuration...
   ln -s /path/to/legacy-dotemacs.el ~/emacs.test && touch ~/Deskop/DOTEMACS-ERR
 #+END_SRC
 
+* Problems
+** TODO Fix =PATH= variable
+=iTerm2.app= with =bash-5.0.18(1)= in =/usr/local/bin/bash=:
+
+#+BEGIN_SRC sh
+  $ echo $PATH
+/Users/matlock/.cabal/bin:/Users/matlock/.ghcup/bin:/Users/matlock/.cargo/bin:/Users/matlock/.pyenv/shims:/usr/local/opt/openssl@1.1/bin:/usr/local/sbin:/opt/local/bin:/opt/local/sbin:/Users/matlock/.nexustools:/Users/matlock/Library/Haskell/bin:/usr/local/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Library/TeX/texbin:/opt/X11/bin
+#+END_SRC
+
+=eshell=:
+
+#+BEGIN_SRC eshell
+$ echo $PATH
+/Users/matlock/.cabal/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Applications/Emacs.app/Contents/MacOS/bin-x86_64-10_14:/Applications/Emacs.app/Contents/MacOS/libexec-x86_64-10_14
+#+END_SRC
+
+=ansi-term= with =bash-5.0.18(1)= in =/usr/local/bin/bash=:
+
+#+BEGIN_SRC sh
+$ echo $PATH
+/Users/matlock/.cabal/bin:/Users/matlock/.ghcup/bin:/Users/matlock/.cabal/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Applications/Emacs.app/Contents/MacOS/bin-x86_64-10_14:/Applications/Emacs.app/Contents/MacOS/libexec-x86_64-10_14
+#+END_SRC
+
+I bet this has something to do with Emacs starting from somewhere in
+=/Applications/Emacs.app/=, so =PWD= is set to there, therefore my =~/.bash_profile=
+and =~/.bashrc= aren't =source=​d, leading to the issue with =PATH=.
+
+The solution is probably to set =CWD= to =/Users/matlock= and then set =PATH= based
+on that (possibly by =source=​ing =~/.bash_profile= and =~/.bashrc=). You'll need to
+find out just when and how =PATH= is set. I wouldn't be surprised if this happens
+to fix the =aspell= problem given that ~$ which aspell~ produces nothing in =eshell=,
+but in =iTerm.app=, ~$ which aspell~ correctly reports =/usr/local/bin/aspell=.
+
+Note that
+#+BEGIN_SRC emacs-lisp :eval no
+  (message (getenv "PWD"))
+#+END_SRC
+
+#+RESULTS:
+produced no output. :thinking:
+
+** TODO Flyspell can't find =aspell=
+From =*Messages*= on startup:
+
+#+BEGIN_SRC fundamental
+  Loading /Users/matlock/config/emacs/README.el (source)...
+  Loading /Users/matlock/config/emacs/custom.el (source)...done
+  [yas] Prepared just-in-time loading of snippets successfully. [2 times]
+  Loading /Users/matlock/config/emacs/README.el (source)...done
+  Loaded /Users/matlock/config/emacs/README.el
+  Error enabling Flyspell mode:
+  (Searching for program No such file or directory aspell)
+#+END_SRC
+
+* Features to add/look into & changes to make [0/3]
+- [ ] oBnOxIoUs CaSe region command (this may already exist, but I'm going
+  to 1) respect other Emacs users enough to assume that it doesn't, and 2) try
+  to write it myself because it seems straightforward but also good Emacs Lisp
+  practice).
+- [ ] [[https://github.com/abo-abo/hydra][hydra]] for fancy keybindings
+- [ ] ~setq~ vs ~customize-variable~; move stuff to =custom.el= if the latter makes
+  sense for much of your configuration
+
 * General interface & minor modes
 ** Package
 Actually, I think =dotemacs.el= takes care of ~package~, ~use-package~, MELPA, and
 the ~org-babel~ stuff necessary to evaluate the Emacs Lisp blocks in this
 file; see https://cestlaz.github.io/posts/using-emacs-10-org-init/
-
-# #+BEGIN_SRC emacs-lisp
-#   (require 'package)
-#   (package-initialize)
-# #+END_SRC
-
-# Note: all the ~package-archives~ stuff for MELPA was moved over to =emacs-custom=.
 
 ** Customize
 There are probably a number of settings you can/should move into this, although
