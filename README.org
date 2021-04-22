@@ -93,6 +93,43 @@ I'm curious how much of a pressing need there is given that with a literate
   (load custom-file)
 #+END_SRC
 
+** Environment variables
+*** COMMENT Get ~exec-path~ to behave like =$PATH=
+# (possibly needed in the past to get ~cider-jack-in~ to work because it couldn't
+# find =lein= :shrug:
+
+# #+BEGIN_SRC emacs-lisp
+#   (setq exec-path (append exec-path '("/usr/local/bin")))
+# #+END_SRC
+
+*** ~exec-path-from-shell~ to fix ~exec-path~​/​~PATH~ behavior in OS X
+See https://github.com/purcell/exec-path-from-shell. Ensure ~exec-path~ works
+whether Emacs is launched from OS X GUI or a =systemd=-style daemon; also ensure
+=PYTHONPATH= works.
+
+#+BEGIN_SRC emacs-lisp
+  (when (memq window-system '(mac ns x))
+    (exec-path-from-shell-initialize))
+  (when (daemonp)
+    (exec-path-from-shell-initialize))
+  (exec-path-from-shell-copy-env "PYTHONPATH")
+#+END_SRC
+
+Note: this method of detecting being in OS X is different than what I've used
+elsewhere in this document, but it may be the right way to do it.
+*** TODO Set default path for find file -- move to custom??
+# See https://stackoverflow.com/questions/6464003/emacs-find-file-default-path
+See
+https://stackoverflow.com/questions/60464/changing-the-default-folder-in-emacs
+and
+https://stackoverflow.com/questions/3964715/what-is-the-correct-way-to-join-multiple-path-components-into-a-single-complete
+
+It looks like I don't even need to do anything with ~concat~ or ~expand-file-name~.
+
+#+BEGIN_SRC emacs-lisp
+  (setq default-directory (getenv "HOME"))
+#+END_SRC
+
 ** TODO General look & feel
 *** TODO Whitespace -- move to custom??
 Highlight lines over 80 chars long; see
@@ -484,14 +521,6 @@ look later. It also looks like a setting I could potentially move to
 #+END_SRC
 
 ** TODO Miscellaneous
-*** Get ~exec-path~ to behave like =$PATH=
-(possibly needed in the past to get ~cider-jack-in~ to work because it couldn't
-find =lein= :shrug:
-
-#+BEGIN_SRC emacs-lisp
-  (setq exec-path (append exec-path '("/usr/local/bin")))
-#+END_SRC
-
 *** Shrug emoticon
 #+BEGIN_SRC emacs-lisp
   (defun shrug-emoticon ()
@@ -529,19 +558,6 @@ reason :shrug:
 *** TODO Define ~obnoxious-case-region~
 Type a line normally and cOnVeRt It To ThIs. Maybe pass a prefix argument to
 shift if it starts uppercase or lowercase?
-
-*** TODO Set default path for find file -- move to custom??
-# See https://stackoverflow.com/questions/6464003/emacs-find-file-default-path
-See
-https://stackoverflow.com/questions/60464/changing-the-default-folder-in-emacs
-and
-https://stackoverflow.com/questions/3964715/what-is-the-correct-way-to-join-multiple-path-components-into-a-single-complete
-
-It looks like I don't even need to do anything with ~concat~ or ~expand-file-name~.
-
-#+BEGIN_SRC emacs-lisp
-  (setq default-directory (getenv "HOME"))
-#+END_SRC
 
 *** TODO Disable "Package ~cl~ is deprecated" warning on startup
 See https://github.com/kiwanami/emacs-epc/issues/35. Might be a good idea to
