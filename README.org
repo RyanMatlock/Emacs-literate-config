@@ -23,7 +23,10 @@ this though.
 the stuff handled by ~customize-variable~).
 
 * Problems
-* Features to add/look into & changes to make [0/3]
+* Features to add/look into & changes to make [1/5]
+- [X] get meta key working properly on M1 Mac Mini
+- [ ] automatically install missing packages on startup (finding out the hard
+  way that migrating this config to a new machine is a PITA)
 - [ ] oBnOxIoUs CaSe region command (this may already exist, but I'm going
   to 1) respect other Emacs users enough to assume that it doesn't, and 2) try
   to write it myself because it seems straightforward but also good Emacs Lisp
@@ -33,10 +36,159 @@ the stuff handled by ~customize-variable~).
   sense for much of your configuration
 
 * General interface & minor modes
+** Meta key behavior
+See https://www.emacswiki.org/emacs/MetaKeyProblems#h5o-18
+
+#+BEGIN_SRC emacs-lisp
+  (setq mac-option-modifier 'meta)
+#+END_SRC
+
+(Works on M1 Mac Mini (9.1?), although I don't think this was necessary on a
+late 2019 MacBook Pro 16".)
+
 ** Package
-Actually, I think =dotemacs.el= takes care of ~package~, ~use-package~, MELPA, and
-the ~org-babel~ stuff necessary to evaluate the Emacs Lisp blocks in this
-file; see https://cestlaz.github.io/posts/using-emacs-10-org-init/
+=dotemacs.el= takes care of ~package~, ~use-package~, MELPA, and the ~org-babel~ stuff
+necessary to evaluate the Emacs Lisp blocks in this file; see
+https://cestlaz.github.io/posts/using-emacs-10-org-init/. However, if using
+this config file on a new machine, the lack of installed packages will lead to
+errors.
+
+*** TODO Auto-install missing packages
+/Very/ useful on new machines.
+
+(Stolen from https://stackoverflow.com/a/55058934)
+
+#+BEGIN_SRC emacs-lisp
+  (setq my-packages
+    '(ac-geiser
+      ac-js2
+      ;; ac-python
+      ac-slime
+      arduino-mode
+      auctex-latexmk
+      auto-complete
+      auto-complete-c-headers
+      auto-complete-chunk
+      ;; awk-it
+      better-defaults
+      bison-mode
+      ;; blank-mode
+      ;; chess
+      ;; cider
+      company-anaconda
+      company-auctex
+      company-bibtex
+      company-emoji
+      ;; company-lsp
+      ;; company-math
+      ;; company-org-roam
+      ;; company-shell
+      ;; company-web
+      ;; d-mode
+      ;; db-pg
+      ebib
+      ein
+      ;; eldoc-eval
+      ;; eldoc-overlay
+      electric-case
+      electric-operator
+      electric-spacing
+      elein
+      elisp-slime-nav
+      elpy
+      emoji-display
+      emojify
+      exec-path-from-shell
+      ;; flx
+      ;; flx-ido
+      flycheck-pyflakes
+      flycheck-rust
+      flymake-hlint
+      gist
+      haskell-tab-indent
+      ;; ;; helm-bibtex
+      ;; ;; hideshow-org
+      highlight-indent-guides
+      hindent
+      ido-yes-or-no
+      iedit
+      ivy
+      ivy-yasnippet
+      ;; ;; js3-mode
+      ;; json-mode
+      ;; latex-math-preview
+      ;; ;; lorem-ipsum
+      ;; lsp-haskell
+      ;; lsp-jedi
+      ;; lsp-latex
+      ;; lsp-mode
+      ;; lsp-pyright
+      ;; lsp-ui
+      magit
+      magit-filenotify
+      ;; ;; mediawiki
+      ;; ;; merlin
+      ;; ;; merlin-company
+      ;; ;; merlin-iedit
+      ;; ;; nodejs-repl
+      ;; ob-ipython
+      org
+      ;; org-ac
+      ;; org-bullets
+      ;; ;; org-journal
+      ;; ;; org-journal-list
+      ;; ;; org-re-reveal
+      ;; ;; org-ref
+      ;; ;; org-roam
+      ;; ;; org-roam-bibtex
+      ;; ;; org-roam-server
+      ;; osx-clipboard
+      ;; ;; osx-dictionary
+      ;; ;; ox-epub
+      ;; ;; ox-pandoc
+      ;; ;; ox-reveal
+      ;; ;; ox-rst
+      ;; ;; ox-tufte
+      ;; ;; ox-wk
+      pandoc-mode
+      paredit
+      ;; pomidor
+      pytest
+      python-mode
+      rust-mode
+      ;; ;; s
+      ;; scion
+      ;; slime
+      solarized-theme
+      sql-indent
+      sqlup-mode
+      ;; ;; sx
+      ;; ;; tagedit
+      ;; ;; telephone-line
+      ;; ;; theme-looper
+      ;; ;; toml-mode
+      ;; ;; transient
+      unfill
+      use-package
+      ;; ;; utop
+      ;; web-beautify
+      ;; wget
+      ;; wgrep-ack
+      yaml-mode))
+
+  ;; iterate over my-packages and install missing ones
+  (dolist (pkg my-packages)
+    (unless (package-installed-p pkg)
+      (package-install pkg)))
+#+END_SRC
+
+Note that this hasn't worked perfectly. Basically, I can install a few packages,
+and then I need to reload ~.dotemacs~. Now I'm failing on
+~File error: https://melpa.org/packages/sesman-20190909.1754.tar, Not found~
+so I guess that's a dependency of some sort. (A cider dependency?)
+
+Maybe separate these into packages I use all the time, packages that make this
+config work, and the rest?
 
 ** Customize
 There are probably a number of settings you can/should move into this, although
@@ -49,7 +201,7 @@ I'm curious how much of a pressing need there is given that with a literate
 #+END_SRC
 
 ** Environment variables
-*** ~exec-path-from-shell~ to fix ~exec-path~​/​~PATH~ behavior in OS X
+*** TODO ~exec-path-from-shell~ to fix ~exec-path~​/​~PATH~ behavior in OS X
 See https://github.com/purcell/exec-path-from-shell. Ensure ~exec-path~ works
 whether Emacs is launched from OS X GUI or a =systemd=-style daemon; also ensure
 =PYTHONPATH= works.
@@ -77,6 +229,10 @@ manually setting the directory. I suspect Linux plays a little nicer with
             "/Users/matlock"
           (getenv "HOME")))
 #+END_SRC
+
+Note: I'm hardcoding my user directory across all times I use this with OSX,
+and that seems like a bad idea, especially now that I'm using multiple,
+separate machines.
 
 ** TODO General look & feel
 *** TODO Whitespace -- move to custom??
