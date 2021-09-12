@@ -608,13 +608,6 @@ at some point.
   (yas-global-mode 1)
 #+END_SRC
 
-*** TODO =.snip= extension for yasnippet templates -- move to custom??
-#+BEGIN_SRC emacs-lisp
-  (setq auto-mode-alist
-        (cons '("\\.snip$" . snippet-mode)
-              auto-mode-alist))
-#+END_SRC
-
 *** =M-<TAB>= for snippets within snippets
 See https://joaotavora.github.io/yasnippet/snippet-expansion.html
 
@@ -678,6 +671,22 @@ bandaid.
 
 #+BEGIN_SRC emacs-lisp
   (setq byte-compile-warnings '(cl-functions))
+#+END_SRC
+
+* ~auto-mode-alist~
+~auto-mode-alist~ is a variable defined using ~defvar~ located in
+=emacs-app/.../lisp/files.el.gz=. As such, it can't be added to using
+~customize-variable~, so I'll keep custom file extension associations down here.
+
+Per https://www.emacswiki.org/emacs/AutoModeAlist, this is the proper way to
+add several entries to the end of ~auto-mode-alist~.
+
+#+BEGIN_SRC emacs-lisp
+  (setq auto-mode-alist
+        (append auto-mode-alist
+                '(("\\.cir\\'" . spice-mode)
+                  ("\\.snip\\'" . snippet-mode)
+                  ("\\.ctl\\.yml\\." . yaml-cocktail-mode))))
 #+END_SRC
 
 * Major modes
@@ -1208,7 +1217,6 @@ they'll be easy to find.
   ;; (setq py-install-directory "~/.emacs.d/plugins/python-mode/")
   (require 'python-mode)
 
-  ;; (setq auto-mode-alist (cons '("\\.py$" . python-mode) auto-mode-alist))
   ;; (setq interpreter-mode-alist (cons '("python" . python-mode)
   ;;                                       interpreter-mode-alist))
   ;; (autoload 'python-mode "python-mode" "Python editing mode." t)
@@ -1308,7 +1316,7 @@ https://www.emacswiki.org/emacs/ElectricPair
   (add-hook 'yaml-cocktail-mode-hook 'yas-minor-mode)
   (add-hook 'yaml-cocktail-mode-hook 'yaml-mode)
 
-  (add-to-list 'auto-mode-alist '("\\.ctl\\.yml\\'" . yaml-cocktail-mode))
+  ;; (add-to-list 'auto-mode-alist '("\\.ctl\\.yml\\'" . yaml-cocktail-mode))
 #+END_SRC
 
 * Settings moved to =emacs-custom=
