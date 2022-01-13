@@ -1,1 +1,3 @@
-README.el
+core-config.el
+core-langs.el
+extras.el
