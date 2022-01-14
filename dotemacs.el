@@ -15,4 +15,4 @@
   (package-refresh-contents)
   (package-install 'use-package))
 
-(org-babel-load-file (expand-file-name "~/config/emacs/README.org"))
+(org-babel-load-file (expand-file-name "~/config/emacs/core-config.org"))
