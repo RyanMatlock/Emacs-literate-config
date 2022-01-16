@@ -1,0 +1,674 @@
+#+title: Literate Emacs configuration with Org mode
+#+subtitle: Core configuration
+#+author: Ryan Matlock
+
+As of [2021-04-19], my Emacs configuration file, which probably began life
+around seven years ago, is over 1700 lines long, full of cruft, and difficult
+to manage. It's time to start over---with Org mode!
+
+Now on [2022-01-13], it's time to separate core features I want from certain
+mode-specific and more obscure customizations, which should hopefully make this
+more portable onto new machines. (TODO: test this on Mac OS and some flavor of
+Linux).
+
+* Usage
+** Escape hatch
+In case you need to go back to your old configuration:
+
+#+BEGIN_SRC sh :eval no
+  ln -s /path/to/legacy-dotemacs.el ~/.emacs
+#+END_SRC
+
+Then either reload =.emacs= or restart Emacs. Looks like you shouldn't need to do
+this though.
+
+** How this works
+=.emacs= is symlinked to =dotemacs.el=, which loads the necessary ~package~ and
+~use-package~ packages in order for ~org-babel-load-file~ to process this file,
+=README.org=, which contains all the Emacs Lisp configuration goodness (excluding
+the stuff handled by ~customize-variable~).
+
+** Configuration organization
+*** ~core-config.org~
+
+Also includes main editing commands for
+- Org mode
+- Emacs Lisp
+so that this file can be easily edited without loading additional extensions.
+
+*** ~core-langs.org~
+Includes configuration for
+- Python
+- Haskell
+- Rust
+and related tools.
+
+*** ~extras.org~
+
+* Switches for additional configuration
+
+#+BEGIN_SRC emacs-lisp
+  (setq core-config-core-langs-switch t)
+  (setq core-config-extras-switch nil)
+#+END_SRC
+
+* Problems
+* Features to add/look into & changes to make [1/5]
+- [X] get meta key working properly on M1 Mac Mini
+- [ ] automatically install missing packages on startup (finding out the hard
+  way that migrating this config to a new machine is a PITA)
+- [ ] oBnOxIoUs CaSe region command (this may already exist, but I'm going
+  to 1) respect other Emacs users enough to assume that it doesn't, and 2) try
+  to write it myself because it seems straightforward but also good Emacs Lisp
+  practice).
+- [ ] [[https://github.com/abo-abo/hydra][hydra]] for fancy keybindings
+- [ ] ~setq~ vs ~customize-variable~; move stuff to =custom.el= if the latter makes
+  sense for much of your configuration
+
+* General interface & minor modes
+** Meta key behavior
+See https://www.emacswiki.org/emacs/MetaKeyProblems#h5o-18
+
+#+BEGIN_SRC emacs-lisp
+  (setq mac-option-modifier 'meta)
+#+END_SRC
+
+(Works on M1 Mac Mini (9.1?), although I don't think this was necessary on a
+late 2019 MacBook Pro 16".)
+n
+** TODO ~package.el~ \to ~straight.el~
+See https://github.com/raxod502/straight.el
+
+I think the better way of doing this might be to move the relevant =use-package=
+command to the natural place in the config file instead of all in one big list.
+
+Old info:
+=dotemacs.el= takes care of ~package~, ~use-package~, MELPA, and the ~org-babel~ stuff
+necessary to evaluate the Emacs Lisp blocks in this file; see
+https://cestlaz.github.io/posts/using-emacs-10-org-init/. However, if using
+this config file on a new machine, the lack of installed packages will lead to
+errors.
+
+*** TODO Auto-install missing packages
+/Very/ useful on new machines.
+
+(Stolen from https://stackoverflow.com/a/55058934)
+
+# #+BEGIN_SRC emacs-lisp
+#   (setq my-packages
+#     '(auto-complete
+#       auto-complete-chunk
+#       better-defaults
+#       electric-case
+#       electric-operator
+#       electric-spacing
+#       elein
+#       elisp-slime-nav
+#       elpy
+#       emoji-display
+#       emojify
+#       exec-path-from-shell
+#       gist
+#       highlight-indent-guides
+#       hindent
+#       ido-yes-or-no
+#       iedit
+#       ivy
+#       ivy-yasnippet
+#       magit
+#       magit-filenotify
+#       pandoc-mode
+#       paredit
+#       solarized-theme
+#       unfill))
+
+#   ;; this is the old package.el way of doing this
+#   ;; ;; iterate over my-packages and install missing ones
+#   ;; (dolist (pkg my-packages)
+#   ;;   (unless (package-installed-p pkg)
+#   ;;     (package-install pkg)))
+
+#   ;; this is the straight.el way?
+#   (dolist (pkg my-packages)
+#     (use-package 'pkg))
+# #+END_SRC
+
+(Previously, ~org~ and ~use-package~ were in the list of packages to install,
+but that's been moved into ~dotemacs.el~.
+
+Note that this hasn't worked perfectly. Basically, I can install a few packages,
+and then I need to reload ~.dotemacs~. Now I'm failing on
+~File error: https://melpa.org/packages/sesman-20190909.1754.tar, Not found~
+so I guess that's a dependency of some sort. (A cider dependency?)
+
+Maybe separate these into packages I use all the time, packages that make this
+config work, and the rest?
+
+
+** TODO =use-package= statements so I can use Emacs
+
+#+BEGIN_SRC emacs-lisp
+  (use-package auto-complete)
+  (use-package auto-complete-chunk)
+  (use-package better-defaults)
+  (use-package electric-case)
+  (use-package electric-operator)
+  (use-package electric-spacing)
+  (use-package elein)
+  (use-package elisp-slime-nav)
+  (use-package elpy)
+  (use-package emoji-display)
+  (use-package emojify)
+  (use-package exec-path-from-shell)
+  (use-package gist)
+  (use-package highlight-indent-guides)
+  (use-package hindent)
+  (use-package ido-yes-or-no)
+  (use-package iedit)
+  (use-package ivy)
+  (use-package ivy-yasnippet)
+  (use-package magit)
+  (use-package magit-filenotify)
+  (use-package pandoc-mode)
+  (use-package paredit)
+  (use-package solarized-theme)
+  (use-package unfill)
+#+END_SRC
+
+** Customize
+There are probably a number of settings you can/should move into this, although
+I'm curious how much of a pressing need there is given that with a literate
+=.emacs= config, I can explain my reasoning for a setting.
+
+#+BEGIN_SRC emacs-lisp
+  (setq custom-file "/Users/matlock/config/emacs/custom.el")
+  (load custom-file)
+#+END_SRC
+
+** Environment variables
+# *** TODO ~exec-path-from-shell~ to fix ~exec-path~​/​~PATH~ behavior in OS X
+# Having trouble with this after ~straight.el~ migration
+
+# See https://github.com/purcell/exec-path-from-shell. Ensure ~exec-path~ works
+# whether Emacs is launched from OS X GUI or a =systemd=-style daemon; also ensure
+# =PYTHONPATH= works.
+
+# #+BEGIN_SRC emacs-lisp
+#   (when (memq window-system '(mac ns x))
+#     (exec-path-from-shell-initialize))
+#   (when (daemonp)
+#     (exec-path-from-shell-initialize))
+#   (exec-path-from-shell-copy-env "PYTHONPATH")
+# #+END_SRC
+
+# Note: this method of detecting being in OS X is different than what I've used
+# elsewhere in this document, but it may be the right way to do it.
+# *** Set ~default-directory~ for ~find-file~
+# Note that this also appears to affect default directory for ~eshell~.
+
+# Update: it seems like ~(getenv "HOME")~ wasn't working (at least on OS X), so I'm
+# manually setting the directory. I suspect Linux plays a little nicer with
+# ~(getenv "HOME")~, so I'm keeping that.
+
+# #+BEGIN_SRC emacs-lisp
+#   (setq default-directory
+#         (if (eq system-type 'darwin)
+#             "/Users/matlock"
+#           (getenv "HOME")))
+# #+END_SRC
+
+# Note: I'm hardcoding my user directory across all times I use this with OSX,
+# and that seems like a bad idea, especially now that I'm using multiple,
+# separate machines.
+
+** TODO General look & feel
+*** TODO Whitespace -- move to custom??
+Highlight lines over 80 chars long; see
+http://emacsredux.com/blog/2013/05/31/highlight-lines-that-exceed-a-certain-length-limit/
+and
+http://stackoverflow.com/questions/6344474/how-can-i-make-emacs-highlight-lines-that-go-over-80-chars 
+
+#+BEGIN_SRC emacs-lisp
+  (require 'whitespace)
+  (setq whitespace-line-column 80)
+  (setq whitespace-style '(face lines-tail))
+
+  (define-global-minor-mode my-global-whitespace-mode whitespace-mode
+    (lambda ()
+      (when (derived-mode-p 'prog-mode)
+        (whitespace-mode))))
+  (my-global-whitespace-mode 1)
+#+END_SRC
+
+*** TODO Turn off welcome screen -- move to custom??
+#+BEGIN_SRC emacs-lisp
+  (setq inhibit-startup-message t)
+#+END_SRC
+
+*** TODO Spaces instead of tabs -- move to custom??
+Except for makefiles, which require tabs. See
+http://stackoverflow.com/questions/24832699/emacs-24-untabify-on-save-for-everything-except-makefiles/24857101#24857101
+
+#+BEGIN_SRC emacs-lisp
+  (setq-default indent-tabs-mode nil)
+  (setq-default tab-width 4)
+  (defun untabify-except-makefiles ()
+    (unless (derived-mode-p 'makefile-mode)
+      (untabify (point-min) (point-max))))
+  (add-hook 'before-save-hook 'untabify-except-makefiles)
+#+END_SRC
+
+*** TODO Set columns to wrap at 80 characters -- move to custom?
+"BuT mOnItOrS aRe So WiDe ThEsE dAyS!!1" Yeah, but it's convenient being able
+to have multiple windows side-by-side in a relatively compact space, plus
+Python's PEP 8 is right.
+
+#+BEGIN_SRC emacs-lisp
+(add-hook 'text-mode-hook 'turn-on-auto-fill)
+(setq-default fill-column 79)
+#+END_SRC
+
+*** TODO Turn on ~column-number-mode~ -- move to custom??
+#+BEGIN_SRC emacs-lisp
+  (setq column-number-mode t)
+#+END_SRC
+
+*** Global emojify
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'after-init-hook #'global-emojify-mode)
+#+END_SRC
+
+*** Highlight indentation guides for programming modes
+This apparently doesn't use ~customize-variable~, but according to some uncited
+documentation (which is likely at least a few years old at this point), ~setq~ is
+the way to do this.
+
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
+  (setq highlight-indent-guides-method 'character)
+  (setq highlight-indent-guides-character ?\|)
+#+END_SRC
+
+*** Auto-indentation on =RET= for various modes
+See http://www.emacswiki.org/emacs/AutoIndentation
+
+#+BEGIN_SRC emacs-lisp
+  (defun set-newline-and-indent ()
+    (local-set-key (kbd "RET") 'newline-and-indent))
+  (add-hook 'html-mode-hook 'set-newline-and-indent)
+  (add-hook 'lisp-mode-hook 'set-newline-and-indent)
+  (add-hook 'LaTeX-mode-hook 'set-newline-and-indent)
+  (add-hook 'c-mode-common-hook 'set-newline-and-indent)
+#+END_SRC
+
+*** TODO Global font lock mode -- move to custom??
+This basically enables syntax highlighting by allowing for different faces for
+keywords, comments, etc.; see
+https://www.gnu.org/software/emacs/manual/html_node/emacs/Font-Lock.html
+
+#+BEGIN_SRC emacs-lisp
+  (global-font-lock-mode 1)
+#+END_SRC
+
+*** Color emojis in Emacs 27/OS X
+See
+https://www.reddit.com/r/emacs/comments/ggd90c/color_emoji_in_emacs_27/. Not
+sure if this is still necessary, but it's been working :shrug:
+
+#+BEGIN_SRC emacs-lisp
+  (when (eq system-type 'darwin)
+    (set-fontset-font t 'symbol "Apple Color Emoji")
+    (set-fontset-font t 'symbol "Noto Color Emoji" nil 'append)
+    (set-fontset-font t 'symbol "Segoe UI Emoji" nil 'append)
+    (set-fontset-font t 'symbol "Symbola" nil 'append))
+#+END_SRC
+
+*** ~emojify-user-emojis~
+I was going to use ~customize-variable~ for this, but it actually seems more
+straightforward to put it here.
+
+Note that the =gitmoji= =:​memo:= symbol is the same as ~emojify~'s =:​pencil:=, and
+=gitmoji='s =:​pencil:= symbol is the same as ~emojify~'s =:​pencil2:=.
+
+#+BEGIN_SRC emacs-lisp
+  (setq emojify-user-emojis
+        '((":memo:" .
+           (("name" . "Memo")
+            ("image" .
+             "~/.emacs.d/emojis/emojione-v2.2.6-22/1f4dd.png")
+            ("style" . "github")))
+          (":adhesive_bandage:" .
+           (("name" . "Adhesive Bandage")
+            ("image" .
+             "~/.emacs.d/emojis/user-added/adhesive_bandage.png")
+            ("style" . "github")))))
+  (when (featurep 'emojify)
+    (emojify-set-emoji-data))
+#+END_SRC
+
+** GUI
+- no menu bar; see see http://emacswiki.org/emacs/MenuBar#toc1
+- no tool bar
+- no scroll bar
+- 96% opacity (matches OS X Terminal); see see
+  http://stackoverflow.com/questions/21946382/how-to-get-transparent-window-in-gnu-emacs-on-osx-mavericks
+- default frame size: 80w x 45h
+# - define ~side-by-side~ to accommodate two windows (it seems like I'm using this
+#   at least 80% of the time)
+- define ~std-frame~ to return to default 80w x 45h
+- define ~lrg-frame~, which accommodates two side-by-side windows
+- define ~xl-frame~, which accommodates three side-by-side-by-side windows
+- use Inconsolata size 15 font
+- set unicode font to Unifont
+- use Solarized Dark theme; see
+  https://emacs.stackexchange.com/questions/10246/emacs-always-ask-to-trust-colour-theme-at-startup
+- disable mouse inputs (except scrolling?); see
+  http://stackoverflow.com/questions/4906534/disable-mouse-clicks-in-emacs
+- disable =C-z=, which minimizes Emacs in GUI mode
+- disable ~visible-bell~; see
+  http://stackoverflow.com/questions/36805713/emacs-blank-square-on-mac-os-x/36813418#36813418
+
+#+BEGIN_SRC emacs-lisp
+  (when window-system
+    (menu-bar-mode -1)  ;; not working?
+    (tool-bar-mode -1)
+    (scroll-bar-mode -1)
+    (set-frame-parameter (selected-frame) 'alpha '(96 96))
+    (add-to-list 'default-frame-alist '(alpha 96 96))
+    (defvar my:frame-width 80)
+    (defvar my:frame-height 45)
+    (set-frame-size (selected-frame) my:frame-width my:frame-height)
+    (defun side-by-side ()
+    "resizes the frame to accommodate two windows side-by-side"
+    (interactive)
+    (set-frame-size (selected-frame)
+                    ;; used to be + 3, but I think there are some side columns
+                    ;; that take away screen real estate now?
+                    (+ (* my:frame-width 2) 7)
+                    my:frame-height))
+    (defun std-frame ()
+      "reverts framesize to standard"
+      (interactive)
+      (set-frame-size (selected-frame)
+                      (+ 1 my:frame-width)
+                      my:frame-height))
+    (defun my:calculate-frame-width (num-windows)
+      "calculate how wide the frame should be for a number of windows"
+      (let ((inter-window-space 2))
+        (+ (* my:frame-width num-windows)
+           (* inter-window-space (- num-windows 1)))))
+    (defun lrg-frame ()
+      "resize frame for 2 side-by-side windows (same as side-by-side function,
+       which is being kept for now for the sake of legacy)"
+      (interactive)
+      (let ((num-windows 2))
+        (set-frame-size (selected-frame)
+                        (my:calculate-frame-width num-windows)
+                        my:frame-height)))
+    (defun xl-frame ()
+      "resize frame for 3 side-by-side-by-side windows + extra height"
+      (interactive)
+      (let ((num-windows 3)
+            (height-multiplier 1.3))
+        (set-frame-size (selected-frame)
+                        (my:calculate-frame-width num-windows)
+                        (floor (* my:frame-height height-multiplier)))))
+    (defvar my:font-face "Inconsolata")
+    (defvar my:font-size 15)
+    (set-fontset-font t 'unicode "Unifont" nil 'prepend)
+    (set-frame-font (concat my:font-face
+                              "-"
+                              (number-to-string my:font-size)))
+
+    (load-theme 'solarized-dark t)
+    (dolist (k '([mouse-1] [down-mouse-1] [drag-mouse-1] [double-mouse-1]
+                 [triple-mouse-1] [mouse-2] [down-mouse-2] [drag-mouse-2]
+                 [double-mouse-2] [triple-mouse-2] [mouse-3] [down-mouse-3]
+                 [drag-mouse-3] [double-mouse-3] [triple-mouse-3] [mouse-4]
+                 [down-mouse-4] [drag-mouse-4] [double-mouse-4]
+                 [triple-mouse-4] [mouse-5] [down-mouse-5] [drag-mouse-5]
+                 [double-mouse-5] [triple-mouse-5]))
+      (global-unset-key k))
+    (global-unset-key (kbd "C-z"))
+    (setq visible-bell nil))
+#+END_SRC
+
+** TODO Preferred global keybindings
+*** Reload =.emacs=
+See
+http://stackoverflow.com/questions/24810079/key-binding-to-reload-emacs-after-changing-it
+
+#+BEGIN_SRC emacs-lisp
+  (defun reload-dotemacs ()
+    (interactive)
+    (load-file "~/.emacs"))
+  (global-set-key (kbd "C-c <f12>") 'reload-dotemacs)
+#+END_SRC
+
+*** Copy selection without killing
+See
+http://stackoverflow.com/questions/3158484/emacs-copying-text-without-killing-it
+and http://www.emacswiki.org/emacs/KeyboardMacros
+
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "M-w") 'kill-ring-save)
+#+END_SRC
+
+*** Switch focus to previous window with =C-x p=
+This complements ~other-window~, which is bound to =C-x o=.
+
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "C-x p") 'previous-multiframe-window)
+#+END_SRC
+
+*** Count words in region
+Documented in old =.emacs= as "~count-words-region~ \to ~count-words~" :shrug:
+
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "M-=") 'count-words)
+  (put 'narrow-to-region 'disabled nil)
+#+END_SRC
+
+*** Iedit with =C-c ;=
+All occurrences of a string are highlighted and then editable; cursor/region
+goes back to normal on second activation of ~iedit-mode~. See
+https://www.emacswiki.org/emacs/Iedit
+
+#+BEGIN_SRC emacs-lisp
+  (define-key global-map (kbd "C-c ;") 'iedit-mode)
+#+END_SRC
+
+** TODO Preferred multi-mode keybindings
+*** Fix auto-identation for multiple modes
+See http://www.emacswiki.org/emacs/AutoIndentation
+
+#+BEGIN_SRC emacs-lisp
+  (defun set-newline-and-indent ()
+    (local-set-key (kbd "RET") 'newline-and-indent))
+  (add-hook 'html-mode-hook 'set-newline-and-indent)
+  (add-hook 'lisp-mode-hook 'set-newline-and-indent)
+  (add-hook 'LaTeX-mode-hook 'set-newline-and-indent)
+  ;; (add-hook 'css-mode 'set-newline-and-indent)
+  (add-hook 'c-mode-common-hook 'set-newline-and-indent)
+#+END_SRC
+
+** Company (COMPlete ANYthing)
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'after-init-hook 'global-company-mode)
+  (global-set-key (kbd "C-c C-<tab>") 'company-complete)
+#+END_SRC
+
+*** Python: company-jedi
+#+BEGIN_SRC emacs-lisp
+  (defun python-company-jedi-hook ()
+    (add-to-list 'company-backends 'company-jedi))
+  (add-hook 'python-mode-hook 'python-company-jedi-hook)
+#+END_SRC
+
+** TODO Flycheck
+** TODO Flyspell -- move to custom?
+See
+http://unix.stackexchange.com/questions/38916/how-do-i-configure-emacs-to-use-ispell-on-mac-os-x
+
+# #+BEGIN_SRC emacs-lisp
+# (setq ispell-program-name "/usr/local/bin/ispell")
+# #+END_SRC
+
+Actually, no?
+
+See
+http://blog.binchen.org/posts/what-s-the-best-spell-check-set-up-in-emacs.html
+and
+http://emacs-fu.blogspot.com/2009/12/automatically-checking-your-spelling.html
+and http://blog.binchen.org/posts/effective-spell-check-in-emacs.html
+
+#+BEGIN_SRC emacs-lisp
+  (setq ispell-program-name "aspell"
+        ispell-extra-args '("--sug-mode=ultra"))
+#+END_SRC
+
+** TODO Magit
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "C-c 0") 'magit-status)
+#+END_SRC
+
+** TODO MELPA
+** IDO (Interactively Do Things)
+See https://masteringemacs.org/article/introduction-to-ido-mode
+
+#+BEGIN_SRC emacs-lisp
+  (require 'ido)
+  (ido-mode 1)
+#+END_SRC
+
+** Paredit
+See http://www.emacswiki.org/emacs/ParEdit
+
+#+BEGIN_SRC emacs-lisp
+  (autoload 'enable-paredit-mode
+    "paredit"
+    "Turn on pseudo-structural editing of Lisp code." t)
+  (add-hook 'emacs-lisp-mode-hook #'enable-paredit-mode)
+  (add-hook 'eval-expression-minibuffer-setup-hook #'enable-paredit-mode)
+  (add-hook 'ielm-mode-hook #'enable-paredit-mode)
+  (add-hook 'lisp-mode-hook #'enable-paredit-mode)
+  (add-hook 'lisp-interaction-mode-hook #'enable-paredit-mode)
+  (add-hook 'scheme-mode-hook #'enable-paredit-mode)
+  (add-hook 'geiser-repl-mode-hook #'enable-paredit-mode)
+  (add-hook 'slime-repl-mode-hook #'enable-paredit-mode)
+#+END_SRC
+
+** TODO LSP (Language Server Protocol)
+
+# #+BEGIN_SRC emacs-lisp
+#   (require 'lsp-mode)
+#   (require 'lsp-ui)
+# #+END_SRC
+
+** TODO TRAMP
+*** TODO Fix problem with hanging -- confused about this/move to custom?
+#+BEGIN_SRC emacs-lisp
+(eval-after-load 'tramp '(setenv "SHELL" "/bin/bash"))
+#+END_SRC
+
+Maybe this should be updated to =/usr/local/bin/bash= or I should figure out how
+to symlink =/usr/local/bin/bash= to =/bin/bash=; if so, the above
+~explicit-shell-file-name~ in ANSI term section should be updated
+
+*** TODO Use SSH -- move to custom?
+See
+https://www.gnu.org/software/emacs/manual/html_node/tramp/Default-Method.html
+
+#+BEGIN_SRC emacs-lisp
+  (setq tramp-default-method "ssh")
+#+END_SRC
+
+** TODO yasnippet
+*** General configuration
+Pretty sure I have other snippet directories; probably should consolidate those
+at some point.
+
+#+BEGIN_SRC emacs-lisp
+  (require 'yasnippet)
+  (yas-global-mode 1)
+  (setq yas-snippet-dirs (append yas-snippet-dirs
+                                 '("~/emacs/yasnippets")))
+  (yas-global-mode 1)
+#+END_SRC
+
+*** =M-<TAB>= for snippets within snippets
+See https://joaotavora.github.io/yasnippet/snippet-expansion.html
+
+#+BEGIN_SRC emacs-lisp
+  (define-key yas-minor-mode-map (kbd "M-TAB") 'yas-expand)
+#+END_SRC
+
+*** TODO Make auto-complete play nicely with YAS
+Not sure if I actually need this given that I don't think I use ~auto-complete~
+anymore. I'll comment this out for now, and if I need it, I'll know where to
+look later. It also looks like a setting I could potentially move to
+=emacs-custom=.
+
+#+BEGIN_SRC emacs-lisp
+  (setq ac-source-yasnippet nil)
+#+END_SRC
+
+** TODO Miscellaneous
+*** Shrug emoticon
+#+BEGIN_SRC emacs-lisp
+  (defun shrug-emoticon ()
+    "insert ¯\\_(ツ)_/¯ anywhere in your code (preferably comments)"
+    (interactive)
+    ;; note that the backslash needs to be escaped
+    (insert "¯\\_(ツ)_/¯"))
+#+END_SRC
+
+*** TODO Magic 8-ball
+A silly extension I wrote because for some reason I figured Emacs could use a
+Magic 8-ball :shrug:
+
+You may want to move the path to something like =~/.emacs.d/plugins/= at some
+point.
+
+Note that the prefix, =C-u=, changes the behavior (by adding "[​=<timestamp>=​]
+=<question>= =<response>=" to the ~kill ring~, I think).
+
+# #+BEGIN_SRC emacs-lisp
+#   (add-to-list 'load-path "~/eight-ball")
+#   (require 'eight-ball)
+#   (global-set-key (kbd "C-c 8") 'eight-ball)
+# #+END_SRC
+
+*** Enable ~downcase-region~, ~upcase-region~
+The latter was hanging out in my Python configuration section for some
+reason :shrug:. Later, it appeared to be added to the base =~/.emacs= file.
+
+#+BEGIN_SRC emacs-lisp
+  (put 'downcase-region 'disabled nil)
+  (put 'upcase-region 'disabled nil)
+#+END_SRC
+
+*** TODO Define ~obnoxious-case-region~
+Type a line normally and cOnVeRt It To ThIs. Maybe pass a prefix argument to
+shift if it starts uppercase or lowercase?
+
+*** TODO Disable "Package ~cl~ is deprecated" warning on startup
+See https://github.com/kiwanami/emacs-epc/issues/35. Might be a good idea to
+investigate this at some point and actually fix it instead of applying a
+bandaid.
+
+#+BEGIN_SRC emacs-lisp
+  (setq byte-compile-warnings '(cl-functions))
+#+END_SRC
+
+
+* Load additional org configuration files
+
+#+BEGIN_SRC emacs-lisp
+  (when core-config-extras-switch
+    ;; (org-babel-load-file (expand-file-name "~/config/emacs/core-langs.org"))
+    (message "Core langs config loaded."))
+  (when core-config-extras-switch
+    ;; (org-babel-load-file (expand-file-name "~/config/emacs/extras.org"))
+    (message "Extras config loaded."))
+#+END_SRC
