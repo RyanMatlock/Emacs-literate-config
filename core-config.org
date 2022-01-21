@@ -623,21 +623,22 @@ look later. It also looks like a setting I could potentially move to
     (insert "¯\\_(ツ)_/¯"))
 #+END_SRC
 
-*** TODO Magic 8-ball
-A silly extension I wrote because for some reason I figured Emacs could use a
-Magic 8-ball :shrug:
-
-You may want to move the path to something like =~/.emacs.d/plugins/= at some
-point.
+*** Magic 8-ball
+Works just like a magic 8-ball with its default configuration. Read the
+documentation for customization options.
 
 Note that the prefix, =C-u=, changes the behavior (by adding "[​=<timestamp>=​]
-=<question>= =<response>=" to the ~kill ring~, I think).
+=<question>= =<response>=" to the ~kill ring~).
 
-# #+BEGIN_SRC emacs-lisp
-#   (add-to-list 'load-path "~/eight-ball")
-#   (require 'eight-ball)
-#   (global-set-key (kbd "C-c 8") 'eight-ball)
-# #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (straight-use-package
+   '(eight-ball
+     :type git
+     :host github
+     :repo "RyanMatlock/eight-ball"))
+  (require 'eight-ball)
+  (global-set-key (kbd "C-c 8") 'eight-ball)
+#+END_SRC
 
 *** Enable ~downcase-region~, ~upcase-region~
 The latter was hanging out in my Python configuration section for some
