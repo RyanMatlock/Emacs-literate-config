@@ -15,9 +15,9 @@ Linux).
 ** Escape hatch
 In case you need to go back to your old configuration:
 
-#+BEGIN_SRC sh :eval no
+#+begin_src sh :eval no
   ln -s /path/to/legacy-dotemacs.el ~/.emacs
-#+END_SRC
+#+end_src
 
 Then either reload =.emacs= or restart Emacs. Looks like you shouldn't need to do
 this though.
@@ -34,6 +34,7 @@ the stuff handled by ~customize-variable~).
 Also includes main editing commands for
 - Org mode
 - Emacs Lisp
+- git
 so that this file can be easily edited without loading additional extensions.
 
 *** ~core-langs.org~
@@ -47,16 +48,17 @@ and related tools.
 
 * Switches for additional configuration
 
-#+BEGIN_SRC emacs-lisp
-  (setq core-config-core-langs-switch t)
+#+begin_src emacs-lisp
+  (setq core-config-core-langs-switch nil)
   (setq core-config-extras-switch nil)
-#+END_SRC
+#+end_src
 
 * Problems
 * Features to add/look into & changes to make [1/5]
+- [ ] complete the switch from ~package.el~ to ~straight.el~
+  - [ ] automatically install missing packages on startup (finding out the hard
+        way that migrating this config to a new machine is a PITA)
 - [X] get meta key working properly on M1 Mac Mini
-- [ ] automatically install missing packages on startup (finding out the hard
-  way that migrating this config to a new machine is a PITA)
 - [ ] oBnOxIoUs CaSe region command (this may already exist, but I'm going
   to 1) respect other Emacs users enough to assume that it doesn't, and 2) try
   to write it myself because it seems straightforward but also good Emacs Lisp
@@ -69,13 +71,13 @@ and related tools.
 ** Meta key behavior
 See https://www.emacswiki.org/emacs/MetaKeyProblems#h5o-18
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (setq mac-option-modifier 'meta)
-#+END_SRC
+#+end_src
 
 (Works on M1 Mac Mini (9.1?), although I don't think this was necessary on a
 late 2019 MacBook Pro 16".)
-n
+
 ** TODO ~package.el~ \to ~straight.el~
 See https://github.com/raxod502/straight.el
 
@@ -94,7 +96,7 @@ errors.
 
 (Stolen from https://stackoverflow.com/a/55058934)
 
-# #+BEGIN_SRC emacs-lisp
+# #+begin_src emacs-lisp
 #   (setq my-packages
 #     '(auto-complete
 #       auto-complete-chunk
@@ -131,7 +133,7 @@ errors.
 #   ;; this is the straight.el way?
 #   (dolist (pkg my-packages)
 #     (use-package 'pkg))
-# #+END_SRC
+# #+end_src
 
 (Previously, ~org~ and ~use-package~ were in the list of packages to install,
 but that's been moved into ~dotemacs.el~.
@@ -147,7 +149,7 @@ config work, and the rest?
 
 ** TODO =use-package= statements so I can use Emacs
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package auto-complete)
   (use-package auto-complete-chunk)
   (use-package better-defaults)
@@ -173,33 +175,33 @@ config work, and the rest?
   (use-package paredit)
   (use-package solarized-theme)
   (use-package unfill)
-#+END_SRC
+#+end_src
 
 ** Customize
 There are probably a number of settings you can/should move into this, although
 I'm curious how much of a pressing need there is given that with a literate
 =.emacs= config, I can explain my reasoning for a setting.
 
-#+BEGIN_SRC emacs-lisp
-  (setq custom-file "/Users/matlock/config/emacs/custom.el")
+#+begin_src emacs-lisp
+  (setq custom-file (expand-file-name "~/config/emacs/custom.el"))
   (load custom-file)
-#+END_SRC
+#+end_src
 
 ** Environment variables
-# *** TODO ~exec-path-from-shell~ to fix ~exec-path~​/​~PATH~ behavior in OS X
-# Having trouble with this after ~straight.el~ migration
+*** TODO ~exec-path-from-shell~ to fix ~exec-path~​/​~PATH~ behavior in OS X
+Having trouble with this after ~straight.el~ migration
 
 # See https://github.com/purcell/exec-path-from-shell. Ensure ~exec-path~ works
 # whether Emacs is launched from OS X GUI or a =systemd=-style daemon; also ensure
 # =PYTHONPATH= works.
 
-# #+BEGIN_SRC emacs-lisp
+# #+begin_src emacs-lisp
 #   (when (memq window-system '(mac ns x))
 #     (exec-path-from-shell-initialize))
 #   (when (daemonp)
 #     (exec-path-from-shell-initialize))
 #   (exec-path-from-shell-copy-env "PYTHONPATH")
-# #+END_SRC
+# #+end_src
 
 # Note: this method of detecting being in OS X is different than what I've used
 # elsewhere in this document, but it may be the right way to do it.
@@ -210,12 +212,12 @@ I'm curious how much of a pressing need there is given that with a literate
 # manually setting the directory. I suspect Linux plays a little nicer with
 # ~(getenv "HOME")~, so I'm keeping that.
 
-# #+BEGIN_SRC emacs-lisp
+# #+begin_src emacs-lisp
 #   (setq default-directory
 #         (if (eq system-type 'darwin)
 #             "/Users/matlock"
 #           (getenv "HOME")))
-# #+END_SRC
+# #+end_src
 
 # Note: I'm hardcoding my user directory across all times I use this with OSX,
 # and that seems like a bad idea, especially now that I'm using multiple,
@@ -228,7 +230,7 @@ http://emacsredux.com/blog/2013/05/31/highlight-lines-that-exceed-a-certain-leng
 and
 http://stackoverflow.com/questions/6344474/how-can-i-make-emacs-highlight-lines-that-go-over-80-chars 
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (require 'whitespace)
   (setq whitespace-line-column 80)
   (setq whitespace-style '(face lines-tail))
@@ -238,90 +240,90 @@ http://stackoverflow.com/questions/6344474/how-can-i-make-emacs-highlight-lines-
       (when (derived-mode-p 'prog-mode)
         (whitespace-mode))))
   (my-global-whitespace-mode 1)
-#+END_SRC
+#+end_src
 
 *** TODO Turn off welcome screen -- move to custom??
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (setq inhibit-startup-message t)
-#+END_SRC
+#+end_src
 
 *** TODO Spaces instead of tabs -- move to custom??
 Except for makefiles, which require tabs. See
 http://stackoverflow.com/questions/24832699/emacs-24-untabify-on-save-for-everything-except-makefiles/24857101#24857101
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (setq-default indent-tabs-mode nil)
   (setq-default tab-width 4)
   (defun untabify-except-makefiles ()
     (unless (derived-mode-p 'makefile-mode)
       (untabify (point-min) (point-max))))
   (add-hook 'before-save-hook 'untabify-except-makefiles)
-#+END_SRC
+#+end_src
 
 *** TODO Set columns to wrap at 80 characters -- move to custom?
 "BuT mOnItOrS aRe So WiDe ThEsE dAyS!!1" Yeah, but it's convenient being able
 to have multiple windows side-by-side in a relatively compact space, plus
 Python's PEP 8 is right.
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (add-hook 'text-mode-hook 'turn-on-auto-fill)
 (setq-default fill-column 79)
-#+END_SRC
+#+end_src
 
 *** TODO Turn on ~column-number-mode~ -- move to custom??
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (setq column-number-mode t)
-#+END_SRC
+#+end_src
 
 *** Global emojify
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (add-hook 'after-init-hook #'global-emojify-mode)
-#+END_SRC
+#+end_src
 
 *** Highlight indentation guides for programming modes
 This apparently doesn't use ~customize-variable~, but according to some uncited
 documentation (which is likely at least a few years old at this point), ~setq~ is
 the way to do this.
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
   (setq highlight-indent-guides-method 'character)
   (setq highlight-indent-guides-character ?\|)
-#+END_SRC
+#+end_src
 
 *** Auto-indentation on =RET= for various modes
 See http://www.emacswiki.org/emacs/AutoIndentation
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (defun set-newline-and-indent ()
     (local-set-key (kbd "RET") 'newline-and-indent))
   (add-hook 'html-mode-hook 'set-newline-and-indent)
   (add-hook 'lisp-mode-hook 'set-newline-and-indent)
   (add-hook 'LaTeX-mode-hook 'set-newline-and-indent)
   (add-hook 'c-mode-common-hook 'set-newline-and-indent)
-#+END_SRC
+#+end_src
 
 *** TODO Global font lock mode -- move to custom??
 This basically enables syntax highlighting by allowing for different faces for
 keywords, comments, etc.; see
 https://www.gnu.org/software/emacs/manual/html_node/emacs/Font-Lock.html
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (global-font-lock-mode 1)
-#+END_SRC
+#+end_src
 
 *** Color emojis in Emacs 27/OS X
 See
 https://www.reddit.com/r/emacs/comments/ggd90c/color_emoji_in_emacs_27/. Not
 sure if this is still necessary, but it's been working :shrug:
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (when (eq system-type 'darwin)
     (set-fontset-font t 'symbol "Apple Color Emoji")
     (set-fontset-font t 'symbol "Noto Color Emoji" nil 'append)
     (set-fontset-font t 'symbol "Segoe UI Emoji" nil 'append)
     (set-fontset-font t 'symbol "Symbola" nil 'append))
-#+END_SRC
+#+end_src
 
 *** ~emojify-user-emojis~
 I was going to use ~customize-variable~ for this, but it actually seems more
@@ -330,7 +332,7 @@ straightforward to put it here.
 Note that the =gitmoji= =:​memo:= symbol is the same as ~emojify~'s =:​pencil:=, and
 =gitmoji='s =:​pencil:= symbol is the same as ~emojify~'s =:​pencil2:=.
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (setq emojify-user-emojis
         '((":memo:" .
            (("name" . "Memo")
@@ -344,7 +346,7 @@ Note that the =gitmoji= =:​memo:= symbol is the same as ~emojify~'s =:​penci
             ("style" . "github")))))
   (when (featurep 'emojify)
     (emojify-set-emoji-data))
-#+END_SRC
+#+end_src
 
 ** GUI
 - no menu bar; see see http://emacswiki.org/emacs/MenuBar#toc1
@@ -368,7 +370,7 @@ Note that the =gitmoji= =:​memo:= symbol is the same as ~emojify~'s =:​penci
 - disable ~visible-bell~; see
   http://stackoverflow.com/questions/36805713/emacs-blank-square-on-mac-os-x/36813418#36813418
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (when window-system
     (menu-bar-mode -1)  ;; not working?
     (tool-bar-mode -1)
@@ -431,58 +433,58 @@ Note that the =gitmoji= =:​memo:= symbol is the same as ~emojify~'s =:​penci
       (global-unset-key k))
     (global-unset-key (kbd "C-z"))
     (setq visible-bell nil))
-#+END_SRC
+#+end_src
 
 ** TODO Preferred global keybindings
 *** Reload =.emacs=
 See
 http://stackoverflow.com/questions/24810079/key-binding-to-reload-emacs-after-changing-it
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (defun reload-dotemacs ()
     (interactive)
     (load-file "~/.emacs"))
   (global-set-key (kbd "C-c <f12>") 'reload-dotemacs)
-#+END_SRC
+#+end_src
 
 *** Copy selection without killing
 See
 http://stackoverflow.com/questions/3158484/emacs-copying-text-without-killing-it
 and http://www.emacswiki.org/emacs/KeyboardMacros
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (global-set-key (kbd "M-w") 'kill-ring-save)
-#+END_SRC
+#+end_src
 
 *** Switch focus to previous window with =C-x p=
 This complements ~other-window~, which is bound to =C-x o=.
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (global-set-key (kbd "C-x p") 'previous-multiframe-window)
-#+END_SRC
+#+end_src
 
 *** Count words in region
 Documented in old =.emacs= as "~count-words-region~ \to ~count-words~" :shrug:
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (global-set-key (kbd "M-=") 'count-words)
   (put 'narrow-to-region 'disabled nil)
-#+END_SRC
+#+end_src
 
 *** Iedit with =C-c ;=
 All occurrences of a string are highlighted and then editable; cursor/region
 goes back to normal on second activation of ~iedit-mode~. See
 https://www.emacswiki.org/emacs/Iedit
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (define-key global-map (kbd "C-c ;") 'iedit-mode)
-#+END_SRC
+#+end_src
 
 ** TODO Preferred multi-mode keybindings
 *** Fix auto-identation for multiple modes
 See http://www.emacswiki.org/emacs/AutoIndentation
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (defun set-newline-and-indent ()
     (local-set-key (kbd "RET") 'newline-and-indent))
   (add-hook 'html-mode-hook 'set-newline-and-indent)
@@ -490,29 +492,29 @@ See http://www.emacswiki.org/emacs/AutoIndentation
   (add-hook 'LaTeX-mode-hook 'set-newline-and-indent)
   ;; (add-hook 'css-mode 'set-newline-and-indent)
   (add-hook 'c-mode-common-hook 'set-newline-and-indent)
-#+END_SRC
+#+end_src
 
 ** Company (COMPlete ANYthing)
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (add-hook 'after-init-hook 'global-company-mode)
   (global-set-key (kbd "C-c C-<tab>") 'company-complete)
-#+END_SRC
+#+end_src
 
 *** Python: company-jedi
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (defun python-company-jedi-hook ()
     (add-to-list 'company-backends 'company-jedi))
   (add-hook 'python-mode-hook 'python-company-jedi-hook)
-#+END_SRC
+#+end_src
 
 ** TODO Flycheck
 ** TODO Flyspell -- move to custom?
 See
 http://unix.stackexchange.com/questions/38916/how-do-i-configure-emacs-to-use-ispell-on-mac-os-x
 
-# #+BEGIN_SRC emacs-lisp
+# #+begin_src emacs-lisp
 # (setq ispell-program-name "/usr/local/bin/ispell")
-# #+END_SRC
+# #+end_src
 
 Actually, no?
 
@@ -522,29 +524,29 @@ and
 http://emacs-fu.blogspot.com/2009/12/automatically-checking-your-spelling.html
 and http://blog.binchen.org/posts/effective-spell-check-in-emacs.html
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (setq ispell-program-name "aspell"
         ispell-extra-args '("--sug-mode=ultra"))
-#+END_SRC
+#+end_src
 
 ** TODO Magit
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (global-set-key (kbd "C-c 0") 'magit-status)
-#+END_SRC
+#+end_src
 
 ** TODO MELPA
 ** IDO (Interactively Do Things)
 See https://masteringemacs.org/article/introduction-to-ido-mode
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (require 'ido)
   (ido-mode 1)
-#+END_SRC
+#+end_src
 
 ** Paredit
 See http://www.emacswiki.org/emacs/ParEdit
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (autoload 'enable-paredit-mode
     "paredit"
     "Turn on pseudo-structural editing of Lisp code." t)
@@ -556,20 +558,20 @@ See http://www.emacswiki.org/emacs/ParEdit
   (add-hook 'scheme-mode-hook #'enable-paredit-mode)
   (add-hook 'geiser-repl-mode-hook #'enable-paredit-mode)
   (add-hook 'slime-repl-mode-hook #'enable-paredit-mode)
-#+END_SRC
+#+end_src
 
 ** TODO LSP (Language Server Protocol)
 
-# #+BEGIN_SRC emacs-lisp
+# #+begin_src emacs-lisp
 #   (require 'lsp-mode)
 #   (require 'lsp-ui)
-# #+END_SRC
+# #+end_src
 
 ** TODO TRAMP
 *** TODO Fix problem with hanging -- confused about this/move to custom?
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (eval-after-load 'tramp '(setenv "SHELL" "/bin/bash"))
-#+END_SRC
+#+end_src
 
 Maybe this should be updated to =/usr/local/bin/bash= or I should figure out how
 to symlink =/usr/local/bin/bash= to =/bin/bash=; if so, the above
@@ -579,29 +581,29 @@ to symlink =/usr/local/bin/bash= to =/bin/bash=; if so, the above
 See
 https://www.gnu.org/software/emacs/manual/html_node/tramp/Default-Method.html
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (setq tramp-default-method "ssh")
-#+END_SRC
+#+end_src
 
 ** TODO yasnippet
 *** General configuration
 Pretty sure I have other snippet directories; probably should consolidate those
 at some point.
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (require 'yasnippet)
   (yas-global-mode 1)
-  (setq yas-snippet-dirs (append yas-snippet-dirs
-                                 '("~/emacs/yasnippets")))
+  ;; (setq yas-snippet-dirs (append yas-snippet-dirs
+  ;;                                '("~/emacs/yasnippets")))
   (yas-global-mode 1)
-#+END_SRC
+#+end_src
 
 *** =M-<TAB>= for snippets within snippets
 See https://joaotavora.github.io/yasnippet/snippet-expansion.html
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (define-key yas-minor-mode-map (kbd "M-TAB") 'yas-expand)
-#+END_SRC
+#+end_src
 
 *** TODO Make auto-complete play nicely with YAS
 Not sure if I actually need this given that I don't think I use ~auto-complete~
@@ -609,19 +611,19 @@ anymore. I'll comment this out for now, and if I need it, I'll know where to
 look later. It also looks like a setting I could potentially move to
 =emacs-custom=.
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (setq ac-source-yasnippet nil)
-#+END_SRC
+#+end_src
 
 ** TODO Miscellaneous
 *** Shrug emoticon
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (defun shrug-emoticon ()
     "insert ¯\\_(ツ)_/¯ anywhere in your code (preferably comments)"
     (interactive)
     ;; note that the backslash needs to be escaped
     (insert "¯\\_(ツ)_/¯"))
-#+END_SRC
+#+end_src
 
 *** Magic 8-ball
 Works just like a magic 8-ball with its default configuration. Read the
@@ -630,7 +632,7 @@ documentation for customization options.
 Note that the prefix, =C-u=, changes the behavior (by adding "[​=<timestamp>=​]
 =<question>= =<response>=" to the ~kill ring~).
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (straight-use-package
    '(eight-ball
      :type git
@@ -638,29 +640,33 @@ Note that the prefix, =C-u=, changes the behavior (by adding "[​=<timestamp>=�
      :repo "RyanMatlock/eight-ball"))
   (require 'eight-ball)
   (global-set-key (kbd "C-c 8") 'eight-ball)
-#+END_SRC
+#+end_src
+
+*** TODO ~fortune~
 
 *** Enable ~downcase-region~, ~upcase-region~
 The latter was hanging out in my Python configuration section for some
 reason :shrug:. Later, it appeared to be added to the base =~/.emacs= file.
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (put 'downcase-region 'disabled nil)
   (put 'upcase-region 'disabled nil)
-#+END_SRC
+#+end_src
 
 *** TODO Define ~obnoxious-case-region~
 Type a line normally and cOnVeRt It To ThIs. Maybe pass a prefix argument to
 shift if it starts uppercase or lowercase?
 
-*** TODO Disable "Package ~cl~ is deprecated" warning on startup
+*** Disable "Package ~cl~ is deprecated" warning on startup
 See https://github.com/kiwanami/emacs-epc/issues/35. Might be a good idea to
 investigate this at some point and actually fix it instead of applying a
 bandaid.
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (setq byte-compile-warnings '(cl-functions))
-#+END_SRC
+#+end_src
+
+
 * Languages in this document: Emacs Lisp and Org
 ** TODO Emacs Lisp
 ** TODO Org mode
@@ -686,11 +692,11 @@ See https://github.com/magit/git-modes
 
 * Load additional org configuration files
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (when core-config-extras-switch
     ;; (org-babel-load-file (expand-file-name "~/config/emacs/core-langs.org"))
     (message "Core langs config loaded."))
   (when core-config-extras-switch
     ;; (org-babel-load-file (expand-file-name "~/config/emacs/extras.org"))
     (message "Extras config loaded."))
-#+END_SRC
+#+end_src
