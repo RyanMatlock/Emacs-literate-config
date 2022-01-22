@@ -661,7 +661,28 @@ bandaid.
 #+BEGIN_SRC emacs-lisp
   (setq byte-compile-warnings '(cl-functions))
 #+END_SRC
+* Languages in this document: Emacs Lisp and Org
+** TODO Emacs Lisp
+** TODO Org mode
+Make ~<s TAB~ create code blocks again (see
+https://emacs.stackexchange.com/a/46992):
 
+#+begin_src emacs-lisp
+  (require 'org-tempo)
+#+end_src
+
+** TODO git/​~git-modes~
+~git~ is important enough to include in ~core-config~.
+
+See https://github.com/magit/git-modes
+
+#+begin_src emacs-lisp
+  (use-package git-modes)
+  (add-to-list 'auto-mode-alist
+               (cons "/gitignore" 'gitignore-mode))
+  (add-to-list 'auto-mode-alist
+               (cons "/gitconfig" 'gitconfig-mode))
+#+end_src
 
 * Load additional org configuration files
 
