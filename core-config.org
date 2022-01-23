@@ -68,16 +68,6 @@ and related tools.
   sense for much of your configuration
 
 * General interface & minor modes
-** Meta key behavior
-See https://www.emacswiki.org/emacs/MetaKeyProblems#h5o-18
-
-#+begin_src emacs-lisp
-  (setq mac-option-modifier 'meta)
-#+end_src
-
-(Works on M1 Mac Mini (9.1?), although I don't think this was necessary on a
-late 2019 MacBook Pro 16".)
-
 ** TODO ~package.el~ \to ~straight.el~
 See https://github.com/raxod502/straight.el
 
@@ -145,7 +135,6 @@ so I guess that's a dependency of some sort. (A cider dependency?)
 
 Maybe separate these into packages I use all the time, packages that make this
 config work, and the rest?
-
 
 ** TODO =use-package= statements so I can use Emacs
 
@@ -436,6 +425,16 @@ Note that the =gitmoji= =:​memo:= symbol is the same as ~emojify~'s =:​penci
 #+end_src
 
 ** TODO Preferred global keybindings
+*** Meta key behavior for Mac
+See https://www.emacswiki.org/emacs/MetaKeyProblems#h5o-18
+
+#+begin_src emacs-lisp
+  (setq mac-option-modifier 'meta)
+#+end_src
+
+(Works on M1 Mac Mini (9.1?), although I don't think this was necessary on a
+late 2019 MacBook Pro 16".)
+
 *** Reload =.emacs=
 See
 http://stackoverflow.com/questions/24810079/key-binding-to-reload-emacs-after-changing-it
@@ -494,7 +493,7 @@ See http://www.emacswiki.org/emacs/AutoIndentation
   (add-hook 'c-mode-common-hook 'set-newline-and-indent)
 #+end_src
 
-** Company (COMPlete ANYthing)
+** TODO Company (COMPlete ANYthing)
 #+begin_src emacs-lisp
   (add-hook 'after-init-hook 'global-company-mode)
   (global-set-key (kbd "C-c C-<tab>") 'company-complete)
@@ -529,18 +528,30 @@ and http://blog.binchen.org/posts/effective-spell-check-in-emacs.html
         ispell-extra-args '("--sug-mode=ultra"))
 #+end_src
 
-** TODO Magit
+** TODO git/​~git-modes~
+~git~ is important enough to include in ~core-config~.
+
+See https://github.com/magit/git-modes
+
 #+begin_src emacs-lisp
-  (global-set-key (kbd "C-c 0") 'magit-status)
+  (use-package git-modes)
+  (add-to-list 'auto-mode-alist
+               (cons "/gitignore" 'gitignore-mode))
+  (add-to-list 'auto-mode-alist
+               (cons "/gitconfig" 'gitconfig-mode))
 #+end_src
 
-** TODO MELPA
 ** IDO (Interactively Do Things)
 See https://masteringemacs.org/article/introduction-to-ido-mode
 
 #+begin_src emacs-lisp
   (require 'ido)
   (ido-mode 1)
+#+end_src
+
+** TODO Magit
+#+begin_src emacs-lisp
+  (global-set-key (kbd "C-c 0") 'magit-status)
 #+end_src
 
 ** Paredit
@@ -615,7 +626,26 @@ look later. It also looks like a setting I could potentially move to
   (setq ac-source-yasnippet nil)
 #+end_src
 
-** TODO Miscellaneous
+** Miscellaneous
+*** Enable ~downcase-region~, ~upcase-region~
+The latter was hanging out in my Python configuration section for some
+reason :shrug:. Later, it appeared to be added to the base =~/.emacs= file.
+
+#+begin_src emacs-lisp
+  (put 'downcase-region 'disabled nil)
+  (put 'upcase-region 'disabled nil)
+#+end_src
+
+*** Disable "Package ~cl~ is deprecated" warning on startup
+See https://github.com/kiwanami/emacs-epc/issues/35. Might be a good idea to
+investigate this at some point and actually fix it instead of applying a
+bandaid.
+
+#+begin_src emacs-lisp
+  (setq byte-compile-warnings '(cl-functions))
+#+end_src
+
+** TODO Silly stuff
 *** Shrug emoticon
 #+begin_src emacs-lisp
   (defun shrug-emoticon ()
@@ -644,50 +674,20 @@ Note that the prefix, =C-u=, changes the behavior (by adding "[​=<timestamp>=�
 
 *** TODO ~fortune~
 
-*** Enable ~downcase-region~, ~upcase-region~
-The latter was hanging out in my Python configuration section for some
-reason :shrug:. Later, it appeared to be added to the base =~/.emacs= file.
-
-#+begin_src emacs-lisp
-  (put 'downcase-region 'disabled nil)
-  (put 'upcase-region 'disabled nil)
-#+end_src
-
 *** TODO Define ~obnoxious-case-region~
 Type a line normally and cOnVeRt It To ThIs. Maybe pass a prefix argument to
 shift if it starts uppercase or lowercase?
 
-*** Disable "Package ~cl~ is deprecated" warning on startup
-See https://github.com/kiwanami/emacs-epc/issues/35. Might be a good idea to
-investigate this at some point and actually fix it instead of applying a
-bandaid.
-
-#+begin_src emacs-lisp
-  (setq byte-compile-warnings '(cl-functions))
-#+end_src
-
 
 * Languages in this document: Emacs Lisp and Org
 ** TODO Emacs Lisp
+
 ** TODO Org mode
 Make ~<s TAB~ create code blocks again (see
 https://emacs.stackexchange.com/a/46992):
 
 #+begin_src emacs-lisp
   (require 'org-tempo)
-#+end_src
-
-** TODO git/​~git-modes~
-~git~ is important enough to include in ~core-config~.
-
-See https://github.com/magit/git-modes
-
-#+begin_src emacs-lisp
-  (use-package git-modes)
-  (add-to-list 'auto-mode-alist
-               (cons "/gitignore" 'gitignore-mode))
-  (add-to-list 'auto-mode-alist
-               (cons "/gitconfig" 'gitconfig-mode))
 #+end_src
 
 * Load additional org configuration files
