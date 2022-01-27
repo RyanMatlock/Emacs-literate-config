@@ -559,14 +559,11 @@ of Emacs's killer apps.
   ;; (global-set-key (kbd "C-c 0") 'magit-status)
 #+end_src
 
-** Completions: ~ido~ \to ~vertico~
-# See https://masteringemacs.org/article/introduction-to-ido-mode
+** Completions: ~vertico~ + ~corfu~
+I used to use a combination of ~ido~ and ~ivy~, but having seen a ~vertico~ demo, I
+thought I'd give it a try. ~ido~ is supposedly a bit outdated now anyway.
 
-# #+begin_src emacs-lisp
-#   (require 'ido)
-#   (ido-mode 1)
-# #+end_src
-
+*** ~vertico~
 Following config taken from
 https://systemcrafters.cc/emacs-tips/streamline-completions-with-vertico/ and
 lightly edited.
@@ -595,6 +592,72 @@ lightly edited.
                              marginalia-annotators-light nil))
     :init
     (marginalia-mode))
+#+end_src
+
+*** ~corfu~
+``Corfu is the minimalistic ~completion-in-region~ counterpart of the ~vertico~
+minibuffer UI.'' -- https://github.com/minad/corfu
+
+#+begin_src emacs-lisp
+  (use-package corfu
+    :straight t
+    ;; :custom
+    ;; (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
+    ;; (corfu-auto t)                 ;; Enable auto completion
+    ;; (corfu-commit-predicate nil)   ;; Do not commit selected candidates on next input
+    ;; (corfu-quit-at-boundary t)     ;; Automatically quit at word boundary
+    ;; (corfu-quit-no-match t)        ;; Automatically quit if there is no match
+    ;; (corfu-preview-current nil)    ;; Disable current candidate preview
+    ;; (corfu-preselect-first nil)    ;; Disable candidate preselection
+    ;; (corfu-echo-documentation nil) ;; Disable documentation in the echo area
+    ;; (corfu-scroll-margin 5)        ;; Use scroll margin
+
+    ;; You may want to enable Corfu only for certain modes.
+    ;; :hook ((prog-mode . corfu-mode)
+    ;;        (shell-mode . corfu-mode)
+    ;;        (eshell-mode . corfu-mode))
+
+    ;; Recommended: Enable Corfu globally.
+    ;; This is recommended since dabbrev can be used globally (M-/).
+    :init
+    (corfu-global-mode))
+
+  ;; Optionally use the `orderless' completion style. See `+orderless-dispatch'
+  ;; in the Consult wiki for an advanced Orderless style dispatcher.
+  ;; Enable `partial-completion' for files to allow path expansion.
+  ;; You may prefer to use `initials' instead of `partial-completion'.
+  (use-package orderless
+    :straight t
+    :init
+    ;; Configure a custom style dispatcher (see the Consult wiki)
+    ;; (setq orderless-style-dispatchers '(+orderless-dispatch)
+    ;;       orderless-component-separator #'orderless-escapable-split-on-space)
+    (setq completion-styles '(orderless)
+          completion-category-defaults nil
+          completion-category-overrides
+          '((file (styles . (partial-completion))))))
+
+  ;; Use dabbrev with Corfu!
+  (use-package dabbrev
+    :straight t
+    ;; Swap M-/ and C-M-/
+    :bind (("M-/" . dabbrev-completion)
+           ("C-M-/" . dabbrev-expand)))
+
+  ;; A few more useful configurations...
+  (use-package emacs
+    :init
+    ;; TAB cycle if there are only few candidates
+    (setq completion-cycle-threshold 3)
+
+    ;; Emacs 28: Hide commands in M-x which do not apply to the current mode.
+    ;; Corfu commands are hidden, since they are not supposed to be used via M-x.
+    ;; (setq read-extended-command-predicate
+    ;;       #'command-completion-default-include-p)
+
+    ;; Enable indentation+completion using the TAB key.
+    ;; `completion-at-point' is often bound to M-TAB.
+    (setq tab-always-indent 'complete))
 #+end_src
 
 ** Paredit
