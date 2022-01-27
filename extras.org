@@ -1,0 +1,26 @@
+#+title: Literate Emacs configuration with Org mode
+#+subtitle: Extras
+#+author: Ryan Matlock
+
+* Extensions
+** Org mode
+*** Org-roam
+Configuration taken from [[https://systemcrafters.cc/build-a-second-brain-in-emacs/getting-started-with-org-roam/#inserting-node-links-using-completions][System Crafters: Build a Second Brain in Emacs with
+Org Roam | Inserting node links using completions]].
+
+#+begin_src emacs-lisp
+  (use-package org-roam
+    :straight t
+    :init
+    (setq org-roam-v2-ack t)
+    :custom
+    (org-roam-directory "~/Dropbox/documents-etc/org-roam")
+    (org-roam-completion-everywhere t)
+    :bind (("C-c n l" . org-roam-buffer-toggle)
+           ("C-c n f" . org-roam-node-find)
+           ("C-c n i" . org-roam-node-insert)
+           :map org-mode-map
+           ("C-M-i" . completion-at-point))
+    :config
+    (org-roam-setup))
+#+end_src
