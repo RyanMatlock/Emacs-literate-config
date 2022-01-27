@@ -32,15 +32,15 @@ the stuff handled by ~customize-variable~).
 *** ~core-config.org~
 
 Also includes main editing commands for
-- Org mode
+- Org mode (but not Org-roam)
 - Emacs Lisp
 - git
 so that this file can be easily edited without loading additional extensions.
 
 *** ~core-langs.org~
 Includes configuration for
-- Python
 - Haskell
+- Python
 - Rust
 - TeX/LaTeX
 and related tools.
@@ -140,8 +140,8 @@ config work, and the rest?
 ** TODO =use-package= statements so I can use Emacs
 
 #+begin_src emacs-lisp
-  (use-package auto-complete)
-  (use-package auto-complete-chunk)
+  ;; (use-package auto-complete)
+  ;; (use-package auto-complete-chunk)
   (use-package better-defaults)
   (use-package electric-case)
   (use-package electric-operator)
@@ -342,8 +342,6 @@ Note that the =gitmoji= =:​memo:= symbol is the same as ~emojify~'s =:​penci
 - 96% opacity (matches OS X Terminal); see see
   http://stackoverflow.com/questions/21946382/how-to-get-transparent-window-in-gnu-emacs-on-osx-mavericks
 - default frame size: 80w x 45h
-# - define ~side-by-side~ to accommodate two windows (it seems like I'm using this
-#   at least 80% of the time)
 - define ~std-frame~ to return to default 80w x 45h
 - define ~lrg-frame~, which accommodates two side-by-side windows
 - define ~xl-frame~, which accommodates three side-by-side-by-side windows
