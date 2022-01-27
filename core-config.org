@@ -160,7 +160,6 @@ config work, and the rest?
   ;; (use-package ivy)
   ;; (use-package ivy-yasnippet)
   (use-package pandoc-mode)
-  (use-package paredit)
   (use-package solarized-theme)
   (use-package unfill)
 #+end_src
@@ -598,6 +597,8 @@ lightly edited.
 See http://www.emacswiki.org/emacs/ParEdit
 
 #+begin_src emacs-lisp
+  (use-package paredit
+    :straight t)
   (autoload 'enable-paredit-mode
     "paredit"
     "Turn on pseudo-structural editing of Lisp code." t)
