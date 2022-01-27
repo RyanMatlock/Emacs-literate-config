@@ -42,6 +42,7 @@ Includes configuration for
 - Python
 - Haskell
 - Rust
+- TeX/LaTeX
 and related tools.
 
 *** ~extras.org~
@@ -50,7 +51,7 @@ and related tools.
 
 #+begin_src emacs-lisp
   (setq core-config-core-langs-switch nil)
-  (setq core-config-extras-switch nil)
+  (setq core-config-extras-switch t)
 #+end_src
 
 * Problems
@@ -154,12 +155,10 @@ config work, and the rest?
   (use-package gist)
   (use-package highlight-indent-guides)
   (use-package hindent)
-  (use-package ido-yes-or-no)
+  ;; (use-package ido-yes-or-no)
   (use-package iedit)
-  (use-package ivy)
-  (use-package ivy-yasnippet)
-  (use-package magit)
-  (use-package magit-filenotify)
+  ;; (use-package ivy)
+  ;; (use-package ivy-yasnippet)
   (use-package pandoc-mode)
   (use-package paredit)
   (use-package solarized-theme)
@@ -521,37 +520,78 @@ See
 http://blog.binchen.org/posts/what-s-the-best-spell-check-set-up-in-emacs.html
 and
 http://emacs-fu.blogspot.com/2009/12/automatically-checking-your-spelling.html
-and http://blog.binchen.org/posts/effective-spell-check-in-emacs.html
+and http://blog.binchen.org/posts/effective-spell-check-in-emacs.html.
 
 #+begin_src emacs-lisp
   (setq ispell-program-name "aspell"
         ispell-extra-args '("--sug-mode=ultra"))
 #+end_src
 
-** TODO git/​~git-modes~
+** ~git~
 ~git~ is important enough to include in ~core-config~.
 
-See https://github.com/magit/git-modes
+*** ~git-modes~
+~git-modes~ allows for syntax highlighting in ~.gitignore~ and ~.gitconfig~
+files. See https://github.com/magit/git-modes.
 
 #+begin_src emacs-lisp
-  (use-package git-modes)
+  (use-package git-modes
+    :straight t)
   (add-to-list 'auto-mode-alist
                (cons "/gitignore" 'gitignore-mode))
   (add-to-list 'auto-mode-alist
                (cons "/gitconfig" 'gitconfig-mode))
 #+end_src
 
-** IDO (Interactively Do Things)
-See https://masteringemacs.org/article/introduction-to-ido-mode
+*** Magit
+[[https://magit.vc][Magit]] is a ~git~ ``porcelain'' essential to my Emacs experience and arguably one
+of Emacs's killer apps.
 
 #+begin_src emacs-lisp
-  (require 'ido)
-  (ido-mode 1)
+  (use-package magit
+    :straight t
+    :bind ("C-c 0" . magit-status))
+  (use-package magit-filenotify
+    :straight t)
+  ;; (global-set-key (kbd "C-c 0") 'magit-status)
 #+end_src
 
-** TODO Magit
+** Completions: ~ido~ \to ~vertico~
+# See https://masteringemacs.org/article/introduction-to-ido-mode
+
+# #+begin_src emacs-lisp
+#   (require 'ido)
+#   (ido-mode 1)
+# #+end_src
+
+Following config taken from
+https://systemcrafters.cc/emacs-tips/streamline-completions-with-vertico/ and
+lightly edited.
+
 #+begin_src emacs-lisp
-  (global-set-key (kbd "C-c 0") 'magit-status)
+  (use-package vertico
+    :ensure t
+    :bind (:map vertico-map
+           ("C-f" . vertico-exit)
+           :map minibuffer-local-map
+           ("M-h" . backward-kill-word))
+    :custom
+    (vertico-cycle t)
+    :init
+    (vertico-mode))
+
+  (use-package savehist
+    :init
+    (savehist-mode))
+
+  (use-package marginalia
+    :after vertico
+    :ensure t
+    :custom
+    (marginalia-annotators '(marginalia-annotators-heavy
+                             marginalia-annotators-light nil))
+    :init
+    (marginalia-mode))
 #+end_src
 
 ** Paredit
