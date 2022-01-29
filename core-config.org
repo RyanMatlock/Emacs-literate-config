@@ -480,7 +480,9 @@ https://www.emacswiki.org/emacs/Iedit
 #+end_src
 
 ** TODO Preferred multi-mode keybindings
-*** Fix auto-identation for multiple modes
+*** TODO Fix auto-identation for multiple modes
+This is probably no longer the best way to achieve this.
+
 See http://www.emacswiki.org/emacs/AutoIndentation
 
 #+begin_src emacs-lisp
@@ -493,18 +495,22 @@ See http://www.emacswiki.org/emacs/AutoIndentation
   (add-hook 'c-mode-common-hook 'set-newline-and-indent)
 #+end_src
 
-** TODO Company (COMPlete ANYthing)
-#+begin_src emacs-lisp
-  (add-hook 'after-init-hook 'global-company-mode)
-  (global-set-key (kbd "C-c C-<tab>") 'company-complete)
-#+end_src
+** TODO Company (COMPlete ANYthing) (\to ~core-langs.org~ or delete)
+~corfu~ might cover this now? In any case, I think I was only using this with
+Python, so it ought to be moved to ~core-langs.org~.
+
+# #+begin_src emacs-lisp
+#   (add-hook 'after-init-hook 'global-company-mode)
+#   (global-set-key (kbd "C-c C-<tab>") 'company-complete)
+# #+end_src
 
 *** Python: company-jedi
-#+begin_src emacs-lisp
-  (defun python-company-jedi-hook ()
-    (add-to-list 'company-backends 'company-jedi))
-  (add-hook 'python-mode-hook 'python-company-jedi-hook)
-#+end_src
+
+# #+begin_src emacs-lisp
+#   (defun python-company-jedi-hook ()
+#     (add-to-list 'company-backends 'company-jedi))
+#   (add-hook 'python-mode-hook 'python-company-jedi-hook)
+# #+end_src
 
 ** TODO Flycheck
 ** TODO Flyspell -- move to custom?
@@ -676,21 +682,6 @@ minibuffer UI.'' -- https://github.com/minad/corfu
     (setq tab-always-indent 'complete))
 #+end_src
 
-** Paredit
-See http://www.emacswiki.org/emacs/ParEdit
-
-#+begin_src emacs-lisp
-  (use-package paredit
-    :straight t
-    :hook ((emacs-lisp-mode . paredit-mode)
-           (lisp-mode . paredit-mode)
-           (common-lisp-mode . paredit-mode)
-           (lisp-interaction-mode . paredit-mode)
-           (geiser-repl-mode . paredit-mode)
-           (slime-repl-mode . paredit-mode)
-           (ielm-mode . paredit-mode)
-           (scheme-mode . paredit-mode)))
-#+end_src
 
 ** TODO LSP (Language Server Protocol)
 
@@ -800,16 +791,31 @@ Type a line normally and cOnVeRt It To ThIs. Maybe pass a prefix argument to
 shift if it starts uppercase or lowercase?
 
 
-* Languages in this document: Emacs Lisp and Org
-** TODO Emacs Lisp
+* TODO Emacs Lisp
+
+** TODO REPL
 
 #+begin_src emacs-lisp
   (use-package elisp-slime-nav)
 #+end_src
 
-** TODO Org mode
-Make ~<s TAB~ create code blocks again (see
-https://emacs.stackexchange.com/a/46992):
+** Parentheses
+*** Paredit
+Balance parentheses automatically; see http://www.emacswiki.org/emacs/ParEdit.
+
+#+begin_src emacs-lisp
+  (use-package paredit
+    :straight t
+    :hook ((emacs-lisp-mode . paredit-mode)
+           (lisp-mode . paredit-mode)
+           (common-lisp-mode . paredit-mode)
+           (lisp-interaction-mode . paredit-mode)
+           (geiser-repl-mode . paredit-mode)
+           (slime-repl-mode . paredit-mode)
+           (ielm-mode . paredit-mode)
+           (scheme-mode . paredit-mode)))
+#+end_src
+
 *** ~rainbow-delimiters~
 [[https://github.com/Fanael/rainbow-delimiters][rainbow-delimiters]]: useful for more than just Lisp, this mode color codes
 parentheses, brackets, and braces by their depth. Saw it (or something like it)
@@ -820,6 +826,12 @@ in some screencast, and I need it.
     :straight t
     :hook ((prog-mode . rainbow-delimiters-mode)))
 #+end_src
+
+* TODO Org mode
+
+** ~org-tempo~
+Enable old-style template blocks, e.g. make ~<s TAB~ create code blocks again;
+see https://emacs.stackexchange.com/a/46992.
 
 #+begin_src emacs-lisp
   (require 'org-tempo)
