@@ -142,17 +142,17 @@ config work, and the rest?
 #+begin_src emacs-lisp
   ;; (use-package auto-complete)
   ;; (use-package auto-complete-chunk)
-  (use-package better-defaults)
+  ;; (use-package better-defaults) ;; was silently loading ido-mode
   (use-package electric-case)
   (use-package electric-operator)
   (use-package electric-spacing)
-  (use-package elein)
-  (use-package elisp-slime-nav)
+  ;; (use-package elein)
+  ;; (use-package elisp-slime-nav)
   (use-package elpy)
   (use-package emoji-display)
   (use-package emojify)
   (use-package exec-path-from-shell)
-  (use-package gist)
+  ;; (use-package gist)
   (use-package highlight-indent-guides)
   (use-package hindent)
   ;; (use-package ido-yes-or-no)
@@ -557,6 +557,15 @@ of Emacs's killer apps.
   ;; (global-set-key (kbd "C-c 0") 'magit-status)
 #+end_src
 
+*** ~gist~
+
+[[https://github.com/defunkt/gist.el][gist.el]]: haven't used this in awhile, and, as of [2022-01-28 Fri], it hasn't
+been updated in 4 years, so I'm just going to leave it out.
+
+#+begin_src emacs-lisp
+  ;; (use-package gist)
+#+end_src
+
 ** Completions: ~vertico~ + ~corfu~
 I used to use a combination of ~ido~ and ~ivy~, but having seen a ~vertico~ demo, I
 thought I'd give it a try. ~ido~ is supposedly a bit outdated now anyway.
@@ -566,9 +575,12 @@ Following config taken from
 https://systemcrafters.cc/emacs-tips/streamline-completions-with-vertico/ and
 lightly edited.
 
+So far I'm loving ~vertico~ + ~savehist~ for ~M-x~ commands! However, it seems like
+=ido-everywhere= is still set to =t= by default for some reason.
+
 #+begin_src emacs-lisp
   (use-package vertico
-    :ensure t
+    :straight t
     :bind (:map vertico-map
            ("C-f" . vertico-exit)
            :map minibuffer-local-map
@@ -579,12 +591,13 @@ lightly edited.
     (vertico-mode))
 
   (use-package savehist
+    :straight t
     :init
     (savehist-mode))
 
   (use-package marginalia
     :after vertico
-    :ensure t
+    :straight t
     :custom
     (marginalia-annotators '(marginalia-annotators-heavy
                              marginalia-annotators-light nil))
@@ -599,10 +612,11 @@ minibuffer UI.'' -- https://github.com/minad/corfu
 #+begin_src emacs-lisp
   (use-package corfu
     :straight t
-    ;; :custom
-    ;; (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
+    :custom
+    (corfu-cycle t)                   ;; Enable cycling for `corfu-next/previous'
     ;; (corfu-auto t)                 ;; Enable auto completion
-    ;; (corfu-commit-predicate nil)   ;; Do not commit selected candidates on next input
+    ;; (corfu-commit-predicate nil)   ;; Do not commit selected candidates on
+    ;;                                ;; next input
     ;; (corfu-quit-at-boundary t)     ;; Automatically quit at word boundary
     ;; (corfu-quit-no-match t)        ;; Automatically quit if there is no match
     ;; (corfu-preview-current nil)    ;; Disable current candidate preview
@@ -784,6 +798,10 @@ shift if it starts uppercase or lowercase?
 
 * Languages in this document: Emacs Lisp and Org
 ** TODO Emacs Lisp
+
+#+begin_src emacs-lisp
+  (use-package elisp-slime-nav)
+#+end_src
 
 ** TODO Org mode
 Make ~<s TAB~ create code blocks again (see
