@@ -46,9 +46,9 @@
    '("#7B6000" "#8B2C02" "#990A1B" "#93115C" "#3F4D91" "#00629D" "#00736F" "#546E00"))
  '(hl-fg-colors
    '("#002b36" "#002b36" "#002b36" "#002b36" "#002b36" "#002b36" "#002b36" "#002b36"))
- '(ido-enable-flex-matching t)
- '(ido-everywhere t)
- '(ido-file-extensions-order '(".org" ".py" ".tex" ".el" ".txt" ".yaml" ".js" ".md"))
+ ;; '(ido-enable-flex-matching t)
+ ;; '(ido-everywhere t)
+ ;; '(ido-file-extensions-order '(".org" ".py" ".tex" ".el" ".txt" ".yaml" ".js" ".md"))
  '(initial-major-mode 'text-mode)
  '(initial-scratch-message nil)
  '(magit-diff-use-overlays nil)
@@ -81,30 +81,14 @@
      ("colorlinks=true" "hyperref" nil nil)
      ("" "siunitx" nil nil)))
  '(org-mode-hook
-   '(;; hookify:my:org-list-note-prompt
-     ;; org-extra-yas-mode-activation-kludge
-     ;; hookify:my:org-html-image-width
-     ;; ob-ipython-auto-configure-kernels
-     ;; hookify:my:org-insert-visible-space-char
-     ;; hookify:my:org-insert-checkbox-item
-     ;; my:org-insert-bullet
-     ;; my:insert-corner-brackets
-     ;; my:insert-right-corner-bracket
-     ;; my:insert-left-corner-bracket
-     ;; my:insert-micro-sign
-     ;; my:insert-section-sign
-     ;; my:org-priority-key
-     ;; my:org-time-stamp-key
-     flyspell-mode
-     ;; org-tempo-setup
+   '(flyspell-mode
      #[0 "\300\301\302\303\304$\207"
          [add-hook change-major-mode-hook org-show-all append local]
          5]
      #[0 "\300\301\302\303\304$\207"
          [add-hook change-major-mode-hook org-babel-show-result-all append local]
          5]
-     org-babel-result-hide-spec
-     org-babel-hide-all-hashes
+     org-babel-result-hide-spec org-babel-hide-all-hashes
      #[0 "\301\211\207"
          [imenu-create-index-function org-imenu-get-tree]
          2]
@@ -116,7 +100,7 @@
    '(("melpa" . "https://melpa.org/packages/")
      ("gnu" . "https://elpa.gnu.org/packages/")))
  '(package-selected-packages
-   '(python-mode use-package hindent lsp-jedi lsp-latex lsp-pyright lsp-haskell flymake-hlint haskell-tab-indent mediawiki vterm osx-clipboard company-org-roam org-roam org-roam-bibtex org-roam-server org-scrum chess company-lsp osx-dictionary lsp-ui flycheck-rust lsp-mode rust-mode toml-mode elpy pomidor unfill sql-indent sqlup-mode db-pg latex-math-preview org-ref ox-reveal highlight-indent-guides org-journal org-journal-list ox-pandoc ox-rst ox-tufte ox-wk org-re-reveal lorem-ipsum company-anaconda company-bibtex company-emoji company-math company-shell company-web telephone-line magit magit-filenotify transient solarized-theme theme-looper flx flx-ido ido-yes-or-no ivy-yasnippet emoji-display ox-epub ivy ebib hideshow-org s ob-ipython ein electric-case electric-operator electric-spacing elein eldoc-overlay eldoc-eval ac-slime elisp-slime-nav slime auto-complete emojify yaml-mode wgrep-ack wget web-beautify tagedit sx scion pytest paredit pandoc-mode org-bullets org-ac nodejs-repl json-mode js3-mode iedit help-mode+ help-fns+ help+ helm-bibtex gist flycheck-pyflakes exec-path-from-shell d-mode company-auctex cider blank-mode bison-mode better-defaults awk-it auto-complete-chunk auto-complete-c-headers auctex-latexmk arduino-mode ac-python ac-js2 ac-geiser))
+   '(spice-mode python-mode use-package hindent lsp-jedi lsp-latex lsp-pyright lsp-haskell flymake-hlint haskell-tab-indent mediawiki vterm osx-clipboard company-org-roam org-roam org-roam-bibtex org-roam-server org-scrum chess company-lsp osx-dictionary lsp-ui flycheck-rust lsp-mode rust-mode toml-mode elpy pomidor unfill sql-indent sqlup-mode db-pg latex-math-preview org-ref ox-reveal highlight-indent-guides org-journal org-journal-list ox-pandoc ox-rst ox-tufte ox-wk org-re-reveal lorem-ipsum company-anaconda company-bibtex company-emoji company-math company-shell company-web telephone-line magit magit-filenotify transient solarized-theme theme-looper flx flx-ido ido-yes-or-no ivy-yasnippet emoji-display ox-epub ivy ebib hideshow-org s ob-ipython ein electric-case electric-operator electric-spacing elein eldoc-overlay eldoc-eval ac-slime elisp-slime-nav slime auto-complete emojify yaml-mode wgrep-ack wget web-beautify tagedit sx scion pytest paredit pandoc-mode org-bullets org-ac nodejs-repl json-mode js3-mode iedit help-mode+ help-fns+ help+ helm-bibtex gist flycheck-pyflakes exec-path-from-shell d-mode company-auctex cider blank-mode bison-mode better-defaults awk-it auto-complete-chunk auto-complete-c-headers auctex-latexmk arduino-mode ac-python ac-js2 ac-geiser))
  '(pos-tip-background-color "#073642")
  '(pos-tip-foreground-color "#93a1a1")
  '(show-trailing-whitespace t)
@@ -129,13 +113,7 @@
  '(term-default-bg-color "#002b36")
  '(term-default-fg-color "#839496")
  '(text-mode-hook
-   '(turn-on-flyspell
-     ;; my:org-insert-bullet
-     ;; my:insert-corner-brackets
-     ;; my:insert-right-corner-bracket
-     ;; my:insert-left-corner-bracket
-     turn-on-auto-fill
-     text-mode-hook-identify))
+   '(turn-on-flyspell turn-on-auto-fill text-mode-hook-identify))
  '(vc-annotate-background nil)
  '(vc-annotate-color-map
    '((20 . "#dc322f")

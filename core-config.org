@@ -576,7 +576,11 @@ https://systemcrafters.cc/emacs-tips/streamline-completions-with-vertico/ and
 lightly edited.
 
 So far I'm loving ~vertico~ + ~savehist~ for ~M-x~ commands! However, it seems like
-=ido-everywhere= is still set to =t= by default for some reason.
+=ido-everywhere= is still set to =t= by default for some reason. Oh, I have an
+idea: I bet it's in =custom.el=! I'm starting to think the smarter/better way to
+do most customizations is with =:custom= inside of =(straight-)use-package=
+statements. Yep, that was it! Going forward, I'll try to move what I can out of
+~custom.el~.
 
 #+begin_src emacs-lisp
   (use-package vertico
