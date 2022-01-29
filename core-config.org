@@ -810,6 +810,16 @@ shift if it starts uppercase or lowercase?
 ** TODO Org mode
 Make ~<s TAB~ create code blocks again (see
 https://emacs.stackexchange.com/a/46992):
+*** ~rainbow-delimiters~
+[[https://github.com/Fanael/rainbow-delimiters][rainbow-delimiters]]: useful for more than just Lisp, this mode color codes
+parentheses, brackets, and braces by their depth. Saw it (or something like it)
+in some screencast, and I need it.
+
+#+begin_src emacs-lisp
+  (use-package rainbow-delimiters
+    :straight t
+    :hook ((prog-mode . rainbow-delimiters-mode)))
+#+end_src
 
 #+begin_src emacs-lisp
   (require 'org-tempo)
