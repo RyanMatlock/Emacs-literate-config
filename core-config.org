@@ -153,7 +153,7 @@ config work, and the rest?
   ;; (use-package emojify)
   ;; (use-package exec-path-from-shell)
   ;; (use-package gist)
-  (use-package highlight-indent-guides)
+  ;; (use-package highlight-indent-guides)
   (use-package hindent)
   ;; (use-package ido-yes-or-no)
   ;; (use-package iedit)
@@ -349,15 +349,22 @@ emojis (e.g. ~:)~)
     :hook (after-init . global-emojify-mode))
 #+end_src
 
-*** Highlight indentation guides for programming modes
-This apparently doesn't use ~customize-variable~, but according to some uncited
-documentation (which is likely at least a few years old at this point), ~setq~ is
-the way to do this.
+*** ~highlight-indent-guides~
+[[https://github.com/DarthFennec/highlight-indent-guides][highlight-indent-guides]] shows indentation level. I used to do this with a pipe
+character, but I think the ='fill= and ='column= options look better now.
 
 #+begin_src emacs-lisp
-  (add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
-  (setq highlight-indent-guides-method 'character)
-  (setq highlight-indent-guides-character ?\|)
+  (use-package highlight-indent-guides
+    :straight t
+    :hook (prog-mode . highlight-indent-guides-mode)
+    :config (progn
+              ;; old way of doing it
+              ;; (setq highlight-indent-guides-method 'character)
+              ;; (setq highlight-indent-guides-character ?\|)
+              ;; an alternative
+              ;; (setq highlight-indent-guides-method 'column)
+              ;; this one looks pretty cool
+              (setq highlight-indent-guides-method 'fill)))
 #+end_src
 
 *** Auto-indentation on =RET= for various modes
