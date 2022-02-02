@@ -721,7 +721,7 @@ see https://emacs.stackexchange.com/a/46992.
 * Load additional org configuration files
 
 #+begin_src emacs-lisp
-  (when core-config-extras-switch
+  (when core-config-core-langs-switch
     ;; (org-babel-load-file (expand-file-name "~/config/emacs/core-langs.org"))
     (message "Core langs config loaded."))
   (when core-config-extras-switch
