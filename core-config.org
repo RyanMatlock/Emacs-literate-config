@@ -22,10 +22,10 @@ In case you need to go back to your old configuration:
 Then either reload =.emacs= or restart Emacs. Looks like you shouldn't need to do
 this though.
 
-** How this works
-=.emacs= is symlinked to =dotemacs.el=, which loads the necessary ~package~ and
+** TODO How this works -- correct this
+=.emacs= is symlinked to =dotemacs.el=, which loads the necessary +~package~+ and
 ~use-package~ packages in order for ~org-babel-load-file~ to process this file,
-=README.org=, which contains all the Emacs Lisp configuration goodness (excluding
++=README.org=+, which contains all the Emacs Lisp configuration goodness (excluding
 the stuff handled by ~customize-variable~).
 
 ** Configuration organization
