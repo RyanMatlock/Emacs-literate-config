@@ -142,26 +142,26 @@ config work, and the rest?
 #+begin_src emacs-lisp
   ;; (use-package auto-complete)
   ;; (use-package auto-complete-chunk)
-  ;; (use-package better-defaults) ;; was silently loading ido-mode
-  (use-package electric-case)
-  (use-package electric-operator)
-  (use-package electric-spacing)
+  ;; (use-package better-defaults) ;; loads ido-mode -- bad!
+  ;; (use-package electric-case)
+  ;; (use-package electric-operator)
+  ;; (use-package electric-spacing)
   ;; (use-package elein)
   ;; (use-package elisp-slime-nav)
-  (use-package elpy)
-  (use-package emoji-display)
+  ;; (use-package elpy)
+  ;; (use-package emoji-display)
   (use-package emojify)
-  (use-package exec-path-from-shell)
+  ;; (use-package exec-path-from-shell)
   ;; (use-package gist)
   (use-package highlight-indent-guides)
   (use-package hindent)
   ;; (use-package ido-yes-or-no)
-  (use-package iedit)
+  ;; (use-package iedit)
   ;; (use-package ivy)
   ;; (use-package ivy-yasnippet)
-  (use-package pandoc-mode)
+  ;; (use-package pandoc-mode)
   ;; (use-package solarized-theme)
-  (use-package unfill)
+  ;; (use-package unfill)
 #+end_src
 
 ** Customize
@@ -423,6 +423,17 @@ See https://www.emacswiki.org/emacs/MetaKeyProblems#h5o-18
 (Works on M1 Mac Mini (9.1?), although I don't think this was necessary on a
 late 2019 MacBook Pro 16".)
 
+*** Iedit: edit multiple occcurrences simultaneously
+This has been /such/ an important extension that I don't think I could live
+without it. Really can't overstate how useful it is; see
+[[https://github.com/victorhge/iedit][iedit | GitHub]]. Per documentation's suggestion, =iedit-mode= is bound to ~C-c ;~.
+
+#+begin_src emacs-lisp
+  (use-package iedit
+    :straight t
+    :bind ("C-c ;" . iedit-mode))
+#+end_src
+
 *** Reload =.emacs=
 See
 http://stackoverflow.com/questions/24810079/key-binding-to-reload-emacs-after-changing-it
@@ -456,15 +467,6 @@ Documented in old =.emacs= as "~count-words-region~ \to ~count-words~" :shrug:
 #+begin_src emacs-lisp
   (global-set-key (kbd "M-=") 'count-words)
   (put 'narrow-to-region 'disabled nil)
-#+end_src
-
-*** Iedit with =C-c ;=
-All occurrences of a string are highlighted and then editable; cursor/region
-goes back to normal on second activation of ~iedit-mode~. See
-https://www.emacswiki.org/emacs/Iedit
-
-#+begin_src emacs-lisp
-  (define-key global-map (kbd "C-c ;") 'iedit-mode)
 #+end_src
 
 ** TODO Preferred multi-mode keybindings
@@ -549,15 +551,6 @@ of Emacs's killer apps.
   (use-package magit-filenotify
     :straight t)
   ;; (global-set-key (kbd "C-c 0") 'magit-status)
-#+end_src
-
-*** ~gist~
-
-[[https://github.com/defunkt/gist.el][gist.el]]: haven't used this in awhile, and, as of [2022-01-28 Fri], it hasn't
-been updated in 4 years, so I'm just going to leave it out.
-
-#+begin_src emacs-lisp
-  ;; (use-package gist)
 #+end_src
 
 ** Completions: ~vertico~ + ~corfu~
@@ -726,7 +719,7 @@ look later. It also looks like a setting I could potentially move to
   (setq ac-source-yasnippet nil)
 #+end_src
 
-** Miscellaneous
+** Direct text handling
 *** Enable ~downcase-region~, ~upcase-region~
 The latter was hanging out in my Python configuration section for some
 reason :shrug:. Later, it appeared to be added to the base =~/.emacs= file.
@@ -736,6 +729,17 @@ reason :shrug:. Later, it appeared to be added to the base =~/.emacs= file.
   (put 'upcase-region 'disabled nil)
 #+end_src
 
+*** ~unfill~
+``Functions providing the inverse of Emacs' fill-paragraph and fill-region'' --
+[[https://github.com/purcell/unfill][unfill | GitHub]]. Provides functions =unfill-region=, =unfill-paragraph=, and
+=unfill-toggle=.
+
+#+begin_src emacs-lisp
+  (use-package unfill
+    :straight t)
+#+end_src
+
+** Miscellaneous
 *** Disable "Package ~cl~ is deprecated" warning on startup
 See https://github.com/kiwanami/emacs-epc/issues/35. Might be a good idea to
 investigate this at some point and actually fix it instead of applying a
@@ -777,7 +781,6 @@ Note that the prefix, =C-u=, changes the behavior (by adding "[â€‹=<timestamp>=â
 *** TODO Define ~obnoxious-case-region~
 Type a line normally and cOnVeRt It To ThIs. Maybe pass a prefix argument to
 shift if it starts uppercase or lowercase?
-
 
 * TODO Emacs Lisp
 
@@ -835,3 +838,14 @@ see https://emacs.stackexchange.com/a/46992.
     ;; (org-babel-load-file (expand-file-name "~/config/emacs/extras.org"))
     (message "Extras config loaded."))
 #+end_src
+
+* Package graveyard
+- [[https://github.com/auto-complete/auto-complete][auto-complete]]
+- [[https://github.com/technomancy/better-defaults][better-defaults]]
+- [[https://github.com/zk-phi/electric-case][electric-case]]
+- [[https://github.com/davidshepherd7/electric-operator][electric-operator]]
+- [[https://github.com/xwl/electric-spacing][electric-spacing]] (does the same thing as ~electric-operator~ ?)
+- [[https://github.com/remvee/elein][elein]]
+- [[https://elpy.readthedocs.io/en/latest/][elpy]] (Emacs Python Develpment Environment) (\to ~core-langs.org~ ?)
+- [[https://github.com/ikazuhiro/emoji-display][emoji-display]] (use ~emojify~ instead)
+- [[https://github.com/defunkt/gist.el][gist]]
