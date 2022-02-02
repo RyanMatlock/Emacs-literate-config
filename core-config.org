@@ -519,9 +519,17 @@ and
 http://emacs-fu.blogspot.com/2009/12/automatically-checking-your-spelling.html
 and http://blog.binchen.org/posts/effective-spell-check-in-emacs.html.
 
+Found a very old blog post ([[http://emacs-fu.blogspot.com/2008/12/running-some-external-program-only-if.html][running some external program only if it exists |
+Emacs-fu]]) that should allow me to bug myself if I don't have an ispell program
+installed.
+
 #+begin_src emacs-lisp
   (setq ispell-program-name "aspell"
         ispell-extra-args '("--sug-mode=ultra"))
+  (unless (executable-find ispell-program-name)
+    (display-warning
+     :warning
+     (format "ispell program not found: %s" ispell-program-name)))
 #+end_src
 
 ** ~git~
