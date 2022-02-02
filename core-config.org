@@ -82,61 +82,6 @@ https://cestlaz.github.io/posts/using-emacs-10-org-init/. However, if using
 this config file on a new machine, the lack of installed packages will lead to
 errors.
 
-*** TODO Auto-install missing packages
-/Very/ useful on new machines.
-
-(Stolen from https://stackoverflow.com/a/55058934)
-
-# #+begin_src emacs-lisp
-#   (setq my-packages
-#     '(auto-complete
-#       auto-complete-chunk
-#       better-defaults
-#       electric-case
-#       electric-operator
-#       electric-spacing
-#       elein
-#       elisp-slime-nav
-#       elpy
-#       emoji-display
-#       emojify
-#       exec-path-from-shell
-#       gist
-#       highlight-indent-guides
-#       hindent
-#       ido-yes-or-no
-#       iedit
-#       ivy
-#       ivy-yasnippet
-#       magit
-#       magit-filenotify
-#       pandoc-mode
-#       paredit
-#       solarized-theme
-#       unfill))
-
-#   ;; this is the old package.el way of doing this
-#   ;; ;; iterate over my-packages and install missing ones
-#   ;; (dolist (pkg my-packages)
-#   ;;   (unless (package-installed-p pkg)
-#   ;;     (package-install pkg)))
-
-#   ;; this is the straight.el way?
-#   (dolist (pkg my-packages)
-#     (use-package 'pkg))
-# #+end_src
-
-(Previously, ~org~ and ~use-package~ were in the list of packages to install,
-but that's been moved into ~dotemacs.el~.
-
-Note that this hasn't worked perfectly. Basically, I can install a few packages,
-and then I need to reload ~.dotemacs~. Now I'm failing on
-~File error: https://melpa.org/packages/sesman-20190909.1754.tar, Not found~
-so I guess that's a dependency of some sort. (A cider dependency?)
-
-Maybe separate these into packages I use all the time, packages that make this
-config work, and the rest?
-
 ** Customize
 It seems like the less I use ~customize~ outside of the literate configuration
 files, the better because I can always use =(use-package ... :custom ...)= or

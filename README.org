@@ -1,0 +1,33 @@
+#+title: Literate Emacs configuration with Org mode
+#+subtitle: General overview
+#+author: Ryan Matlock
+
+* TODOs [0/2]
+** TODO Split config across ~core-config.org~, ~core-langs.org~, and ~extras.org~
+** TODO Switch to ~straight.el~
+[[https://github.com/raxod502/straight.el][straight.el]] is an Emacs package management system that apparently makes Emacs
+configurations more portable across devices.
+
+* Notes
+** ~package.el~ auto-installation
+Method stolen from [[https://stackoverflow.com/a/55058934][Setting up emacs on new machine with init.el and package
+installation | stackoverflow]]. Note that this only sort of works; ~straight.el~
+seems to work much better for me, which is why I made the transition away from
+~package.el~, but I thought I'd keep a note on how I used to achieve this…kind
+of.
+
+#+begin_src emacs-lisp
+  (setq my-packages
+    '(auto-complete
+      auto-complete-chunk
+      better-defaults
+      electric-case
+      electric-operator
+      ;; and so on
+      ))
+
+  ;; iterate over my-packages and install missing ones
+  (dolist (pkg my-packages)
+    (unless (package-installed-p pkg)
+      (package-install pkg)))
+#+end_src
