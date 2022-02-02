@@ -349,6 +349,25 @@ emojis (e.g. ~:)~)
     :hook (after-init . global-emojify-mode))
 #+end_src
 
+Note that the =gitmoji= =:​memo:= symbol is the same as ~emojify~'s =:​pencil:=, and
+=gitmoji='s =:​pencil:= symbol is the same as ~emojify~'s =:​pencil2:=.
+
+#+begin_src emacs-lisp
+  (setq emojify-user-emojis
+        '((":memo:" .
+           (("name" . "Memo")
+            ("image" .
+             "~/.emacs.d/emojis/emojione-v2.2.6-22/1f4dd.png")
+            ("style" . "github")))
+          (":adhesive_bandage:" .
+           (("name" . "Adhesive Bandage")
+            ("image" .
+             "~/.emacs.d/emojis/user-added/adhesive_bandage.png")
+            ("style" . "github")))))
+  (when (featurep 'emojify)
+    (emojify-set-emoji-data))
+#+end_src
+
 *** ~highlight-indent-guides~
 [[https://github.com/DarthFennec/highlight-indent-guides][highlight-indent-guides]] shows indentation level. I used to do this with a pipe
 character, but I think the ='fill= and ='column= options look better now.
@@ -386,42 +405,6 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Font-Lock.html
 
 #+begin_src emacs-lisp
   (global-font-lock-mode 1)
-#+end_src
-
-*** Color emojis in Emacs 27/OS X
-See
-https://www.reddit.com/r/emacs/comments/ggd90c/color_emoji_in_emacs_27/. Not
-sure if this is still necessary, but it's been working :shrug:
-
-#+begin_src emacs-lisp
-  (when (eq system-type 'darwin)
-    (set-fontset-font t 'symbol "Apple Color Emoji")
-    (set-fontset-font t 'symbol "Noto Color Emoji" nil 'append)
-    (set-fontset-font t 'symbol "Segoe UI Emoji" nil 'append)
-    (set-fontset-font t 'symbol "Symbola" nil 'append))
-#+end_src
-
-*** ~emojify-user-emojis~
-I was going to use ~customize-variable~ for this, but it actually seems more
-straightforward to put it here.
-
-Note that the =gitmoji= =:​memo:= symbol is the same as ~emojify~'s =:​pencil:=, and
-=gitmoji='s =:​pencil:= symbol is the same as ~emojify~'s =:​pencil2:=.
-
-#+begin_src emacs-lisp
-  (setq emojify-user-emojis
-        '((":memo:" .
-           (("name" . "Memo")
-            ("image" .
-             "~/.emacs.d/emojis/emojione-v2.2.6-22/1f4dd.png")
-            ("style" . "github")))
-          (":adhesive_bandage:" .
-           (("name" . "Adhesive Bandage")
-            ("image" .
-             "~/.emacs.d/emojis/user-added/adhesive_bandage.png")
-            ("style" . "github")))))
-  (when (featurep 'emojify)
-    (emojify-set-emoji-data))
 #+end_src
 
 ** Preferred global keybindings
