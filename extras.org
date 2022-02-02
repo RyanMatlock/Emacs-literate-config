@@ -24,3 +24,28 @@ Org Roam | Inserting node links using completions]].
     :config
     (org-roam-setup))
 #+end_src
+
+* Major Modes
+** Markdown
+For when you can't use Org mode 🙃; see [[https://jblevins.org/projects/markdown-mode/][markdown-mode]].
+
+#+begin_src emacs-lisp
+  (use-package markdown-mode
+    :straight t
+    :commands (markdown-mode gfm-mode)
+    :mode (("README\\.md\\'" . gfm-mode)
+           ("\\.md\\'" . markdown-mode)
+           ("\\.markdown\\'" . markdown-mode))
+    :init (setq markdown-command "multimarkdown"))
+#+end_src
+
+*** ~pandoc-mode~
+[[http://joostkremers.github.io/pandoc-mode/][pandoc-mode]] makes it easier to interface with ~pandoc~, which is especially
+useful when editing Markdown files (Org mode has a lot of this functionality
+built in).
+
+#+begin_src emacs-lisp
+  (use-package pandoc-mode
+    :straight t
+    :hook ((markdown-mode . pandoc-mode)))
+#+end_src
