@@ -165,9 +165,15 @@ config work, and the rest?
 #+end_src
 
 ** Customize
-There are probably a number of settings you can/should move into this, although
-I'm curious how much of a pressing need there is given that with a literate
-=.emacs= config, I can explain my reasoning for a setting.
+It seems like the less I use ~customize~ outside of the literate configuration
+files, the better because I can always use =(use-package ... :custom ...)= or
+=setq= and annotate everything using Org mode. See [[https://emacs.stackexchange.com/questions/102/advantages-of-setting-variables-with-setq-instead-of-custom-el][Advantages of setting
+variables with setq instead of custom.el? | emacs.stackexchange]] for a good
+(albeit old) discussion of the relative merits of each.
+
++There are probably a number of settings you can/should move into this,
+although I'm curious how much of a pressing need there is given that with a
+literate =.emacs= config, I can explain my reasoning for a setting.+
 
 #+begin_src emacs-lisp
   (setq custom-file (expand-file-name "~/config/emacs/custom.el"))
