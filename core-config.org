@@ -150,7 +150,7 @@ config work, and the rest?
   ;; (use-package elisp-slime-nav)
   ;; (use-package elpy)
   ;; (use-package emoji-display)
-  (use-package emojify)
+  ;; (use-package emojify)
   ;; (use-package exec-path-from-shell)
   ;; (use-package gist)
   (use-package highlight-indent-guides)
@@ -339,9 +339,14 @@ Python's PEP 8 is right.
   (setq column-number-mode t)
 #+end_src
 
-*** Global emojify
+*** ~emojify~
+[[https://github.com/iqbalansari/emacs-emojify][emojify]] enables emojis (e.g. 🙂), GitHub-style emojis (e.g. ~:smile:~), and ASCII
+emojis (e.g. ~:)~)
+
 #+begin_src emacs-lisp
-  (add-hook 'after-init-hook #'global-emojify-mode)
+  (use-package emojify
+    :straight t
+    :hook (after-init . global-emojify-mode))
 #+end_src
 
 *** Highlight indentation guides for programming modes
