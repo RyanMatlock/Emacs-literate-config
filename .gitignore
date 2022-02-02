@@ -1,3 +1,6 @@
 core-config.el
 core-langs.el
 extras.el
+
+# want to verify that Org file looks good
+*.html
