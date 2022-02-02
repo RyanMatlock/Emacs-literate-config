@@ -671,7 +671,6 @@ minibuffer UI.'' -- https://github.com/minad/corfu
     (setq tab-always-indent 'complete))
 #+end_src
 
-
 ** TODO LSP (Language Server Protocol)
 
 # #+begin_src emacs-lisp
@@ -695,36 +694,6 @@ https://www.gnu.org/software/emacs/manual/html_node/tramp/Default-Method.html
 
 #+begin_src emacs-lisp
   (setq tramp-default-method "ssh")
-#+end_src
-
-** TODO yasnippet
-*** General configuration
-Pretty sure I have other snippet directories; probably should consolidate those
-at some point.
-
-#+begin_src emacs-lisp
-  (require 'yasnippet)
-  (yas-global-mode 1)
-  ;; (setq yas-snippet-dirs (append yas-snippet-dirs
-  ;;                                '("~/emacs/yasnippets")))
-  (yas-global-mode 1)
-#+end_src
-
-*** =M-<TAB>= for snippets within snippets
-See https://joaotavora.github.io/yasnippet/snippet-expansion.html
-
-#+begin_src emacs-lisp
-  (define-key yas-minor-mode-map (kbd "M-TAB") 'yas-expand)
-#+end_src
-
-*** TODO Make auto-complete play nicely with YAS
-Not sure if I actually need this given that I don't think I use ~auto-complete~
-anymore. I'll comment this out for now, and if I need it, I'll know where to
-look later. It also looks like a setting I could potentially move to
-=emacs-custom=.
-
-#+begin_src emacs-lisp
-  (setq ac-source-yasnippet nil)
 #+end_src
 
 ** Direct text handling
