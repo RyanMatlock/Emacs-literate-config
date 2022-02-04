@@ -82,22 +82,6 @@ https://cestlaz.github.io/posts/using-emacs-10-org-init/. However, if using
 this config file on a new machine, the lack of installed packages will lead to
 errors.
 
-** Customize
-It seems like the less I use ~customize~ outside of the literate configuration
-files, the better because I can always use =(use-package ... :custom ...)= or
-=setq= and annotate everything using Org mode. See [[https://emacs.stackexchange.com/questions/102/advantages-of-setting-variables-with-setq-instead-of-custom-el][Advantages of setting
-variables with setq instead of custom.el? | emacs.stackexchange]] for a good
-(albeit old) discussion of the relative merits of each.
-
-+There are probably a number of settings you can/should move into this,
-although I'm curious how much of a pressing need there is given that with a
-literate =.emacs= config, I can explain my reasoning for a setting.+
-
-#+begin_src emacs-lisp
-  (setq custom-file (expand-file-name "~/config/emacs/custom.el"))
-  (load custom-file)
-#+end_src
-
 ** TODO General look & feel
 *** GUI
 - no menu bar; see see http://emacswiki.org/emacs/MenuBar#toc1
@@ -740,6 +724,22 @@ see https://emacs.stackexchange.com/a/46992.
   (when core-config-extras-switch
     ;; (org-babel-load-file (expand-file-name "~/config/emacs/extras.org"))
     (message "Extras config loaded."))
+* Customize
+It seems like the less I use ~customize~ outside of the literate configuration
+files, the better because I can always use =(use-package ... :custom ...)= or
+=setq= and annotate everything using Org mode. See [[https://emacs.stackexchange.com/questions/102/advantages-of-setting-variables-with-setq-instead-of-custom-el][Advantages of setting
+variables with setq instead of custom.el? | emacs.stackexchange]] for a good
+(albeit old) discussion of the relative merits of each. I think this ought to
+be loaded after everything else so customization override anything hard coded
+into these config files.
+
++There are probably a number of settings you can/should move into this,
+although I'm curious how much of a pressing need there is given that with a
+literate =.emacs= config, I can explain my reasoning for a setting.+
+
+#+begin_src emacs-lisp
+  (setq custom-file (expand-file-name "~/config/emacs/custom.el"))
+  (load custom-file)
 #+end_src
 
 * Package graveyard
