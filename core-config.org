@@ -207,6 +207,19 @@ s-expressions in =:config=.]
 #+end_src
 
 *** TODO Whitespace -- move to custom??
+*** Prettier mode line
+I checked Reddit to get some ideas for which mode line packages are popular
+these days. A lot of people seem to be happy with Doom Emacs/[[https://github.com/seagle0128/doom-modeline][doom-modeline]], and
+[[https://gitlab.com/jessieh/mood-line][mood-line]] is a lightweight alternative.
+
+If that doesn't work out, [[https://github.com/tarsius/minions][minions]] (minor mode lighter \to separate menu) + [[https://github.com/tarsius/moody][moody]]
+also looks really nice.
+
+#+begin_src emacs-lisp
+  (use-package mood-line
+    :straight t
+    :config (mood-line-mode))
+#+end_src
 Highlight lines over 80 chars long; see
 http://emacsredux.com/blog/2013/05/31/highlight-lines-that-exceed-a-certain-length-limit/
 and
