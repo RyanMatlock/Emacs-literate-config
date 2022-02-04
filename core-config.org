@@ -197,12 +197,53 @@ these days. A lot of people seem to be happy with Doom Emacs/[[https://github.co
 [[https://gitlab.com/jessieh/mood-line][mood-line]] is a lightweight alternative.
 
 If that doesn't work out, [[https://github.com/tarsius/minions][minions]] (minor mode lighter \to separate menu) + [[https://github.com/tarsius/moody][moody]]
-also looks really nice.
+also looks really nice. It looks like you could actually use ~mood-line~ with
+~minions~ with some tweaks; see [[https://gitlab.com/jessieh/mood-line/-/issues/21][Support Minions Mode]].
+
+By default, ~mood-line~'s git status looks unreadable in the active
+window/frame/buffer/whatever the right term is when using Solarized Dark theme
+(bright yellow text over light grey background) [note: only true when
+=(solarized-high-contrast-mode-line t)= ]. I think the issue can be
+traced to
+
+#+begin_src emacs-lisp :eval no
+  (defface mood-line-status-info
+    '((t (:inherit (font-lock-keyword-face))))
+    "Face used for generic status indicators in the mode-line."
+    :group 'mood-line)
+#+end_src
+
+so I'm going to try modifying that. Actually, looking at the Customize options,
+=mood-line-status-success= uses the same bright yellow color, and
+=mood-line-status-neutral= uses only a slightly darker grey than the background.
 
 #+begin_src emacs-lisp
   (use-package mood-line
     :straight t
-    :config (mood-line-mode))
+    :config
+    (progn
+      (when (and (member 'solarized-dark custom-enabled-themes)
+                 solarized-high-contrast-mode-line)
+        (progn
+          ;; (message "You're using Solarized Dark")
+          ;; note: hex codes work just as well as color strings
+          (set-face-attribute
+           'mood-line-status-info
+           nil
+           :foreground
+           (cdr (assoc 'blue-d solarized-dark-color-palette-alist)))
+          (set-face-attribute
+           'mood-line-status-success
+           nil
+           :foreground
+           (cdr (assoc 'blue-d solarized-dark-color-palette-alist)))
+          (set-face-attribute
+           'mood-line-status-neutral
+           nil
+           :foreground
+           (cdr (assoc 'green-d solarized-dark-color-palette-alist)))))
+      (mood-line-mode)))
+#+end_src
 #+end_src
 Highlight lines over 80 chars long; see
 http://emacsredux.com/blog/2013/05/31/highlight-lines-that-exceed-a-certain-length-limit/
