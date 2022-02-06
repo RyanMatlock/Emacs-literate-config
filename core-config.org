@@ -82,6 +82,18 @@ https://cestlaz.github.io/posts/using-emacs-10-org-init/. However, if using
 this config file on a new machine, the lack of installed packages will lead to
 errors.
 
+** Startup behavior
+*** ~*scratch*~ behavior
+#+begin_src emacs-lisp
+  (setq initial-major-mode 'text-mode)
+  (setq initial-scratch-message nil)
+#+end_src
+
+*** Turn off welcome screen
+#+begin_src emacs-lisp
+  (setq inhibit-startup-message t)
+#+end_src
+
 ** TODO General look & feel
 *** GUI
 - no menu bar; see see http://emacswiki.org/emacs/MenuBar#toc1
