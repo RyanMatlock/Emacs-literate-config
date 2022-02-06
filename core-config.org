@@ -95,6 +95,21 @@ errors.
 #+end_src
 
 ** TODO General look & feel
+*** Solarized Dark theme
+[[https://github.com/bbatsov/solarized-emacs][solarized-emacs]]
+
+#+begin_src emacs-lisp
+  (use-package solarized-theme
+    :straight t
+    :config (progn
+              (load-theme 'solarized-dark t)
+              (setq solarized-distinct-fringe-background t)
+              (setq solarized-high-contrast-mode-line t)
+              (setq solarized-scale-org-headlines nil)
+              (setq solarized-use-more-italic t)
+              (setq solarized-use-variable-pitch nil)))
+#+end_src
+
 *** GUI
 - no menu bar; see see http://emacswiki.org/emacs/MenuBar#toc1
 - no tool bar
@@ -107,8 +122,8 @@ errors.
 - define ~xl-frame~, which accommodates three side-by-side-by-side windows
 - use Inconsolata size 15 font
 - set unicode font to Unifont
-- use Solarized Dark theme; see
-  https://emacs.stackexchange.com/questions/10246/emacs-always-ask-to-trust-colour-theme-at-startup
+- +use Solarized Dark theme; see+
+  +https://emacs.stackexchange.com/questions/10246/emacs-always-ask-to-trust-colour-theme-at-startup+
 - disable mouse inputs (except scrolling?); see
   http://stackoverflow.com/questions/4906534/disable-mouse-clicks-in-emacs
 - disable =C-z=, which minimizes Emacs in GUI mode
@@ -116,8 +131,6 @@ errors.
   http://stackoverflow.com/questions/36805713/emacs-blank-square-on-mac-os-x/36813418#36813418
 
 #+begin_src emacs-lisp
-  (use-package solarized-theme
-    :straight t)
   (when window-system
     (menu-bar-mode -1)  ;; not working?
     (tool-bar-mode -1)
@@ -170,8 +183,6 @@ errors.
     (set-frame-font (concat gui-config-font-face
                             "-"
                             (number-to-string gui-config-font-size)))
-
-    (load-theme 'solarized-dark t)
     (dolist (k '([mouse-1] [down-mouse-1] [drag-mouse-1] [double-mouse-1]
                  [triple-mouse-1] [mouse-2] [down-mouse-2] [drag-mouse-2]
                  [double-mouse-2] [triple-mouse-2] [mouse-3] [down-mouse-3]
