@@ -47,7 +47,10 @@ and related tools.
 
 *** ~extras.org~
 
-* Switches for additional configuration
+* TODO Switches for additional configuration
+Since these are boolean, they should probably end in =-p=. Currently have ~C-c ;~
+bound to =org-toggle-comment= but I want to use the appropriate ~iedit~ function,
+so fix that first, then fix this.
 
 #+begin_src emacs-lisp
   (setq core-config-core-langs-switch nil)
@@ -67,6 +70,25 @@ and related tools.
 - [ ] [[https://github.com/abo-abo/hydra][hydra]] for fancy keybindings
 - [ ] ~setq~ vs ~customize-variable~; move stuff to =custom.el= if the latter makes
   sense for much of your configuration
+
+* Customize
+It seems like the less I use ~customize~ outside of the literate configuration
+files, the better because I can always use =(use-package ... :custom ...)= or
+=setq= and annotate everything using Org mode. See [[https://emacs.stackexchange.com/questions/102/advantages-of-setting-variables-with-setq-instead-of-custom-el][Advantages of setting
+variables with setq instead of custom.el? | emacs.stackexchange]] for a good
+(albeit old) discussion of the relative merits of each. +I think this ought to
+be loaded after everything else so customization override anything hard coded
+into these config files.+ Moving this file led to weirdness/ugliness, so I'll
+have to dig through the configuration. Bleh.
+
++There are probably a number of settings you can/should move into this,
+although I'm curious how much of a pressing need there is given that with a
+literate =.emacs= config, I can explain my reasoning for a setting.+
+
+#+begin_src emacs-lisp
+  (setq custom-file (expand-file-name "~/config/emacs/custom.el"))
+  (load custom-file)
+#+end_src
 
 * General interface & minor modes
 ** TODO ~package.el~ \to ~straight.el~
@@ -95,6 +117,7 @@ errors.
 #+end_src
 
 ** TODO General look & feel
+
 *** Solarized Dark theme
 [[https://github.com/bbatsov/solarized-emacs][solarized-emacs]]
 
@@ -137,7 +160,7 @@ errors.
     (scroll-bar-mode -1)
     (set-frame-parameter (selected-frame) 'alpha '(96 96))
     (add-to-list 'default-frame-alist '(alpha 96 96))
-    (defvar gui-config-frame-width 80)
+    (defvar gui-config-frame-width 80) ;; BAD!! refer to column-fill-width?
     (defvar gui-config-frame-height 45)
     (set-frame-size (selected-frame)
                     gui-config-frame-width
@@ -213,7 +236,6 @@ s-expressions in =:config=.]
               (exec-path-from-shell-copy-env "PYTHONPATH")))
 #+end_src
 
-*** TODO Whitespace -- move to custom??
 *** Prettier mode line
 I checked Reddit to get some ideas for which mode line packages are popular
 these days. A lot of people seem to be happy with Doom Emacs/[[https://github.com/seagle0128/doom-modeline][doom-modeline]], and
@@ -267,7 +289,24 @@ so I'm going to try modifying that. Actually, looking at the Customize options,
            (cdr (assoc 'green-d solarized-dark-color-palette-alist)))))
       (mood-line-mode)))
 #+end_src
+
+*** TODO Set columns to wrap at 80 characters -- move to custom?
+Note: the fixed width font size for verbatim/code is slightly wider than
+Inconsolata, so either change the face or make the window slightly wider maybe?
+You ought to set one value as a number and then do the appropriate math with
+that value rather than what you've done with hard-coding 79 and 80 characters
+into this configuration.
+
+"BuT mOnItOrS aRe So WiDe ThEsE dAyS!!1" Yeah, but it's convenient being able
+to have multiple windows side-by-side in a relatively compact space, plus
+Python's PEP 8 is right.
+
+#+begin_src emacs-lisp
+(add-hook 'text-mode-hook 'turn-on-auto-fill)
+(setq-default fill-column 79)
 #+end_src
+
+*** TODO ~whitespace~ -- move to custom??
 Highlight lines over 80 chars long; see
 http://emacsredux.com/blog/2013/05/31/highlight-lines-that-exceed-a-certain-length-limit/
 and
@@ -285,35 +324,43 @@ http://stackoverflow.com/questions/6344474/how-can-i-make-emacs-highlight-lines-
   (my-global-whitespace-mode 1)
 #+end_src
 
-*** TODO Turn off welcome screen -- move to custom??
-#+begin_src emacs-lisp
-  (setq inhibit-startup-message t)
-#+end_src
+*** TODO Tab/space handling -- improve this
+Tip: ~M-x~ [[http://pragmaticemacs.com/emacs/convert-tabs-to-spaces/][untabify]] works on a region, ~C-u M-x untabify~ works on a whole
+buffer. Maybe make a function, =safe-untabify-buffer=, that warns if you attempt
+to =untabify= in a mode that requires tabs?
 
-*** TODO Spaces instead of tabs -- move to custom??
-Except for makefiles, which require tabs. See
-http://stackoverflow.com/questions/24832699/emacs-24-untabify-on-save-for-everything-except-makefiles/24857101#24857101
++Use spaces instead of tabs (generally); provide function to ``untabify''
+buffer, see [[http://stackoverflow.com/questions/24832699/emacs-24-untabify-on-save-for-everything-except-makefiles/24857101#24857101][Emacs 24: untabify on save for everything *except* makefiles |
+stackoverflow]]. Note: don't use on makefiles, which *require* tabs instead of
+spaces.+
 
 #+begin_src emacs-lisp
   (setq-default indent-tabs-mode nil)
   (setq-default tab-width 4)
+  ;; (defvar tabbed-mode-list
+  ;;   '('makefile-mode)
+  ;;   "docstring")
+  ;; (defun untabify-buffer ()
+  ;;   (unless (derived-mode-p 'makefile-mode)
+  ;;     (untabify (point-min) (point-max))))
+#+end_src
+
+I used to run =untabify-except-makefiles= on every save, but that's really not
+necessary, so I'm going to remove that feature.
+
+#+begin_src emacs-lisp :eval no
   (defun untabify-except-makefiles ()
     (unless (derived-mode-p 'makefile-mode)
       (untabify (point-min) (point-max))))
   (add-hook 'before-save-hook 'untabify-except-makefiles)
 #+end_src
 
-*** TODO Set columns to wrap at 80 characters -- move to custom?
-"BuT mOnItOrS aRe So WiDe ThEsE dAyS!!1" Yeah, but it's convenient being able
-to have multiple windows side-by-side in a relatively compact space, plus
-Python's PEP 8 is right.
 
-#+begin_src emacs-lisp
-(add-hook 'text-mode-hook 'turn-on-auto-fill)
-(setq-default fill-column 79)
-#+end_src
+*** TODO ~column-number-mode~ / ~display-line-numbers-mode~
+[[https://www.gnu.org/software/emacs/manual/html_node/efaq/Displaying-the-current-line-or-column.html][column-number-mode]]
 
-*** TODO Turn on ~column-number-mode~ -- move to custom??
+[[https://www.emacswiki.org/emacs/LineNumbers][display-line-number-mode]] enable this??
+
 #+begin_src emacs-lisp
   (setq column-number-mode t)
 #+end_src
@@ -325,7 +372,8 @@ emojis (e.g. ~:)~)
 #+begin_src emacs-lisp
   (use-package emojify
     :straight t
-    :hook (after-init . global-emojify-mode))
+    :hook (after-init . global-emojify-mode)
+    :config (setq emojify-display-style 'image))
 #+end_src
 
 Note that the =gitmoji= =:​memo:= symbol is the same as ~emojify~'s =:​pencil:=, and
@@ -770,6 +818,20 @@ in some screencast, and I need it.
 #+end_src
 
 * TODO Org mode
+** Keybindings
+By default
+
+| key   | binding            | desired behavior    |
+|-------+--------------------+---------------------|
+| ~TAB~   | =org-cycle=          | =completion-at-point= |
+| ~C-c ;~ | =org-toggle-comment= | =iedit-...=           |
+
+| variable              | value |
+|-----------------------+-------|
+| =org-cycle-emulate-tab= | =t=     |
+
+But I want to bind ~TAB~ to =org-cycle= for headlines and =completion-at-point= for
+everything else.
 
 ** ~org-tempo~
 Enable old-style template blocks, e.g. make ~<s TAB~ create code blocks again;
@@ -779,31 +841,27 @@ see https://emacs.stackexchange.com/a/46992.
   (require 'org-tempo)
 #+end_src
 
+** =org-pretty-entities=
+[[https://orgmode.org/manual/Special-Symbols.html][org-pretty-entities]] automatically converts appearance of things like ~\​to~ to →
+and ~\​alpha~ to α. This can be toggled with ~C-c C-x \~
+(=org-toggle-pretty-entities=).
+
+#+begin_src emacs-lisp
+  (setq org-pretty-entities t)
+#+end_src
+
 * Load additional org configuration files
 
 #+begin_src emacs-lisp
   (when core-config-core-langs-switch
-    ;; (org-babel-load-file (expand-file-name "~/config/emacs/core-langs.org"))
-    (message "Core langs config loaded."))
+    (progn
+      ;; (org-babel-load-file
+      ;;  (expand-file-name "~/config/emacs/core-langs.org"))
+      (message "Core langs config loaded.")))
   (when core-config-extras-switch
-    ;; (org-babel-load-file (expand-file-name "~/config/emacs/extras.org"))
-    (message "Extras config loaded."))
-* Customize
-It seems like the less I use ~customize~ outside of the literate configuration
-files, the better because I can always use =(use-package ... :custom ...)= or
-=setq= and annotate everything using Org mode. See [[https://emacs.stackexchange.com/questions/102/advantages-of-setting-variables-with-setq-instead-of-custom-el][Advantages of setting
-variables with setq instead of custom.el? | emacs.stackexchange]] for a good
-(albeit old) discussion of the relative merits of each. I think this ought to
-be loaded after everything else so customization override anything hard coded
-into these config files.
-
-+There are probably a number of settings you can/should move into this,
-although I'm curious how much of a pressing need there is given that with a
-literate =.emacs= config, I can explain my reasoning for a setting.+
-
-#+begin_src emacs-lisp
-  (setq custom-file (expand-file-name "~/config/emacs/custom.el"))
-  (load custom-file)
+    (progn
+      ;; (org-babel-load-file (expand-file-name "~/config/emacs/extras.org"))
+      (message "Extras config loaded.")))
 #+end_src
 
 * Package graveyard
