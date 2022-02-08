@@ -265,6 +265,7 @@ so I'm going to try modifying that. Actually, looking at the Customize options,
 #+begin_src emacs-lisp
   (use-package mood-line
     :straight t
+    :requires solarized-theme
     :config
     (progn
       (when (and (member 'solarized-dark custom-enabled-themes)
@@ -289,6 +290,10 @@ so I'm going to try modifying that. Actually, looking at the Customize options,
            (cdr (assoc 'green-d solarized-dark-color-palette-alist)))))
       (mood-line-mode)))
 #+end_src
+
+Getting warning on startup now: ~Error (use-package): mood-line/:config:
+Symbol’s value as variable is void: solarized-dark-color-palette-alist~ even
+after adding =:requires solarized-theme= :shrug:
 
 *** TODO Set columns to wrap at 80 characters -- move to custom?
 Note: the fixed width font size for verbatim/code is slightly wider than
