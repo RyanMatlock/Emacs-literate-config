@@ -355,7 +355,6 @@ necessary, so I'm going to remove that feature.
   (add-hook 'before-save-hook 'untabify-except-makefiles)
 #+end_src
 
-
 *** TODO ~column-number-mode~ / ~display-line-numbers-mode~
 [[https://www.gnu.org/software/emacs/manual/html_node/efaq/Displaying-the-current-line-or-column.html][column-number-mode]]
 
@@ -693,6 +692,25 @@ minibuffer UI.'' -- https://github.com/minad/corfu
     (setq tab-always-indent 'complete))
 #+end_src
 
+** TODO Project handling: ~projectile~
+[[https://github.com/bbatsov/projectile][projectile]]: per [[https://youtu.be/bFS0V_4YfhY][Lukewh's short projectile introduction | YouTube]], it's useful
+simply for navigating between and within projects, as defined by the presence
+of a ~.git~ folder or something similar.
+
+#+begin_src emacs-lisp
+  (use-package projectile
+    :straight t
+    :config
+    (projectile-mode +1)
+    ;; recommended MacOS keybinding
+    ;; (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
+    (define-key projectile-mode-map (kbd "C-x p") 'projectile-command-map))
+#+end_src
+
+Issue (tangential): tried using recommended ~s-p~ keybinding, and it appears that
+~⌘~ + ~p~ is read as ~M-p~. I think ~⌘~ should be the super key, ~s-~, but maybe I'm
+wrong?
+
 ** TODO LSP (Language Server Protocol)
 
 # #+begin_src emacs-lisp
@@ -849,6 +867,10 @@ and ~\​alpha~ to α. This can be toggled with ~C-c C-x \~
 #+begin_src emacs-lisp
   (setq org-pretty-entities t)
 #+end_src
+
+** TODO Export
+
+*** TODO HTML -- default stylesheet
 
 * Load additional org configuration files
 
