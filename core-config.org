@@ -121,16 +121,19 @@ errors.
 *** Solarized Dark theme
 [[https://github.com/bbatsov/solarized-emacs][solarized-emacs]]
 
+Note: you need to =setq= various properties /before/ you load the theme,
+otherwise you'll get unexpected behaviors.
+
 #+begin_src emacs-lisp
   (use-package solarized-theme
     :straight t
-    :config (progn
-              (load-theme 'solarized-dark t)
-              (setq solarized-distinct-fringe-background t)
-              (setq solarized-high-contrast-mode-line t)
-              (setq solarized-scale-org-headlines nil)
-              (setq solarized-use-more-italic t)
-              (setq solarized-use-variable-pitch nil)))
+    :config
+    (setq solarized-distinct-fringe-background t)
+    (setq solarized-high-contrast-mode-line nil)
+    (setq solarized-scale-org-headlines nil)
+    (setq solarized-use-more-italic t)
+    (setq solarized-use-variable-pitch nil)
+    (load-theme 'solarized-dark t))
 #+end_src
 
 *** GUI
