@@ -48,14 +48,63 @@ and related tools.
 *** ~extras.org~
 
 * TODO Switches for additional configuration
-Since these are boolean, they should probably end in =-p=. Currently have ~C-c ;~
+See [[* Load additional org configuration files][code for handling processing of additional config files]] below.
+
++Since these are boolean, they should probably end in =-p=. Currently have ~C-c ;~
 bound to =org-toggle-comment= but I want to use the appropriate ~iedit~ function,
-so fix that first, then fix this.
+so fix that first, then fix this.+
+
+# #+begin_src emacs-lisp :eval no
+#   (setq core-config-core-langs-switch nil)
+#   (setq core-config-extras-switch t)
+# #+end_src
+
+# Figure out a smarter way of doing the above by using code like the following:
+
+# #+begin_src emacs-lisp :eval no
+#   ;; (defvar additional-config-files-alist
+#   ;;   (("./core-langs.org" . t)
+#   ;;    ("./extras.org" . t))
+#   ;;   "Avoids repeating myself with analyzing switches for each file...")
+
+#   ;; (defvar additional-config-files-nested-alist
+#   ;;   (('core-langs
+#   ;;     . (('name . "Core langs")
+#   ;;        ('path . "./core-langs.org")
+#   ;;        ('enable . t)))
+#   ;;    ('extras
+#   ;;     . (('name . "Extras")
+#   ;;        ('path . "./extras.org")
+#   ;;        ('enable . t)))
+#   ;;    ('experimental
+#   ;;     . (('name . "Experimental")
+#   ;;        ('path . "./experimental-config.org")
+#   ;;        ('enable . nil))))
+#   ;;   "maybe a better way of doing this?")
+# #+end_src
+
+# It looks like I may be better off using a [[http://xahlee.info/emacs/emacs/elisp_hash_table.html][hash table]] or [[http://xahlee.info/emacs/emacs/elisp_property_list.html][property list (plist)]]
+# instead of an [[http://xahlee.info/emacs/emacs/elisp_association_list.html][association list (alist)]] :thinking: ...or not?
+
+This seems to work well, and it's pretty clear what's going on.
 
 #+begin_src emacs-lisp
-  (setq core-config-core-langs-switch nil)
-  (setq core-config-extras-switch t)
+  (setq config-additional-org-config-files
+    '(((name . "Core languages")
+       (path . "./core-langs.org")
+       (enable . t))
+      ((name . "Extras")
+       (path . "./extras.org")
+       (enable . nil))
+      ((name . "Experimental configuration")
+       (path . "./experimental-config.org")
+       (enable . nil))))
 #+end_src
+
++That's almost working as expected, although the relative path to this file
+isn't being picked up as I'd expect. It's looking for something like
+~$HOME/core-langs.org~ instead of ~$HOME/config/emacs/core-langs.org~.+ Fixed: kind
+of a hack, but I hard coded ~~/config/emacs~ into =expand-file-name= below.
 
 * Problems
 * Features to add/look into & changes to make [1/5]
@@ -957,17 +1006,54 @@ StackExchange]]
 *** TODO HTML -- default stylesheet
 
 * Load additional org configuration files
+See [[* Switches for additional configuration][configuration switches]] to see what's loaded.
+
+Old/dumb way of doing it:
+
+# #+begin_src emacs-lisp :eval no
+#   (when core-config-core-langs-switch
+#     (progn
+#       ;; (org-babel-load-file
+#       ;;  (expand-file-name "~/config/emacs/core-langs.org"))
+#       (message "Core langs config loaded.")))
+#   (when core-config-extras-switch
+#     (progn
+#       ;; (org-babel-load-file (expand-file-name "~/config/emacs/extras.org"))
+#       (message "Extras config loaded.")))
+# #+end_src
+
+# #+begin_src emacs-lisp :eval no
+#   ;; there's probably a nicer way of doing it without the let
+#   (dolist (config-file-alist config-additional-org-config-files)
+#     (let ((name (alist-get 'name config-file-alist))
+#           (full-path (expand-file-name (alist-get 'path config-file-alist)))
+#           (enable (alist-get 'enable config-file-alist)))
+#       (when enable
+#         (progn
+#           (org-babel-load-file full-path)
+#           (message (format "%s successfully loaded." name))))))
+# #+end_src
+
+
+New/fancier/better way of doing it:
 
 #+begin_src emacs-lisp
-  (when core-config-core-langs-switch
-    (progn
-      ;; (org-babel-load-file
-      ;;  (expand-file-name "~/config/emacs/core-langs.org"))
-      (message "Core langs config loaded.")))
-  (when core-config-extras-switch
-    (progn
-      ;; (org-babel-load-file (expand-file-name "~/config/emacs/extras.org"))
-      (message "Extras config loaded.")))
+  ;; there's probably a nicer way of doing it without the let
+  (dolist (config-file-alist config-additional-org-config-files)
+    (let ((name (alist-get 'name config-file-alist))
+          (full-path (expand-file-name (alist-get 'path config-file-alist)
+                                       "~/config/emacs"))
+          (enable (alist-get 'enable config-file-alist)))
+      (when enable
+        (if (file-readable-p full-path)
+            (progn
+              (org-babel-load-file full-path)
+              (message (format "%s loaded." name)))
+          (display-warning
+           :warning
+           (format "%s NOT loaded (%s missing or unreadable)."
+                   name
+                   full-path))))))
 #+end_src
 
 * Package graveyard
@@ -980,3 +1066,10 @@ StackExchange]]
 - [[https://elpy.readthedocs.io/en/latest/][elpy]] (Emacs Python Develpment Environment) (\to ~core-langs.org~ ?)
 - [[https://github.com/ikazuhiro/emoji-display][emoji-display]] (use ~emojify~ instead)
 - [[https://github.com/defunkt/gist.el][gist]]
+
+* Sanity check
+Check that bottom of this file was reached and evaluated successfully.
+
+#+begin_src emacs-lisp
+  (message "Bottom of core-config.org reached and evaluated.")
+#+end_src
