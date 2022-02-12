@@ -877,11 +877,35 @@ But I want to bind ~TAB~ to =org-cycle= for headlines and =completion-at-point= 
 everything else.
 
 ** ~org-tempo~
-Enable old-style template blocks, e.g. make ~<s TAB~ create code blocks again;
-see https://emacs.stackexchange.com/a/46992.
+Enable old-style template blocks, e.g. make ~<s TAB~ create ~src~ blocks again; see
+[[https://emacs.stackexchange.com/a/46992][Why do easy templates, .e.g, "< s TAB" in org 9.2 not work? | Emacs
+StackExchange]]. Additional [[https://config.daviwil.com/emacs#block-templates][block templates]] courtesy of [[https://config.daviwil.com/emacs][daviwil's Emacs
+config]]. See [[https://orgmode.org/worg/org-contrib/babel/languages/index.html][Babel: Languages]] for list of supported languages and their ~src~
+block identifiers.
 
 #+begin_src emacs-lisp
   (require 'org-tempo)
+
+  ;; daviwil's strategy:
+  ;; (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+  ;; ...
+  ;; (add-to-list 'org-structure-template-alist '("py" . "src python"))
+
+  ;; more elegant way of doing it(?)
+  ;; note: cdr needs to have 'src␣' prepended in order to work.
+  (setq org-structure-template-alist-extensions
+    '(("el" . "emacs-lisp")
+      ("hs" . "haskell")
+      ("ltx" . "latex")
+      ("org" . "org")
+      ("py" . "python")
+      ("rst" . "rust")  ;; not currently supported?
+      ("sql" . "sql")))
+
+  (dolist (cell org-structure-template-alist-extensions)
+    (add-to-list 'org-structure-template-alist
+                 (cons (car cell)
+                       (format "src %s" (cdr cell)))))
 #+end_src
 
 ** =org-pretty-entities=
