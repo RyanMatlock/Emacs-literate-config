@@ -979,7 +979,11 @@ StackExchange]]
       (string= "src" (org-in-block-p '("src"))))
 
     (defun beginning-src ()
-      "Find the beginning of the src block"
+      "Find the beginning of the src block
+
+  Note: pathological case: if a block within src block contains \"#+BEGIN_SRC\"
+  and cursor is before that line, \":eval no\" won't toggle in correct
+  location"
       (let ((case-fold-search t)) (search-backward "#+BEGIN_SRC")))
 
     (defun toggle-eval-no ()
