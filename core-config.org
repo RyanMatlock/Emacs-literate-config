@@ -925,6 +925,38 @@ By default
 But I want to bind ~TAB~ to =org-cycle= for headlines and =completion-at-point= for
 everything else.
 
+I'm constantly accidentally typing ~C-c ;~ when I mean to type ~C-c '~, so I want
+=org-toggle-comment= to feel more intentional. I never use
+=org-table-create-or-convert-from-region=, and even if I needed to use it from
+time to time, I can always call it with ~M-x ...~ rather than keep it bound to a
+key.
+
+#+begin_src emacs-lisp
+  (defun org-iedit-in-src-block ()
+    "Use this in Org mode to ensure iedit-mode only works in src block
+
+  Note: manually calling 「M-x iedit-mode⸥ will still work anywhere"
+    (interactive)
+    (when (org-in-src-block-p t)
+      (iedit-mode)))
+#+end_src
+
+=org-iedit-in-src-block= works as expected.
+
+#+begin_src emacs-lisp
+  (defun org-mode-key-map-rebindings ()
+    "My preferred Org mode key (un/re)bindings."
+    ;; doesn't work
+    ;; (define-key org-mode-map (kbd "C-c ;") nil)
+    ;; (define-key org-mode-map (kbd "C-c |") org-toggle-comment)
+    (local-set-key (kbd "C-c ;") org-iedit-in-src-block)
+    (local-set-key (kbd "C-c |") org-toggle-comment))
+
+  (add-hook 'org-mode-hook 'org-mode-key-map-rebindings)
+#+end_src
+
+These keybindings don't work as expected.
+
 ** ~org-tempo~
 Enable old-style template blocks, e.g. make ~<s TAB~ create ~src~ blocks again; see
 [[https://emacs.stackexchange.com/a/46992][Why do easy templates, .e.g, "< s TAB" in org 9.2 not work? | Emacs
