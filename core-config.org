@@ -840,6 +840,16 @@ bandaid.
   (setq byte-compile-warnings '(cl-functions))
 #+end_src
 
+*** ~beacon~
+[[https://github.com/Malabarba/beacon][beacon]] highlights the cursor when scrolling. Seems helpful!
+
+#+begin_src emacs-lisp
+  (use-package beacon
+    :straight t
+    :config
+    (beacon-mode 1))
+#+end_src
+
 ** TODO Silly stuff
 *** Shrug emoticon
 #+begin_src emacs-lisp
