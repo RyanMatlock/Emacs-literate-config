@@ -850,6 +850,17 @@ bandaid.
     (beacon-mode 1))
 #+end_src
 
+*** ~neotree~
+[[https://github.com/jaypei/emacs-neotree][neotree]] works like NerdTree for Vim (basically a directory tree that opens up
+beside your buffer).
+
+#+begin_src emacs-lisp
+  (use-package neotree
+    :straight t
+    :config
+    (global-set-key [f8] 'neotree-toggle))
+#+end_src
+
 ** TODO Silly stuff
 *** Shrug emoticon
 #+begin_src emacs-lisp
