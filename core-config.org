@@ -996,14 +996,14 @@ block identifiers.
   ;; more elegant way of doing it(?)
   ;; note: cdr needs to have 'src␣' prepended in order to work.
   (setq org-structure-template-alist-extensions
-    '(("el" . "emacs-lisp")
-      ("hs" . "haskell")
+    '(("el"  . "emacs-lisp")
+      ("hs"  . "haskell")
       ("ltx" . "latex")
       ("org" . "org")
-      ("py" . "python")
+      ("py"  . "python")
       ;; ("rst" . "rust")  ;; not currently supported
       ("sql" . "sql")
-      ("sh" . "shell")
+      ("sh"  . "shell")
       ("esh" . "eshell")))
 
   (dolist (cell org-structure-template-alist-extensions)
