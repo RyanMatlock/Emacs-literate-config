@@ -41,6 +41,18 @@ use-package]] for config source.
     (which-key-mode))
 #+end_src
 
+** Python: ~pylsp~
+Ran
+#+begin_src shell :eval no
+  pip install 'python-lsp-server[all]'
+#+end_src
+
+Looking at [[https://www.mattduck.com/lsp-python-getting-started.html][Getting started with lsp-mode for Python]] (from [2020-04-26 Sun])
+plus the current config file, it looks a little hairy. I'm getting some degree
+of linting and code completion in Python right now, but I need to come back to
+this later. [[https://emacs-lsp.github.io/lsp-mode/page/lsp-pylsp/][lsp-pylsp]] seems to have a daunting number of options.
+
+
 * Haskell
 ** ~hindent~
 [[https://github.com/mihaimaruseac/hindent][hindent]] is a Haskell pretty printer.
