@@ -6,6 +6,41 @@ This contains configuration for my essential languages: Haskell, Python, Rust an
 TeX/LaTeX. In order to enable these configurations, =core-config-core-langs-switch=
 must be set to =t= in ~core-config.org~.
 
+* Language Server Protocol: ~lsp-mode~
+See [[https://github.com/emacs-lsp/lsp-mode][lsp-mode]] for project details, and see [[https://emacs-lsp.github.io/lsp-mode/page/installation/#use-package][LSP Mode installation instructions §
+use-package]] for config source.
+
+#+begin_src emacs-lisp
+  (use-package lsp-mode
+    :straight t
+    :init
+    ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
+    (setq lsp-keymap-prefix "C-c l")
+    :hook ((haskell-mode . lsp)
+           (python-mode . lsp)
+           ;; if you want which-key integration
+           (lsp-mode . lsp-enable-which-key-integration))
+    :commands lsp)
+
+  ;; optionally
+  (use-package lsp-ui
+    :straight t
+    :commands lsp-ui-mode)
+  (use-package lsp-treemacs
+    :straight t
+    :commands lsp-treemacs-errors-list)
+
+  ;; ;; optionally if you want to use debugger
+  ;; (use-package dap-mode)
+  ;; ;; (use-package dap-LANGUAGE) to load the dap adapter for your language
+
+  ;; optional if you want which-key integration
+  (use-package which-key
+    :straight t
+    :config
+    (which-key-mode))
+#+end_src
+
 * Haskell
 ** ~hindent~
 [[https://github.com/mihaimaruseac/hindent][hindent]] is a Haskell pretty printer.
