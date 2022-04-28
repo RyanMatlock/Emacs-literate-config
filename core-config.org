@@ -1001,8 +1001,10 @@ block identifiers.
       ("ltx" . "latex")
       ("org" . "org")
       ("py" . "python")
-      ("rst" . "rust")  ;; not currently supported?
-      ("sql" . "sql")))
+      ;; ("rst" . "rust")  ;; not currently supported
+      ("sql" . "sql")
+      ("sh" . "shell")
+      ("esh" . "eshell")))
 
   (dolist (cell org-structure-template-alist-extensions)
     (add-to-list 'org-structure-template-alist
