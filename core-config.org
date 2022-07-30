@@ -1064,6 +1064,15 @@ StackExchange]]
 
 *** TODO HTML -- default stylesheet
 
+*** TODO LaTeX
+**** Dates
+I think I just want these rendered like the surrounding text.
+
+#+begin_src emacs-lisp
+  (setq org-latex-active-timestamp-format "\\text{%s}")
+  (setq org-latex-inactive-timestamp-format "\\text{%s}")
+#+end_src
+
 * Load additional org configuration files
 See [[* Switches for additional configuration][configuration switches]] to see what's loaded.
 
