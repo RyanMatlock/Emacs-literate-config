@@ -380,22 +380,27 @@ Python's PEP 8 is right.
 (setq-default fill-column 79)
 #+end_src
 
-*** TODO ~whitespace~ -- move to custom??
-Highlight lines over 80 chars long; see
-http://emacsredux.com/blog/2013/05/31/highlight-lines-that-exceed-a-certain-length-limit/
-and
-http://stackoverflow.com/questions/6344474/how-can-i-make-emacs-highlight-lines-that-go-over-80-chars 
+*** ~whitespace~
+[[https://www.emacswiki.org/emacs/WhiteSpace][whitespace]] package: highlight lines >80 characters wide, [[https://www.emacswiki.org/emacs/WhiteSpace#h5o-9][highlight ~TAB~
+characters]] (~untabify~ on saving should take care of this, but IIRC makefiles
+require tabs, and maybe I'll run into some situations where I want to be able
+to see them).
 
 #+begin_src emacs-lisp
-  (require 'whitespace)
-  (setq whitespace-line-column 80)
-  (setq whitespace-style '(face lines-tail))
-
-  (define-global-minor-mode my-global-whitespace-mode whitespace-mode
-    (lambda ()
-      (when (derived-mode-p 'prog-mode)
-        (whitespace-mode))))
-  (my-global-whitespace-mode 1)
+  (use-package whitespace
+    :straight t
+    :hook (prog-mode . whitespace-mode)
+    :config
+    (progn (setq whitespace-display-characters
+                 '((tab-mark ?\t [?\xBB ?\t] [?\\ ?\t]) ;; tab: »
+                   ))
+           (setq whitespace-line-column (+ fill-column 1) ;; 80 characters
+                 )
+           (setq whitespace-style '(face
+                                    trailing
+                                    lines-tail
+                                    tabs
+                                    tab-mark))))
 #+end_src
 
 *** TODO Tab/space handling -- improve this
