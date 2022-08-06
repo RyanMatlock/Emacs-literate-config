@@ -185,13 +185,44 @@ otherwise you'll get unexpected behaviors.
     (load-theme 'solarized-dark t))
 #+end_src
 
+*** Set columns to wrap at 80 characters
+Note: the fixed width font size for verbatim/code is slightly wider than
+Inconsolata, so either change the face or make the window slightly wider maybe?
+You ought to set one value as a number and then do the appropriate math with
+that value rather than what you've done with hard-coding 79 and 80 characters
+into this configuration.
+
+see [[https://www.gnu.org/software/emacs/manual/html_node/efaq/Turning-on-auto_002dfill-by-default.html][Turn on ~auto-fill-mode~ by default]]
+
+#+begin_src emacs-lisp
+  ;; (add-hook 'text-mode-hook 'turn-on-auto-fill)
+  (setq-default fill-column 79)
+  (setq-default auto-fill-function 'do-auto-fill)
+#+end_src
+
+*** TODO ~fill-column-indicator~
+[[https://www.emacswiki.org/emacs/FillColumnIndicator][fill-column-indicator]]
+
+# #+begin_src emacs-lisp
+#   (use-package fill-column-indicator
+#     :straight t
+#     :hook (prog-mode . fill-column-indicator-mode)
+#     :config (setq fci-rule-width 1))
+# #+end_src
+
+# Not working:
+# #+begin_verbatim
+# command-execute: Autoloading file path/to/.emacs.d/straight/build/fill-column-indicator/fill-column-indicator.elc failed to define function fill-column-indicator-mode
+# #+end_verbatim
+
 *** GUI
 - no menu bar; see see http://emacswiki.org/emacs/MenuBar#toc1
 - no tool bar
 - no scroll bar
 - 96% opacity (matches OS X Terminal); see see
   http://stackoverflow.com/questions/21946382/how-to-get-transparent-window-in-gnu-emacs-on-osx-mavericks
-- default frame size: 80w x 45h
+- default frame size: 80w (+ padding b/c verbatim/code font for Org mode is
+  slightly wider than Inconsolata) x 45h
 - define ~std-frame~ to return to default 80w x 45h
 - define ~lrg-frame~, which accommodates two side-by-side windows
 - define ~xl-frame~, which accommodates three side-by-side-by-side windows
@@ -212,19 +243,22 @@ otherwise you'll get unexpected behaviors.
     (scroll-bar-mode -1)
     (set-frame-parameter (selected-frame) 'alpha '(96 96))
     (add-to-list 'default-frame-alist '(alpha 96 96))
-    (defvar gui-config-frame-width 80) ;; BAD!! refer to column-fill-width?
+    (defvar gui-config-frame-width-padding 4)
+    (defvar gui-config-frame-width (+ fill-column
+                                      gui-config-frame-width-padding
+                                      1))
     (defvar gui-config-frame-height 45)
     (set-frame-size (selected-frame)
                     gui-config-frame-width
                     gui-config-frame-height)
     (defun side-by-side ()
-    "resizes the frame to accommodate two windows side-by-side"
-    (interactive)
-    (set-frame-size (selected-frame)
-                    ;; used to be + 3, but I think there are some side columns
-                    ;; that take away screen real estate now?
-                    (+ (* gui-config-frame-width 2) 7)
-                    gui-config-frame-height))
+      "resizes the frame to accommodate two windows side-by-side"
+      (interactive)
+      (set-frame-size (selected-frame)
+                      ;; used to be + 3, but I think there are some side columns
+                      ;; that take away screen real estate now?
+                      (+ (* gui-config-frame-width 2) 7)
+                      gui-config-frame-height))
     (defun std-frame ()
       "reverts framesize to standard"
       (interactive)
