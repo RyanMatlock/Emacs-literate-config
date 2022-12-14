@@ -4,3 +4,5 @@ extras.el
 
 # want to verify that Org file looks good
 *.html
+*.tex
+*.pdf
