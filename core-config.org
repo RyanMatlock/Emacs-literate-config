@@ -43,7 +43,7 @@ Includes configuration for
 - Python
 - Rust
 - TeX/LaTeX
-and related tools.
+and related tools (LSP mode?).
 
 *** ~extras.org~
 
@@ -117,8 +117,8 @@ of a hack, but I hard coded ~~/config/emacs~ into =expand-file-name= below.
   to write it myself because it seems straightforward but also good Emacs Lisp
   practice).
 - [ ] [[https://github.com/abo-abo/hydra][hydra]] for fancy keybindings
-- [ ] ~setq~ vs ~customize-variable~; move stuff to =custom.el= if the latter makes
-  sense for much of your configuration
+- [ ] +~setq~ vs ~customize-variable~; move stuff to =custom.el= if the latter
+  makes sense for much of your configuration+
 
 * Customize
 It seems like the less I use ~customize~ outside of the literate configuration
@@ -395,23 +395,8 @@ after adding =:requires solarized-theme= :shrug:
     ;; :requires (all-the-icons marginalia)
     :requires all-the-icons
     ;; :hook ((marginalia-mode . all-the-icons-completition-marginalia-setup))
-    :config (all-the-icons-completion-mode))
-#+end_src
-
-*** TODO Set columns to wrap at 80 characters -- move to custom?
-Note: the fixed width font size for verbatim/code is slightly wider than
-Inconsolata, so either change the face or make the window slightly wider maybe?
-You ought to set one value as a number and then do the appropriate math with
-that value rather than what you've done with hard-coding 79 and 80 characters
-into this configuration.
-
-"BuT mOnItOrS aRe So WiDe ThEsE dAyS!!1" Yeah, but it's convenient being able
-to have multiple windows side-by-side in a relatively compact space, plus
-Python's PEP 8 is right.
-
-#+begin_src emacs-lisp
-(add-hook 'text-mode-hook 'turn-on-auto-fill)
-(setq-default fill-column 79)
+    :config
+    (all-the-icons-completion-mode))
 #+end_src
 
 *** ~whitespace~
@@ -1104,13 +1089,17 @@ StackExchange]]
 *** TODO HTML -- default stylesheet
 
 *** TODO LaTeX
-**** Dates
+**** TODO Dates
 I think I just want these rendered like the surrounding text.
 
 #+begin_src emacs-lisp
   (setq org-latex-active-timestamp-format "\\text{%s}")
   (setq org-latex-inactive-timestamp-format "\\text{%s}")
 #+end_src
+
+Also want to change the behavior of exporting dates as =[<ISO 8601> <%a>]= to
+=%B %-d, %Y=. Looks like I may need to change =org-timestamp-custom-formats=, but
+the documentation is a little spotty.
 
 * Load additional org configuration files
 See [[* Switches for additional configuration][configuration switches]] to see what's loaded.
