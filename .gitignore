@@ -1,8 +1,9 @@
-core-config.el
-core-langs.el
-extras.el
+# most .el files are derived from Org files with two exceptions, so keep those
+!dotemacs.el
+!legacy-dotemacs.el
+*.el
 
-# want to verify that Org file looks good
+# derived from Org files
 *.html
 *.tex
 *.pdf
