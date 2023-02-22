@@ -153,6 +153,11 @@ https://cestlaz.github.io/posts/using-emacs-10-org-init/. However, if using
 this config file on a new machine, the lack of installed packages will lead to
 errors.
 
+** TODO Save last n ~*Messages*~ buffers
+It's helpful to automatically have a log of sorts, kind of like
+~.bash_history~. Having this first ensures that it's done when setting up this
+configuration on a new machine.
+
 ** Startup behavior
 *** ~*scratch*~ behavior
 #+begin_src emacs-lisp
