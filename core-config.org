@@ -659,15 +659,8 @@ Python, so it ought to be moved to ~core-langs.org~.
 # #+end_src
 
 ** TODO Flycheck
-** TODO Flyspell -- move to custom?
-See
-http://unix.stackexchange.com/questions/38916/how-do-i-configure-emacs-to-use-ispell-on-mac-os-x
-
-# #+begin_src emacs-lisp
-# (setq ispell-program-name "/usr/local/bin/ispell")
-# #+end_src
-
-Actually, no?
+** TODO ~ispell~ with ~aspell~
+Still need to sync ~aspell~ dictionaries across computers!
 
 See
 http://blog.binchen.org/posts/what-s-the-best-spell-check-set-up-in-emacs.html
