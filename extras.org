@@ -72,3 +72,22 @@ and maybe some LaTeX stuff. It's probably still pretty useful.
 Not really sure about ~M-TAB~ for =yas-expand=, but it was in my old config :shrug:
 
 Still need to set snippet directory; see [[https://github.com/joaotavora/yasnippet#where-are-the-snippets][yasnippet | Where are the snippets?]]
+
+* Miscellaneous
+
+** Exercism
+[[https://exercism.org/tracks][Exercism]] seems like a neat way to learn concepts from dozens of programming
+languages.
+
+*** Emacs Lisp
+
+**** Run test suite
+
+#+begin_src emacs-lisp
+  (defun exercism-eval-and-run-all-tests-in-buffer ()
+    "Deletes all loaded tests from the runtime, evaluates the current buffer and runs all loaded tests with ert."
+    (interactive)
+    (ert-delete-all-tests)
+    (eval-buffer)
+    (ert 't))
+#+end_src
