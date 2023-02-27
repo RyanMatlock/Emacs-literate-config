@@ -409,6 +409,45 @@ s-expressions in =:config=.]
               (exec-path-from-shell-copy-env "PYTHONPATH")))
 #+end_src
 
+**** TODO read ~.bashrc~ & use bash as default ANSI term
+Bear in mind that on your MacBook Pro, ~bash~ (the Homebrew version you use) is
+located at ~/usr/local/bin/bash~, but your M1 Mac Mini, it's located at
+~/opt/homebrew/bin/bash~, so maybe that's an issue? Probably helpful to know
+which sort of device you're on.
+
+https://osxdaily.com/2011/07/15/get-cpu-info-via-command-line-in-mac-os-x/
+
+#+begin_src bash :eval no
+  $ sysctl -n machdep.cpu.brand_string
+  Intel(R) Core(TM) i7-9750H CPU @ 2.60GHz
+#+end_src
+
+[[https://emacs.stackexchange.com/questions/14858/how-to-check-in-elisp-if-a-string-is-a-substring-of-another-string][How to check in elisp if a string is a substring of another string? |
+emacs.stackexchange]]
+
+#+begin_src emacs-lisp :eval no
+  (string-match-p (regexp-quote "Intel")
+                  "Intel(R) Core(TM) i7-9750H CPU @ 2.60GHz")
+#+end_src
+
+Alternately, you may simply want to check for the existence of one or the other
+binaries, and then settle on ~/bin/bash~ if neither exists ¯\_(ツ)_/¯
+
+[[https://stackoverflow.com/a/37523213][How to define a default shell for emacs | stackoverflow]]
+
+#+begin_src emacs-lisp
+  (when (memq window-system '(mac ns x))
+    (let ((apple-silicon-bash-path "/opt/homebrew/bin/bash")
+          (intel-mac-bash-path "/usr/local/bin/bash")
+          (fallback-bash-path "/bin/bash"))
+      (cond ((file-exists-p apple-silicon-bash-path)
+             (setq-default shell-file-name apple-silicon-bash-path))
+            ((file-exists-p intel-mac-bash-path)
+             (setq-default shell-file-name intel-mac-bash-path))
+            (t (setq-default shell-file-name fallback-bash-path)))))
+#+end_src
+
+
 *** TODO COMMENT ~all-the-icons.el~ + ~all-the-icons-completion~
 [[https://github.com/domtronn/all-the-icons.el][all-the-icons.el]]
 
