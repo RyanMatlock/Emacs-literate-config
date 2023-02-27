@@ -444,7 +444,10 @@ binaries, and then settle on ~/bin/bash~ if neither exists ¯\_(ツ)_/¯
              (setq-default shell-file-name apple-silicon-bash-path))
             ((file-exists-p intel-mac-bash-path)
              (setq-default shell-file-name intel-mac-bash-path))
-            (t (setq-default shell-file-name fallback-bash-path)))))
+            (t (progn (setq-default shell-file-name fallback-bash-path)
+                      (message
+                       (format "Homebrew bash not found. Using %s instead"
+                               fallback-bash-path)))))))
 #+end_src
 
 
