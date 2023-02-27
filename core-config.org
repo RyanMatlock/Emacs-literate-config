@@ -848,6 +848,17 @@ seems to do the trick. Now I just need to remember what the commands do.
 See [[https://www.mattduck.com/lsp-python-getting-started.html][Getting started with ~lsp-mode~ for Python | matt duck]] (posted
 [2020-04-26 Sun])
 
+https://github.com/emacs-lsp/lsp-haskell
+
+https://haskell-language-server.readthedocs.io/en/latest/installation.html
+
+https://abailly.github.io/posts/a-modern-haskell-env.html
+
+#+begin_src bash :eval no
+  $ which haskell-language-server-wrapper
+  $HOME/.ghcup/bin/haskell-language-server-wrapper
+#+end_src
+
 #+begin_src emacs-lisp
   (use-package haskell-mode
     :straight t)
@@ -855,16 +866,35 @@ See [[https://www.mattduck.com/lsp-python-getting-started.html][Getting started 
   (use-package lsp-mode
     :straight t
       :config
-      (lsp-register-custom-settings
-       '(("pyls.plugins.pyls_mypy.enabled" t t)
-         ("pyls.plugins.pyls_mypy.live_mode" nil t)
-         ("pyls.plugins.pyls_black.enabled" t t)
-         ("pyls.plugins.pyls_isort.enabled" t t)
-         ("pyls.plugins.flake8.enabled" t t)))
+      (progn (lsp-register-custom-settings
+              '(("pyls.plugins.pyls_mypy.enabled" t t)
+                ("pyls.plugins.pyls_mypy.live_mode" nil t)
+                ("pyls.plugins.pyls_black.enabled" t t)
+                ("pyls.plugins.pyls_isort.enabled" t t)
+                ("pyls.plugins.flake8.enabled" t t))))
       :hook
       ((python-mode . lsp)
        (haskell-mode . lsp)
-       (haskell-literate-mode . lsp)))
+       (haskell-literate-mode . lsp))
+      :commands lsp)
+
+  (use-package lsp-haskell
+    :ensure t
+    :config
+    (setq lsp-haskell-server-path "haskell-language-server-wrapper")
+    (setq lsp-haskell-server-args ())
+    ;; Comment/uncomment this line to see interactions between lsp client/server.
+    ;; (setq lsp-log-io t)
+    )
+
+  (add-hook 'lsp-after-initialize-hook
+            '(lambda ()
+               (lsp--set-configuration
+                '(:haskell
+                  (:plugin
+                   (:tactics
+                    (:config
+                     (:timeout_duration 5))))))))
 
   (use-package lsp-ui
     :commands lsp-ui-mode)
