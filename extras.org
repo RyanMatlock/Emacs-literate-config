@@ -81,11 +81,12 @@ languages.
 
 *** Emacs Lisp
 
-**** TODO Run test suite
-Didn't test this before commit; not working for some reason, and the test suite
-isn't working as expected using ~M-x eval-buffer~ in the test buffer either.
+**** Run test suite
++Didn't test this before commit; not working for some reason, and the test suite
+isn't working as expected using ~M-x eval-buffer~ in the test buffer either.+
 
-It looks like you need to read up on [[https://www.gnu.org/software/emacs/manual/html_mono/ert.html][ERT: Emacs Lisp Regression Testing]].
++It looks like you need to+ Ok, for some reason it's working fine now, but you
+should read up on [[https://www.gnu.org/software/emacs/manual/html_mono/ert.html][ERT: Emacs Lisp Regression Testing]] anyway.
 
 #+begin_src emacs-lisp
   (defun exercism-eval-and-run-all-tests-in-buffer ()
