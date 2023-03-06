@@ -63,6 +63,28 @@ this later. [[https://emacs-lsp.github.io/lsp-mode/page/lsp-pylsp/][lsp-pylsp]] 
     :hook (haskell-mode . hindent-mode))
 #+end_src
 
+** ~dante~: an "Emacs mode for Interactive Haskell" + ~attrap~
+[[https://github.com/jyp/dante][dante]] provides a frontend to GHCi features.
+
+[[http://h2.jaguarpaw.co.uk/posts/how-i-use-dante/][How [someone] uses[s] dante]]
+
+[[https://github.com/jyp/attrap][attrap]]: ATtempt To Repair At Point
+
+#+begin_src emacs-lisp
+  (use-package attrap
+    :straight t)
+
+  (use-package dante
+    :straight t
+    :after haskell-mode
+    :commands 'dante-mode
+    :init
+    (add-hook 'haskell-mode-hook 'flycheck-mode)
+    (add-hook 'haskell-mode-hook 'dante-mode)
+    :config
+    (flycheck-add-next-checker 'haskell-dante '(info . haskell-hlint)))
+#+end_src
+
 * Python
 
 * Rust
