@@ -438,7 +438,7 @@ binaries, and then settle on ~/bin/bash~ if neither exists ¯\_(ツ)_/¯
 #+begin_src emacs-lisp
   (defvar shell-paths-alist
     '((homebrew-apple-silicon-bash . "/opt/homebrew/bin/bash")
-      (homebrew-intel-mac-bash . "/usr/local/bin")
+      (homebrew-intel-mac-bash . "/usr/local/bin/bash")
       (builtin-bash . "/bin/bash"))
     "Alist of form  ((descriptive-name . /path/to/shell) ...) where
   /path/to/shell is a preferred shell for shell-file-name.")
