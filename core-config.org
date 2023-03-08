@@ -436,20 +436,33 @@ binaries, and then settle on ~/bin/bash~ if neither exists ¯\_(ツ)_/¯
 [[https://stackoverflow.com/a/37523213][How to define a default shell for emacs | stackoverflow]]
 
 #+begin_src emacs-lisp
+  (defvar shell-paths-alist
+    '((homebrew-apple-silicon-bash . "/opt/homebrew/bin/bash")
+      (homebrew-intel-mac-bash . "/usr/local/bin")
+      (builtin-bash . "/bin/bash"))
+    "Alist of form  ((descriptive-name . /path/to/shell) ...) where
+  /path/to/shell is a preferred shell for shell-file-name.")
+
+  (defun set-default-shell-file-name (sh-paths-alist &optional warn-p)
+    "Set shell-file-name to first existing file in paths-alist. If warn-p is t and
+  no path in sh-paths-alist is valid, then a warning will be raised."
+    (let ((sh-path-alist (car sh-paths-alist)))
+      (cond ((and sh-path-alist (file-exists-p (cdr sh-path-alist)))
+             (progn
+               (setq-default shell-file-name (cdr sh-path-alist))
+               (message (format "Using %s for shell-file-name at %s."
+                                (car sh-path-alist)
+                                (cdr sh-path-alist)))))
+            (sh-path-alist
+             (set-default-shell-file-name (cdr sh-paths-alist) warn-p))
+            (warn-p
+             (warn (format "No valid shell path in %s" sh-paths-alist))))))
   (when (memq window-system '(mac ns x))
-    (let ((apple-silicon-bash-path "/opt/homebrew/bin/bash")
-          (intel-mac-bash-path "/usr/local/bin/bash")
-          (fallback-bash-path "/bin/bash"))
-      (cond ((file-exists-p apple-silicon-bash-path)
-             (setq-default shell-file-name apple-silicon-bash-path))
-            ((file-exists-p intel-mac-bash-path)
-             (setq-default shell-file-name intel-mac-bash-path))
-            (t (progn (setq-default shell-file-name fallback-bash-path)
-                      (message
-                       (format "Homebrew bash not found. Using %s instead"
-                               fallback-bash-path)))))))
+    (set-default-shell-file-name shell-paths-alist t))
 #+end_src
 
+When I finally decide to join the modern era and use zsh or fish, it will be
+easy to =cons= onto =shell-paths-alist=.
 
 *** TODO COMMENT ~all-the-icons.el~ + ~all-the-icons-completion~
 [[https://github.com/domtronn/all-the-icons.el][all-the-icons.el]]
