@@ -93,3 +93,98 @@ this later. [[https://emacs-lsp.github.io/lsp-mode/page/lsp-pylsp/][lsp-pylsp]] 
 * Rust
 
 * TeX/LaTeX
+Basically all of this is pulled from ~legacy-dotemacs.el~ because I liked the way
+my old configuration worked with LaTeX. That said, I think a lot of this stuff
+goes back to around 2015 when I was relatively new to Emacs, so some of these
+options may be deprecated or implemented in a weird way.
+
+** Indentation
+
+#+begin_src emacs-lisp
+  (setq LaTeX-item-indent 2)  ;; was 0 before, but I prefer 2
+  (setq LaTeX-indent-level 2)
+#+end_src
+
+** Word count
+The MacTeX (and presumably most LaTeX distributions) comes with a CLI utility
+called ~texcount~; see [[http://superuser.com/questions/125027/word-count-for-latex-within-emacs][Word count for LaTeX within emacs | stackexchange]].
+
+#+begin_src emacs-lisp
+  (defun latex-word-count ()
+    (interactive)
+    (shell-command (concat "texcount "
+                           ;; options
+                           "-brief "
+                           ;; use shell-quote-argument to handle buffer names
+                           ;; with spaces or other weirdness
+                           (shell-quote-argument buffer-file-name))))
+
+  (add-hook 'LaTeX-mode-hook 'latex-word-count)
+  (eval-after-load 'latex
+    '(define-key LaTeX-mode-map (kbd "C-c w") 'latex-word-count))
+#+end_src
+
+** Misc hooks and settings
+Didn't find any comments associated with these settings in ~legacy-dotemacs.el~,
+but I liked how everything worked before.
+
+#+begin_src emacs-lisp
+  (setq TeX-auto-save t)
+  (setq TeX-parse-self t)
+  (setq-default TeX-master nil)
+  (add-hook 'LaTeX-mode-hook 'visual-line-mode)
+  (add-hook 'LaTeX-mode-hook 'flyspell-mode)
+  (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
+  (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
+  (setq reftex-plug-into-AUCTeX t)
+  (setq TeX-PDF-mode t)
+#+end_src
+
+** ~C-c C-c~ compilation with ~latexmk~
+Note: SyncTeX is setup via ~/.latexmkrc (see below)
+
+#+begin_src emacs-lisp
+  (add-hook 'LaTeX-mode-hook
+            (lambda ()
+              (push
+               '("latexmk" "latexmk -pdf %s" TeX-run-TeX nil t
+                 :help "Run latexmk on file")
+               TeX-command-list)))
+  (add-hook 'LaTeX-mode-hook
+            (lambda ()
+              (push
+               '("xelatexmk" "latexmk -xelatex -pdf %s" TeX-run-TeX nil t
+                 :help "Run latexmk -xelatex on file")
+               TeX-command-list)))
+  (add-hook 'TeX-mode-hook '(lambda () (setq TeX-command-default "latexmk")))
+#+end_src
+
+** Set Skim as default PDF viewer on MacOS
+Skim's displayline is used for forward search (from .tex to .pdf); option -b
+highlights the current line; option -g opens Skim in the background (just
+checked and displayliine is still there).
+
+#+begin_src emacs-lisp
+  (when (memq window-system '(mac ns x))
+    (setq TeX-view-program-selection '((output-pdf "PDF Viewer")))
+    (setq
+     TeX-view-program-list
+     '(("PDF Viewer"
+        (concat "/Applications/Skim.app/Contents/SharedSupport/displayline"
+                " -b -g %n %o %b")))))
+#+end_src
+
+** Default view?
+Comments in ~legacy-dotemacs.el~ pointed me to [[http://alexkrispin.wordpress.com/2010/10/25/writing-with-emacs-and-auctex-part-1/][Writing with Emacs and AucTeX part
+1]], an article from 2010, so this might be way out of date. On the other hand,
+https://www.gnu.org/software/auctex/ says that the current version is 13.1,
+updated on [2022-02-20 Sun].
+
+#+begin_src emacs-lisp
+  (setq TeX-output-view-style '(("^pdf$" "." "vince %o")
+                                ("^ps$" "." "gv %o")
+                                ("^dvi$" "." "xdvi %o")))
+  (setq tex-dvi-view-command "xdvi")
+  (setq tex-dvi-print-command "dvips")
+  (setq tex-alt-dvi-print-command "dvips")
+#+end_src
