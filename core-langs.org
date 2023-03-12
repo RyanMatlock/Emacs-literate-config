@@ -93,15 +93,23 @@ this later. [[https://emacs-lsp.github.io/lsp-mode/page/lsp-pylsp/][lsp-pylsp]] 
 * Rust
 
 * TeX/LaTeX
-Basically all of this is pulled from ~legacy-dotemacs.el~ because I liked the way
-my old configuration worked with LaTeX. That said, I think a lot of this stuff
-goes back to around 2015 when I was relatively new to Emacs, so some of these
++Basically all+ Most of this (with the exception of the AUCTeX stuff towards the
+top) is pulled from ~legacy-dotemacs.el~ because I liked the way my old
+configuration worked with LaTeX. That said, I think a lot of this stuff goes
+back to around 2015 when I was relatively new to Emacs, so some of these
 options may be deprecated or implemented in a weird way.
+
+** AUCTeX
+
+#+begin_src emacs-lisp
+  (use-package auctex
+    :straight t)
+#+end_src
 
 ** Indentation
 
 #+begin_src emacs-lisp
-  (setq LaTeX-item-indent 2)  ;; was 0 before, but I prefer 2
+  (setq LaTeX-item-indent 0)
   (setq LaTeX-indent-level 2)
 #+end_src
 
