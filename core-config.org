@@ -1097,6 +1097,14 @@ in some screencast, and I need it.
     :hook ((prog-mode . rainbow-delimiters-mode)))
 #+end_src
 
+** TODO ~eshell~
+Seeing as how ~eshell~ natively accepts Emacs Lisp, this seems like a fine
+section under which to put this.
+
+*** TODO Fancy prompt
+EmacsWiki has some ideas for how to change thee [[https://www.emacswiki.org/emacs/EshellPrompt][eshell prompt]] to make it more
+like your bash prompt, or even do some cool things like fish.
+
 * TODO Org mode
 ** Keybindings
 By default
