@@ -1059,11 +1059,15 @@ shift if it starts uppercase or lowercase?
 
 * TODO Emacs Lisp
 
-** TODO REPL
+** REPL
 
 #+begin_src emacs-lisp
   (use-package elisp-slime-nav)
 #+end_src
+
+Update: These days I'm using [[https://www.emacswiki.org/emacs/InferiorEmacsLispMode][IELM]] (Inferior Emacs Lisp Mode), which works
+really well. Not sure that ~elisp-slime-nav~ is useful, but I'll keep this here
+for now.
 
 ** Parentheses
 *** Paredit
