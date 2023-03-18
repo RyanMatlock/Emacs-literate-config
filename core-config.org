@@ -769,7 +769,7 @@ of Emacs's killer apps.
 I used to use a combination of ~ido~ and ~ivy~, but having seen a ~vertico~ demo, I
 thought I'd give it a try. ~ido~ is supposedly a bit outdated now anyway.
 
-*** ~vertico~
+*** TODO ~vertico~
 Following config taken from
 https://systemcrafters.cc/emacs-tips/streamline-completions-with-vertico/ and
 lightly edited.
@@ -780,6 +780,9 @@ idea: I bet it's in =custom.el=! I'm starting to think the smarter/better way to
 do most customizations is with =:custom= inside of =(straight-)use-package=
 statements. Yep, that was it! Going forward, I'll try to move what I can out of
 ~custom.el~.
+
+~vertico-directory~ provides for "Ido-like directory navigation," which sounds
+nice to have again; configuration taken from [[https://github.com/minad/vertico#extensions][vertico | Extensions]].
 
 #+begin_src emacs-lisp
   (use-package vertico
@@ -797,6 +800,22 @@ statements. Yep, that was it! Going forward, I'll try to move what I can out of
     :straight t
     :init
     (savehist-mode))
+
+  (use-package vertico-directory
+    ;; see https://github.com/minad/vertico/issues/83#issuecomment-883762831
+    :straight (vertico :includes vertico-directory
+                       :files (:defaults "extensions/vertico-directory.el"))
+    :after vertico
+    :ensure nil
+    ;; More convenient directory navigation commands
+    :bind (:map vertico-map
+                ("RET" . vertico-directory-enter)
+                ("DEL" . vertico-directory-delete-char)
+                ("M-DEL" . vertico-directory-delete-word))
+    ;; Tidy shadowed file names
+    :hook (rfn-eshadow-update-overlay . vertico-directory-tidy))
+  ;; still not working -- look into this later
+  ;; try restarting Emacs?
 
   ;; (use-package marginalia
   ;;   :after vertico
