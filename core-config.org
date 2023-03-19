@@ -57,26 +57,26 @@ the way I want it at some point---and keep it that way!
 
 *** TODO ~corfu~
 
-#+begin_quote
+#+begin_example
 Error (use-package): corfu/:init: Symbol’s function definition is void:
 corfu-global-mode Disable showing Disable logging
-#+end_quote
+#+end_example
 
 *** TODO ~auctex~
 
-#+begin_quote
+#+begin_example
 Error (use-package): auctex/:catch: Loading file
 /Users/matlock/.emacs.d/straight/build/auctex/auctex.elc failed to provide
 feature ‘auctex’ Disable showing Disable logging
-#+end_quote
+#+end_example
 
 ** ~*Messages*~
 
 *** TODO ~org-iedit-in-src-block~
 
-#+begin_quote
+#+begin_example
 File mode specification error: (void-variable org-iedit-in-src-block)
-#+end_quote
+#+end_example
 
 ** Other
 
@@ -863,7 +863,7 @@ nice to have again; configuration taken from [[https://github.com/minad/vertico#
   ;;   (marginalia-mode))
 #+end_src
 
-#+begin_export ascii
+#+begin_example
 Error (use-package): vertico/:init: Symbol’s value as variable is void:
 vertico-map Disable showing Disable logging
 Warning (straight): Two different recipes given for "vertico" (:files cannot be
@@ -874,7 +874,7 @@ corfu-global-mode Disable showing Disable logging
 Error (use-package): auctex/:catch: Loading file
 /Users/matlock/.emacs.d/straight/build/auctex/auctex.elc failed to provide
 feature ‘auctex’ Disable showing Disable logging
-#+end_export
+#+end_example
 
 Getting these warnings after restarting Emacs. Upgraded ~vertico~, commented out
 ~vertico-directory~ stuff, restarted, and now ~vertico~ isn't working anymore.
@@ -885,13 +885,13 @@ try to enable ~vertico-directory~ again. -- Nope, that didn't work.
 
 Now getting these warnings on startup:
 
-#+begin_export ascii
+#+begin_example
 Error (use-package): corfu/:init: Symbol’s function definition is void:
 corfu-global-mode Disable showing Disable logging
 Error (use-package): auctex/:catch: Loading file
 /Users/matlock/.emacs.d/straight/build/auctex/auctex.elc failed to provide
 feature ‘auctex’ Disable showing Disable logging
-#+end_export
+#+end_example
 
 *** ~corfu~
 ``Corfu is the minimalistic ~completion-in-region~ counterpart of the ~vertico~
