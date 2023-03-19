@@ -168,6 +168,20 @@ Note: SyncTeX is setup via ~/.latexmkrc (see below)
                '("xelatexmk" "latexmk -xelatex -pdf %s" TeX-run-TeX nil t
                  :help "Run latexmk -xelatex on file")
                TeX-command-list)))
+  ;; (add-hook 'LaTeX-mode-hook
+  ;;           (lambda ()
+  ;;             (push
+  ;;              '("pdflatex"
+  ;;                (concat "pdflatex "
+  ;;                        "-interaction=nonstopmode "
+  ;;                        "-output-format=pdf "
+  ;;                        "%s")
+  ;;                TeX-run-TeX
+  ;;                nil
+  ;;                t
+  ;;                :help "Run pdflatex on file")
+  ;;              TeX-command-list)))
+  ;; not working ¯\_(ツ)_/¯
   (add-hook 'TeX-mode-hook
             #'(lambda () (setq TeX-command-default "latexmk")))
 #+end_src
