@@ -765,7 +765,7 @@ of Emacs's killer apps.
   ;; (global-set-key (kbd "C-c 0") 'magit-status)
 #+end_src
 
-** Completions: ~vertico~ + ~corfu~
+** TODO Completions: ~vertico~ + ~corfu~
 I used to use a combination of ~ido~ and ~ivy~, but having seen a ~vertico~ demo, I
 thought I'd give it a try. ~ido~ is supposedly a bit outdated now anyway.
 
@@ -801,21 +801,21 @@ nice to have again; configuration taken from [[https://github.com/minad/vertico#
     :init
     (savehist-mode))
 
-  (use-package vertico-directory
-    ;; see https://github.com/minad/vertico/issues/83#issuecomment-883762831
-    :straight (vertico :includes vertico-directory
-                       :files (:defaults "extensions/vertico-directory.el"))
-    :after vertico
-    :ensure nil
-    ;; More convenient directory navigation commands
-    :bind (:map vertico-map
-                ("RET" . vertico-directory-enter)
-                ("DEL" . vertico-directory-delete-char)
-                ("M-DEL" . vertico-directory-delete-word))
-    ;; Tidy shadowed file names
-    :hook (rfn-eshadow-update-overlay . vertico-directory-tidy))
+  ;; (use-package vertico-directory
+  ;;   ;; see https://github.com/minad/vertico/issues/83#issuecomment-883762831
+  ;;   :straight (vertico :includes vertico-directory
+  ;;                      :files (:defaults "extensions/vertico-directory.el"))
+  ;;   :after vertico
+  ;;   :ensure nil
+  ;;   ;; More convenient directory navigation commands
+  ;;   :bind (:map vertico-map
+  ;;               ("RET" . vertico-directory-enter)
+  ;;               ("DEL" . vertico-directory-delete-char)
+  ;;               ("M-DEL" . vertico-directory-delete-word))
+  ;;   ;; Tidy shadowed file names
+  ;;   :hook (rfn-eshadow-update-overlay . vertico-directory-tidy))
   ;; still not working -- look into this later
-  ;; try restarting Emacs?
+  ;; try restarting Emacs? -- nope
 
   ;; (use-package marginalia
   ;;   :after vertico
@@ -826,6 +826,36 @@ nice to have again; configuration taken from [[https://github.com/minad/vertico#
   ;;   :init
   ;;   (marginalia-mode))
 #+end_src
+
+#+begin_export ascii
+Error (use-package): vertico/:init: Symbol’s value as variable is void:
+vertico-map Disable showing Disable logging
+Warning (straight): Two different recipes given for "vertico" (:files cannot be
+both ("*" (:exclude ".git")) and (:defaults "extensions/vertico-directory.el"))
+Disable showing Disable logging
+Error (use-package): corfu/:init: Symbol’s function definition is void:
+corfu-global-mode Disable showing Disable logging
+Error (use-package): auctex/:catch: Loading file
+/Users/matlock/.emacs.d/straight/build/auctex/auctex.elc failed to provide
+feature ‘auctex’ Disable showing Disable logging
+#+end_export
+
+Getting these warnings after restarting Emacs. Upgraded ~vertico~, commented out
+~vertico-directory~ stuff, restarted, and now ~vertico~ isn't working anymore.
+
+Somehow that really messed everything up, and I had to nuke my
+~$HOME/.emacs.d/straight/~ directory, although it seems to be fine now. Going to
+try to enable ~vertico-directory~ again. -- Nope, that didn't work.
+
+Now getting these warnings on startup:
+
+#+begin_export ascii
+Error (use-package): corfu/:init: Symbol’s function definition is void:
+corfu-global-mode Disable showing Disable logging
+Error (use-package): auctex/:catch: Loading file
+/Users/matlock/.emacs.d/straight/build/auctex/auctex.elc failed to provide
+feature ‘auctex’ Disable showing Disable logging
+#+end_export
 
 *** ~corfu~
 ``Corfu is the minimalistic ~completion-in-region~ counterpart of the ~vertico~
