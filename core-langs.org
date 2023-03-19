@@ -164,7 +164,8 @@ Note: SyncTeX is setup via ~/.latexmkrc (see below)
                '("xelatexmk" "latexmk -xelatex -pdf %s" TeX-run-TeX nil t
                  :help "Run latexmk -xelatex on file")
                TeX-command-list)))
-  (add-hook 'TeX-mode-hook '(lambda () (setq TeX-command-default "latexmk")))
+  (add-hook 'TeX-mode-hook
+            #'(lambda () (setq TeX-command-default "latexmk")))
 #+end_src
 
 ** Set Skim as default PDF viewer on MacOS
