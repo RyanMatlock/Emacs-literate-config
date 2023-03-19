@@ -47,6 +47,42 @@ and related tools (LSP mode?).
 
 *** ~extras.org~
 
+
+* Current warnings and issues
+Going to try to keep this relatively up-to-date with current issues with my
+configuration. Hopefully I'll empty this section and have everything working
+the way I want it at some point---and keep it that way!
+
+** ~*Warnings*~
+
+*** TODO ~corfu~
+
+#+begin_quote
+Error (use-package): corfu/:init: Symbol’s function definition is void:
+corfu-global-mode Disable showing Disable logging
+#+end_quote
+
+*** TODO ~auctex~
+
+#+begin_quote
+Error (use-package): auctex/:catch: Loading file
+/Users/matlock/.emacs.d/straight/build/auctex/auctex.elc failed to provide
+feature ‘auctex’ Disable showing Disable logging
+#+end_quote
+
+** ~*Messages*~
+
+*** TODO ~org-iedit-in-src-block~
+
+#+begin_quote
+File mode specification error: (void-variable org-iedit-in-src-block)
+#+end_quote
+
+** Other
+
+*** TODO ~vertico-directory~
+Not sure how to get this to work with straight.
+
 * TODO Switches for additional configuration
 See [[* Load additional org configuration files][code for handling processing of additional config files]] below.
 
