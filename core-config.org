@@ -29,8 +29,8 @@ this though.
 the stuff handled by ~customize-variable~).
 
 ** Configuration organization
-*** ~core-config.org~
 
+*** ~core-config.org~
 Also includes main editing commands for
 - Org mode (but not Org-roam)
 - Emacs Lisp
@@ -47,8 +47,7 @@ and related tools (LSP mode?).
 
 *** ~extras.org~
 
-
-* Current warnings and issues
+* Warnings, issues, and other problems + features to consider
 Going to try to keep this relatively up-to-date with current issues with my
 configuration. Hopefully I'll empty this section and have everything working
 the way I want it at some point---and keep it that way!
@@ -79,6 +78,17 @@ File mode specification error: (void-variable org-iedit-in-src-block)
 #+end_example
 
 ** Other
+
+** Features to add [2/4]
+- [X] complete the switch from ~package.el~ to ~straight.el~
+  - [X] automatically install missing packages on startup (finding out the hard
+        way that migrating this config to a new machine is a PITA)
+- [X] get meta key working properly on M1 Mac Mini
+- [ ] oBnOxIoUs CaSe (aka alternating case) region command (this may already
+  exist, but I'm going to 1) respect other Emacs users enough to assume that it
+  doesn't, and 2) try to write it myself because it seems straightforward but
+  also good Emacs Lisp practice).
+- [ ] [[https://github.com/abo-abo/hydra][hydra]] for fancy keybindings
 
 *** TODO ~vertico-directory~
 Not sure how to get this to work with straight.
@@ -142,19 +152,6 @@ isn't being picked up as I'd expect. It's looking for something like
 ~$HOME/core-langs.org~ instead of ~$HOME/config/emacs/core-langs.org~.+ Fixed: kind
 of a hack, but I hard coded ~~/config/emacs~ into =expand-file-name= below.
 
-* Problems
-* Features to add/look into & changes to make [1/5]
-- [ ] complete the switch from ~package.el~ to ~straight.el~
-  - [ ] automatically install missing packages on startup (finding out the hard
-        way that migrating this config to a new machine is a PITA)
-- [X] get meta key working properly on M1 Mac Mini
-- [ ] oBnOxIoUs CaSe region command (this may already exist, but I'm going
-  to 1) respect other Emacs users enough to assume that it doesn't, and 2) try
-  to write it myself because it seems straightforward but also good Emacs Lisp
-  practice).
-- [ ] [[https://github.com/abo-abo/hydra][hydra]] for fancy keybindings
-- [ ] +~setq~ vs ~customize-variable~; move stuff to =custom.el= if the latter
-  makes sense for much of your configuration+
 
 * Customize
 It seems like the less I use ~customize~ outside of the literate configuration
