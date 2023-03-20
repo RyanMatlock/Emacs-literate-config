@@ -108,7 +108,7 @@ isn't being picked up as I'd expect. It's looking for something like
 of a hack, but I hard coded ~~/config/emacs~ into =expand-file-name= below.
 
 
-* Customize
+* TODO COMMENT Customize
 It seems like the less I use ~customize~ outside of the literate configuration
 files, the better because I can always use =(use-package ... :custom ...)= or
 =setq= and annotate everything using Org mode. See [[https://emacs.stackexchange.com/questions/102/advantages-of-setting-variables-with-setq-instead-of-custom-el][Advantages of setting
@@ -122,10 +122,14 @@ have to dig through the configuration. Bleh.
 although I'm curious how much of a pressing need there is given that with a
 literate =.emacs= config, I can explain my reasoning for a setting.+
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :eval no
   (setq custom-file (expand-file-name "~/config/emacs/custom.el"))
   (load custom-file)
 #+end_src
+
+~custom.el~ must have gotten clobbered by a git merge. I guess the smart thing
+to do would be to keep it in a separate directory so that doesn't happen in the
+future, or I could see how easy it is to keep settings synced across devices.
 
 * General interface & minor modes
 ** TODO ~package.el~ \to ~straight.el~
