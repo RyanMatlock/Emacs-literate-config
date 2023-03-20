@@ -2,32 +2,48 @@
 #+subtitle: General overview
 #+author: Ryan Matlock
 
-* TODOs [0/2]
-** TODO Split config across ~core-config.org~, ~core-langs.org~, and ~extras.org~
-** TODO Switch to ~straight.el~
-[[https://github.com/raxod502/straight.el][straight.el]] is an Emacs package management system that apparently makes Emacs
-configurations more portable across devices.
+* Motivation
+In 2021, I decided that my 1700+ line ~.emacs~ file, parts of which dated to
+2014, was becoming too difficult to maintain. An Org mode-based set of
+configuration files seemed much easier to manage, and [[https://github.com/radian-software/straight.el][straight.el]] has made the
+process of syncing configurations across devices even simpler.
 
-* Notes
-** ~package.el~ auto-installation
-Method stolen from [[https://stackoverflow.com/a/55058934][Setting up emacs on new machine with init.el and package
-installation | stackoverflow]]. Note that this only sort of works; ~straight.el~
-seems to work much better for me, which is why I made the transition away from
-~package.el~, but I thought I'd keep a note on how I used to achieve this…kind
-of.
+* Usage
+** Escape hatch
+In case you need to go back to your old configuration:
 
-#+begin_src emacs-lisp
-  (setq my-packages
-    '(auto-complete
-      auto-complete-chunk
-      better-defaults
-      electric-case
-      electric-operator
-      ;; and so on
-      ))
-
-  ;; iterate over my-packages and install missing ones
-  (dolist (pkg my-packages)
-    (unless (package-installed-p pkg)
-      (package-install pkg)))
+#+begin_src sh :eval no
+  ln -s /path/to/legacy-dotemacs.el ~/.emacs
 #+end_src
+
+Then either reload =.emacs= or restart Emacs. Looks like you shouldn't need to do
+this though.
+
+** TODO How this works -- correct this
+=.emacs= is symlinked to =dotemacs.el=, which loads the necessary +~package~+ and
+~use-package~ packages in order for ~org-babel-load-file~ to process this file,
++=README.org=+, which contains all the Emacs Lisp configuration goodness (excluding
+the stuff handled by ~customize-variable~).
+
+** Configuration organization
+
+*** ~core-config.org~
+Also includes main editing commands for
+- Org mode (but not Org-roam)
+- Emacs Lisp
+- git
+so that this file can be easily edited without loading additional extensions.
+
+*** ~core-langs.org~
+Includes configuration for
+- LSP mode
+- Haskell
+- Python
+- Rust
+- TeX/LaTeX/AUCTeX
+
+*** ~extras.org~
+- Org roam
+- markdown
+- minor modes
+- highly specific/project-oriented extensions
