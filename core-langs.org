@@ -215,3 +215,10 @@ updated on [2022-02-20 Sun].
   (setq tex-dvi-print-command "dvips")
   (setq tex-alt-dvi-print-command "dvips")
 #+end_src
+
+* Sanity check
+Check that bottom of this file was reached and evaluated successfully.
+
+#+begin_src emacs-lisp
+  (message "Bottom of core-langs.org reached and evaluated.")
+#+end_src

@@ -96,3 +96,10 @@ should read up on [[https://www.gnu.org/software/emacs/manual/html_mono/ert.html
     (eval-buffer)
     (ert 't))
 #+end_src
+
+* Sanity check
+Check that bottom of this file was reached and evaluated successfully.
+
+#+begin_src emacs-lisp
+  (message "Bottom of extras.org reached and evaluated.")
+#+end_src
