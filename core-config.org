@@ -2,51 +2,6 @@
 #+subtitle: Core configuration
 #+author: Ryan Matlock
 
-As of [2021-04-19], my Emacs configuration file, which probably began life
-around seven years ago, is over 1700 lines long, full of cruft, and difficult
-to manage. It's time to start over---with Org mode!
-
-Now on [2022-01-13], it's time to separate core features I want from certain
-mode-specific and more obscure customizations, which should hopefully make this
-more portable onto new machines. (TODO: test this on Mac OS and some flavor of
-Linux).
-
-* Usage
-** Escape hatch
-In case you need to go back to your old configuration:
-
-#+begin_src sh :eval no
-  ln -s /path/to/legacy-dotemacs.el ~/.emacs
-#+end_src
-
-Then either reload =.emacs= or restart Emacs. Looks like you shouldn't need to do
-this though.
-
-** TODO How this works -- correct this
-=.emacs= is symlinked to =dotemacs.el=, which loads the necessary +~package~+ and
-~use-package~ packages in order for ~org-babel-load-file~ to process this file,
-+=README.org=+, which contains all the Emacs Lisp configuration goodness (excluding
-the stuff handled by ~customize-variable~).
-
-** Configuration organization
-
-*** ~core-config.org~
-Also includes main editing commands for
-- Org mode (but not Org-roam)
-- Emacs Lisp
-- git
-so that this file can be easily edited without loading additional extensions.
-
-*** ~core-langs.org~
-Includes configuration for
-- Haskell
-- Python
-- Rust
-- TeX/LaTeX
-and related tools (LSP mode?).
-
-*** ~extras.org~
-
 * Warnings, issues, and other problems + features to consider
 Going to try to keep this relatively up-to-date with current issues with my
 configuration. Hopefully I'll empty this section and have everything working
