@@ -96,7 +96,7 @@ This seems to work well, and it's pretty clear what's going on.
        (enable . t))
       ((name . "Extras")
        (path . "./extras.org")
-       (enable . nil))
+       (enable . t))
       ((name . "Experimental configuration")
        (path . "./experimental-config.org")
        (enable . nil))))
