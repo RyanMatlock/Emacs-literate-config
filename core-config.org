@@ -34,6 +34,13 @@ File mode specification error: (void-variable org-iedit-in-src-block)
 
 ** Other
 
+*** TODO restore ~custom.el~ settings as much as possible
+You seem to have clobbered your ~custom.el~​/​~customize~ settings (I think by
+merging back into git main or something like that), and it's messed up your
+modeline and the way Org mode hides things like tildes. Fix it, and ensure that
+you can't mess this up again, maybe by keeping ~custom.el~ out of this repo and
+only symlinking to it.
+
 ** Features to add [2/4]
 - [X] complete the switch from ~package.el~ to ~straight.el~
   - [X] automatically install missing packages on startup (finding out the hard
