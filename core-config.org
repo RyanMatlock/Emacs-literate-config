@@ -9,13 +9,6 @@ the way I want it at some point---and keep it that way!
 
 ** ~*Warnings*~
 
-*** TODO ~corfu~
-
-#+begin_example
-Error (use-package): corfu/:init: Symbol’s function definition is void:
-corfu-global-mode Disable showing Disable logging
-#+end_example
-
 *** TODO ~auctex~
 
 #+begin_example
@@ -883,7 +876,7 @@ minibuffer UI.'' -- https://github.com/minad/corfu
     ;; Recommended: Enable Corfu globally.
     ;; This is recommended since dabbrev can be used globally (M-/).
     :init
-    (corfu-global-mode))
+    (global-corfu-mode))
 
   ;; Optionally use the `orderless' completion style. See `+orderless-dispatch'
   ;; in the Consult wiki for an advanced Orderless style dispatcher.
