@@ -485,17 +485,21 @@ to see them).
     :hook
     (prog-mode . whitespace-mode)
     (org-mode . whitespace-mode)
+    (tex-mode . whitespace-mode)
+    (latex-mode . whitespace-mode)
+    (LaTeX-mode . whitespace-mode)
     :config
-    (progn (setq whitespace-display-characters
-                 '((tab-mark ?\t [?\xBB ?\t] [?\\ ?\t]) ;; tab: »
-                   ))
-           (setq whitespace-line-column (+ fill-column 1) ;; 80 characters
-                 )
-           (setq whitespace-style '(face
-                                    trailing
-                                    lines-tail
-                                    tabs
-                                    tab-mark))))
+    (setq whitespace-display-characters
+          ;; display <tab> as »
+          '((tab-mark ?\t [?\xBB ?\t] [?\\ ?\t])))
+    (setq whitespace-line-column
+          ;; 80 characters
+          (+ fill-column 1))
+    (setq whitespace-style '(face
+                             trailing
+                             lines-tail
+                             tabs
+                             tab-mark)))
 #+end_src
 
 *** TODO Tab/space handling -- improve this
