@@ -19,9 +19,6 @@ File mode specification error: (void-variable org-iedit-in-src-block)
 
 ** Other
 
-*** TODO ~auctex~
-Having trouble getting ~auctex~ to play nicely with ~straight~.
-
 *** TODO restore ~custom.el~ settings as much as possible
 You seem to have clobbered your ~custom.el~​/​~customize~ settings (I think by
 merging back into git main or something like that), and it's messed up your

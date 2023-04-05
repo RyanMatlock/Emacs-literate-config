@@ -217,6 +217,37 @@ For some reason, =:eval no= and =:eval no-export= don't seem to be working (in
 terms of =org-babel= skipping the evaluation. See [[https://orgmode.org/manual/Evaluating-Code-Blocks.html][Org Mode Manual § 16.5
 Evaluating Code Blocks]] for more info.
 
+Let's try [[https://github.com/daviwil/emacs-from-scratch/wiki/LaTeX-config-(AucteX)-in-Emacs-from-scratch#auctex][LaTeX config (AucteX) in Emacs from scratch § auctex]]
+
+#+begin_src emacs-lisp
+  (use-package auctex-latexmk
+    :straight t
+    :config
+    (auctex-latexmk-setup)
+    (setq auctex-latexmk-inherit-TeX-PDF-mode t))
+
+  (use-package latex
+    :straight auctex
+    :defer t
+    :mode
+    ("\\.tex\\'" . latex-mode)
+    :hook
+    (LaTeX-mode . TeX-PDF-mode)
+    (LaTeX-mode . LaTeX-math-mode)
+
+    :config
+    (setq TeX-auto-save t)
+    (setq-default TeX-master nil)
+    (setq TeX-save-query nil)
+
+    ;; latexmk
+    (require 'auctex-latexmk)
+    (auctex-latexmk-setup)
+    (setq auctex-latexmk-inherit-TeX-PDF-mode t))
+#+end_src
+
+Well, I didn't get any warnings with this.
+
 ** Indentation
 
 #+begin_src emacs-lisp
@@ -326,6 +357,69 @@ updated on [2022-02-20 Sun].
   (setq tex-dvi-print-command "dvips")
   (setq tex-alt-dvi-print-command "dvips")
 #+end_src
+
+** ~outshine~ ~TAB~ folding à la Org mode
+See [[https://github.com/daviwil/emacs-from-scratch/wiki/LaTeX-config-(AucteX)-in-Emacs-from-scratch#latex][LaTeX config (AucteX) in Emacs from scratch]] [Note: contains some minor
+modifications.]
+
+#+begin_src emacs-lisp
+  (use-package outshine
+    :config
+    (setq LaTeX-section-alist
+          '(("part" . 0)
+            ("chapter" . 1)
+            ("section" . 2)
+            ("subsection" . 3)
+            ("subsubsection" . 4)
+            ("paragraph" . 5)
+            ("subparagraph" . 6)
+            ("begin" . 7)))
+  (add-hook 'LaTeX-mode-hook
+            #'(lambda ()
+                (outshine-mode 1)
+                (setq outline-level #'LaTeX-outline-level)
+                (setq outline-regexp (LaTeX-outline-regexp t))
+                (setq outline-heading-alist
+                      (mapcar #'(lambda (x)
+                                  (cons (concat "\\" (car x)) (cdr x)))
+                              LaTeX-section-alist)))))
+
+  ;; this is when using general.el, which you aren't doing
+  ;; (general-define-key
+  ;;  :states '(normal visual)
+  ;;  :keymaps 'LaTeX-mode-map
+  ;;  "TAB"  '(outshine-cycle :which-key "outshine-cycle"))
+
+  ;; not needed
+  ;; use LaTeX-mode-map for AUCTeX; latex-mode-map for plain latex-mode
+  ;; (eval-after-load 'latex
+  ;;   (define-key 'LaTeX-mode-map (kbd "<tab>") 'outshine-cycle))
+#+end_src
+
+See also [[https://stackoverflow.com/a/5505855][Set custom keybinding for specific Emacs mode | stackoverflow]] for info
+on setting key bindings.
+
+#+begin_example :eval no
+  ELISP> (keymapp 'global-key-map)
+  nil
+  ELISP> (keymapp 'latex-mode-map)
+  nil
+  ELISP> (keymapp 'LaTeX-mode-map)
+  nil
+  ELISP> (keymapp 'text-mode-map)
+  nil
+  ELISP> (keymapp 'fundamental-mode-map)
+  nil
+  ELISP> (keymapp 'esc-map)
+  nil
+  ELISP> (keymapp 'global-map)
+  nil
+  ELISP> (keymapp 'prog-mode-map)
+  nil
+#+end_example
+
++Ok, well, that's kinda weird. Anyway, =outshine= stuff will have to wait.+
+Never mind, =outshine-cycle= is working already.
 
 * Sanity check
 Check that bottom of this file was reached and evaluated successfully.
