@@ -1,3 +1,4 @@
+#+options: ^:{}
 #+title: Literate Emacs configuration with Org mode
 #+subtitle: Core configuration
 #+author: Ryan Matlock
@@ -1106,6 +1107,96 @@ Update: These days I'm using [[https://www.emacswiki.org/emacs/InferiorEmacsLisp
 really well. Not sure that ~elisp-slime-nav~ is useful, but I'll keep this here
 for now.
 
+*** IELM keybindings
+I've been having to manually ~M-x ielm-return~ in order to evaluate
+s-expressions, which is annoying. Ideally, I'd like to simply hit ~RET~ or
+~M-RET~ at the end of an s-expression in order to evaluate it.
+
+# #+begin_src emacs-lisp
+#   (define-key ielm-map (kbd "M-<ret>") 'ielm-return)
+# #+end_src
+
+#+begin_example
+  RET (translated from <return>) runs the command paredit-RET (found in
+  paredit-mode-map), which is an interactive byte-compiled Lisp function in
+  ‘paredit.el’.
+
+  It is bound to RET.
+
+  (paredit-RET)
+#+end_example
+
+#+begin_example
+  IELM mode defined in ‘ielm.el’:
+  Major mode for interactively evaluating Emacs Lisp expressions.
+  Uses the interface provided by ‘comint-mode’ (which see).
+
+  ,* C-j evaluates the sexp following the prompt.  There must be at most
+    one top level sexp per prompt.
+
+  ,* RET inserts a newline and indents, or evaluates a
+    complete expression (but see variable ‘ielm-dynamic-return’).
+    Inputs longer than one line are moved to the line following the
+    prompt (but see variable ‘ielm-dynamic-multiline-inputs’).
+
+  ,* M-RET works like ‘ielm-return’, except
+    that it doesn’t print the result of evaluating the input.  This
+    functionality is useful when forms would generate voluminous
+    output.
+
+  ,* C-M-i completes Lisp symbols (or filenames, within strings),
+    or indents the line if there is nothing to complete.
+
+  ⋮
+
+  C-j             ielm-send-input
+    (this binding is currently shadowed)
+  RET             ielm-return
+    (this binding is currently shadowed)
+  ⋮
+  M-<ret>         ielm-return
+#+end_example
+
+#+begin_example
+  ielm-dynamic-return is a variable defined in ‘ielm.el’.
+
+  Its value is t
+
+  Controls whether RET has intelligent behavior in IELM.
+  If non-nil, RET evaluates input for complete sexps, or inserts a newline
+  and indents for incomplete sexps.  If nil, always inserts newlines.
+#+end_example
+
+=ielm-dynamic-return= sounds nice.
+
+[[https://stackoverflow.com/a/13966287][Unset key binding in emacs | stackoverflow]] is old but has info on how to unset
+the =paredit-mode= keybinding:
+
+#+begin_src emacs-lisp
+  (eval-after-load 'ielm
+    (define-key paredit-mode-map (kbd "<ret>") nil))
+#+end_src
+
+Still getting
+
+#+begin_example
+  RET (translated from <return>) runs the command paredit-RET (found in
+  paredit-mode-map), which is an interactive byte-compiled Lisp function in
+  ‘paredit.el’.
+
+  It is bound to RET.
+
+  (paredit-RET)
+
+  Default key binding for RET in Paredit Mode.
+  Normally, inserts a newline, like traditional Emacs RET.
+  With Electric Indent Mode enabled, inserts a newline and indents
+    the new line, as well as any subexpressions of it on subsequent
+    lines; see ‘paredit-newline’ for details and examples.
+#+end_example
+
+after that ¯\_(ツ)_/¯
+
 ** Parentheses
 *** Paredit
 Balance parentheses automatically; see http://www.emacswiki.org/emacs/ParEdit.
@@ -1126,7 +1217,8 @@ Balance parentheses automatically; see http://www.emacswiki.org/emacs/ParEdit.
 *** ~rainbow-delimiters~
 [[https://github.com/Fanael/rainbow-delimiters][rainbow-delimiters]]: useful for more than just Lisp, this mode color codes
 parentheses, brackets, and braces by their depth. Saw it (or something like it)
-in some screencast, and I need it.
+in some screencast, and I need it. Update: used this for awhile, and I don't
+know how I ever lived without it.
 
 #+begin_src emacs-lisp
   (use-package rainbow-delimiters
