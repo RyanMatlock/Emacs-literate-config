@@ -1107,7 +1107,17 @@ Update: These days I'm using [[https://www.emacswiki.org/emacs/InferiorEmacsLisp
 really well. Not sure that ~elisp-slime-nav~ is useful, but I'll keep this here
 for now.
 
-*** IELM keybindings
+*** Eldoc hints
+See [[https://www.n16f.net/blog/making-ielm-more-comfortable/][Making IELM More Comfortable | Nicolas Martyanoff — Brain dump]] (nice
+because it's recent---dated [2023-04-08 Sat])
+
+Eldoc mode gives you hints in the minibuffer.
+
+#+begin_src emacs-lisp
+  (add-hook 'ielm-mode-hook 'eldoc-mode)
+#+end_src
+
+*** COMMENT IELM keybindings
 I've been having to manually ~M-x ielm-return~ in order to evaluate
 s-expressions, which is annoying. Ideally, I'd like to simply hit ~RET~ or
 ~M-RET~ at the end of an s-expression in order to evaluate it.
@@ -1172,10 +1182,11 @@ s-expressions, which is annoying. Ideally, I'd like to simply hit ~RET~ or
 [[https://stackoverflow.com/a/13966287][Unset key binding in emacs | stackoverflow]] is old but has info on how to unset
 the =paredit-mode= keybinding:
 
-#+begin_src emacs-lisp
-  (eval-after-load 'ielm
-    (define-key paredit-mode-map (kbd "<ret>") nil))
-#+end_src
+# #+begin_src emacs-lisp
+#   (eval-after-load 'inferior-emacs-lisp-mode
+#     (eval-after-load 'paredit
+#       (define-key paredit-mode-map (kbd "<ret>") nil)))
+# #+end_src
 
 Still getting
 
@@ -1197,22 +1208,66 @@ Still getting
 
 after that ¯\_(ツ)_/¯
 
+# #+begin_src emacs-lisp
+#   (let ((binding (kbd "<ret>")))
+#     (eval-after-load 'inferior-emacs-lisp-mode
+#       (progn
+#         (eval-after-load 'paredit
+#           (define-key paredit-mode-map binding nil))
+#         (define-key inferior-emacs-lisp-mode-map binding 'ielm-return))))
+# #+end_src
+
+# #+begin_src emacs-lisp
+#   (define-key inferior-emacs-lisp-mode-map
+#     (kbd "C-c M-<ret>")
+#     'ielm-return-for-effect)
+#   (define-key
+#     inferior-emacs-lisp-mode-map
+#     (kbd "M-<ret>")
+#     'ielm-return)
+# #+end_src
+
+With paredit out of the way, =RET= is bound 
+
 ** Parentheses
-*** Paredit
+*** +Paredit+ smartparens
 Balance parentheses automatically; see http://www.emacswiki.org/emacs/ParEdit.
 
+# #+begin_src emacs-lisp
+#   (use-package paredit
+#     :straight t
+#     :hook ((emacs-lisp-mode . paredit-mode)
+#            (lisp-mode . paredit-mode)
+#            (common-lisp-mode . paredit-mode)
+#            (lisp-interaction-mode . paredit-mode)
+#            (geiser-repl-mode . paredit-mode)
+#            (slime-repl-mode . paredit-mode)
+#            (ielm-mode . paredit-mode)
+#            (scheme-mode . paredit-mode)))
+# #+end_src
+
+# #+begin_src emacs-lisp
+#   (define-key paredit-mode-map (kbd "<ret>") nil)
+#   (define-key paredit-mode-map (kbd "C-j") 'paredit-newline)
+#   (define-key inferior-emacs-lisp-mode-map (kbd "<ret>") 'ielm-return)
+# #+end_src
+
+Per [[https://stackoverflow.com/a/16614083][Why can't I change paredit keybindings]] (which is almost 10 years old at the
+time of visiting this), I should use [[https://github.com/Fuco1/smartparens][smartparens]] instead of paredit because of
+the convoluted way paredit handles keybindings (no wonder you've been having so
+much trouble!).
+
 #+begin_src emacs-lisp
-  (use-package paredit
+  (use-package smartparens
     :straight t
-    :hook ((emacs-lisp-mode . paredit-mode)
-           (lisp-mode . paredit-mode)
-           (common-lisp-mode . paredit-mode)
-           (lisp-interaction-mode . paredit-mode)
-           (geiser-repl-mode . paredit-mode)
-           (slime-repl-mode . paredit-mode)
-           (ielm-mode . paredit-mode)
-           (scheme-mode . paredit-mode)))
+    :config (require 'smartparens-config))
 #+end_src
+
+I like that this doesn't have such a pesky way of handling keybindings, +but I
+need to ensure that single quotes aren't added in pairs in Lisp modes,+ and I
+need to enable it by default in those modes. That said, paredit seems more
+assertive in preventing unbalanced parentheses, so I might need to do more
+tweaking.
 
 *** ~rainbow-delimiters~
 [[https://github.com/Fanael/rainbow-delimiters][rainbow-delimiters]]: useful for more than just Lisp, this mode color codes
@@ -1223,7 +1278,8 @@ know how I ever lived without it.
 #+begin_src emacs-lisp
   (use-package rainbow-delimiters
     :straight t
-    :hook ((prog-mode . rainbow-delimiters-mode)))
+    :hook ((prog-mode . rainbow-delimiters-mode)
+           (inferior-emacs-lisp-mode . rainbow-delimiters-mode)))
 #+end_src
 
 ** TODO ~eshell~
