@@ -1117,7 +1117,7 @@ Eldoc mode gives you hints in the minibuffer.
   (add-hook 'ielm-mode-hook 'eldoc-mode)
 #+end_src
 
-*** COMMENT IELM keybindings
+*** IELM keybindings
 I've been having to manually ~M-x ielm-return~ in order to evaluate
 s-expressions, which is annoying. Ideally, I'd like to simply hit ~RET~ or
 ~M-RET~ at the end of an s-expression in order to evaluate it.
@@ -1227,10 +1227,24 @@ after that ¯\_(ツ)_/¯
 #     'ielm-return)
 # #+end_src
 
-With paredit out of the way, =RET= is bound 
+With paredit out of the way, =RET= is bound to =ielm-return=, although I'd
+still like some easier way of inserting a newline.
+
+#+begin_src emacs-lisp
+  (define-key inferior-emacs-lisp-mode-map (kbd "M-<ret>") 'sp-newline)
+#+end_src
+
+Still not working how I would like it to. Just noticed that I had this section
+commented, +so maybe it'll work now.+ Nope.
+
+#+begin_quote
+Good to know: ~C-c M-o~ is bound to =comint-clear-buffer=, and ~C-c C-l~ is
+bound to =comint-dynamic-list-input-ring=, which is basically the history of
+the input.
+#+end_quote
 
 ** Parentheses
-*** +Paredit+ smartparens
+*** TODO +Paredit+ smartparens
 Balance parentheses automatically; see http://www.emacswiki.org/emacs/ParEdit.
 
 # #+begin_src emacs-lisp
@@ -1260,14 +1274,36 @@ much trouble!).
 #+begin_src emacs-lisp
   (use-package smartparens
     :straight t
+    :hook ((emacs-lisp-mode . 'smartparens-strict-mode)
+           (lisp-mode . 'smartparens-strict-mode)
+           (inferior-emacs-lisp-mode . 'smartparens-strict-mode))
     :config (require 'smartparens-config))
+
+  ;; (sp-with-modes sp--lisp-modes
+  ;;   'turn-on-smartparens-strict-mode)
+
+  ;; (let ((barf-slurp ((format "C-S-%s")))))
+  ;; (define-key smartparens-mode-map (kbd "C-S-right") 'sp-forward-slurp-sexp)
+  ;; (define-key smartparens-mode-map (kbd "C-S-left"))
+
+  ;; sp-use-paredit-bindings
 #+end_src
 
 I like that this doesn't have such a pesky way of handling keybindings, +but I
 need to ensure that single quotes aren't added in pairs in Lisp modes,+ and I
 need to enable it by default in those modes. That said, paredit seems more
 assertive in preventing unbalanced parentheses, so I might need to do more
-tweaking.
+tweaking. It looks like I need to update the keybindings so slurp and barf
+behave like paredit mode.
+
+It looks like part of the smartparens documentation covers [[https://github.com/Fuco1/smartparens/wiki/Paredit-and-smartparens][paredit and
+smartparens]].
+
+Here's what I want
+- [ ] enable =sp-use-paredit-bindings= in Lisp modes and possibly globally (at
+  least for now; perhaps at some point I'll want to update that) ---
+  =smartparens-strict-mode= actually seems to handle slurping and barfing th
+  way I'm used to
 
 *** ~rainbow-delimiters~
 [[https://github.com/Fanael/rainbow-delimiters][rainbow-delimiters]]: useful for more than just Lisp, this mode color codes
