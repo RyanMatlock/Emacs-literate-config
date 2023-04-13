@@ -1298,9 +1298,9 @@ much trouble!).
 #+begin_src emacs-lisp
   (use-package smartparens
     :straight t
-    :hook ((emacs-lisp-mode . 'smartparens-strict-mode)
-           (lisp-mode . 'smartparens-strict-mode)
-           (inferior-emacs-lisp-mode . 'smartparens-strict-mode))
+    :hook ((emacs-lisp-mode . 'turn-on-smartparens-strict-mode)
+           (lisp-mode . 'turn-on-smartparens-strict-mode)
+           (comint-mode . 'turn-on-smartparens-strict-mode))
     :config (require 'smartparens-config))
 
   ;; (sp-with-modes sp--lisp-modes
@@ -1312,6 +1312,17 @@ much trouble!).
 
   ;; sp-use-paredit-bindings
 #+end_src
+
+#+begin_example
+  Warning (defvaralias): Overwriting value of ‘inferior-emacs-lisp-mode-hook’ by
+  aliasing to ‘ielm-mode-hook’ Disable showing Disable logging
+#+end_example
+
+This might be an issue.
+
+Per [[https://github.com/NicolasPetton/emacs/blob/b176d169347925d57ca63ab63b85d92e49a53c81/lisp/ielm.el#L64][https://github.com/NicolasPetton/emacs/blob/master/lisp/ielm.el#L64]], you
+could use =comint-mode-hook= and =comint-mode-map= instead of the IELM
+equivalents.
 
 I like that this doesn't have such a pesky way of handling keybindings, +but I
 need to ensure that single quotes aren't added in pairs in Lisp modes,+ and I
