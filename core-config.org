@@ -1252,14 +1252,23 @@ alias to the former).
 like I can't really =(require 'ielm-mode)= or any variation I can think of.
 
 #+begin_src emacs-lisp
-  (eval-after-load 'ielm
+  (with-eval-after-load 'ielm
     (progn
       (define-key ielm-map (kbd "C-c M-<return>") 'ielm-return-for-effect)
       (define-key ielm-map (kbd "M-<return>") 'ielm-return)
       (define-key ielm-map (kbd "<return>") 'sp-newline)))
 #+end_src
 
-This appears to work!!
++This appears to work!!+
+
++This warning came up after restarting Emacs:+
+
+#+begin_example
+  Symbol's value as variable is void: ielm-map
+#+end_example
+
+Switching =eval-after-load= to =with-eval-after-load= seems to have made the
+warning go away.
 
 #+begin_quote
 Good to know: ~C-c M-o~ is bound to =comint-clear-buffer=, and ~C-c C-l~ is
