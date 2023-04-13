@@ -1149,6 +1149,10 @@ tl;dr:
   https://github.com/eXLabT/emacs-lisp/blob/master/ielm.elc)
 - =with-eval-after-load= works, =eval-after-load= doesn't, and I don't really
   understand why at the moment.
+- [[https://stackoverflow.com/a/15869858][Bind command to C-RET in Emacs | stackoverflow]] has great advice for how to
+  format =kbd='s argument: ~C-h k~ the key combination you want to use and see
+  what Emacs calls it combination, e.g. ~C-h k C-RET~ gives ~C-<return>~, so
+  you can use =(kbd "C-<return>")= when you want to bind a command to ~C-RET~.
 
 #+begin_quote
 Good to know: ~C-c M-o~ is bound to =comint-clear-buffer=, and ~C-c C-l~ is
