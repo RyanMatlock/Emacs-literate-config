@@ -1230,12 +1230,18 @@ after that ¯\_(ツ)_/¯
 With paredit out of the way, =RET= is bound to =ielm-return=, although I'd
 still like some easier way of inserting a newline.
 
-#+begin_src emacs-lisp
-  (define-key inferior-emacs-lisp-mode-map (kbd "M-<ret>") 'sp-newline)
-#+end_src
+# #+begin_src emacs-lisp
+#   (eval-after-load 'inferior-emacs-lisp-mode
+#     (define-key inferior-emacs-lisp-mode-map (kbd "M-<ret>") 'sp-newline))
+# #+end_src
 
 Still not working how I would like it to. Just noticed that I had this section
-commented, +so maybe it'll work now.+ Nope.
+commented, +so maybe it'll work now.+ Nope. Worse than that, actually: on
+startup, I got the following message in ~*Warnings*~:
+
+#+begin_example
+  Symbol's value as variable is void: inferior-emacs-lisp-mode-map
+#+end_example
 
 #+begin_quote
 Good to know: ~C-c M-o~ is bound to =comint-clear-buffer=, and ~C-c C-l~ is
