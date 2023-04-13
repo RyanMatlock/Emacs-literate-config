@@ -27,6 +27,12 @@ modeline and the way Org mode hides things like tildes. Fix it, and ensure that
 you can't mess this up again, maybe by keeping ~custom.el~ out of this repo and
 only symlinking to it.
 
+*** TODO get =smartparens= to behave like =paredit=
+Still having trouble with =turn-on-smartparens-strict-mode= for Lisp modes, and
+I haven't figured out where to stuff =sp-use-paredit-bindings= (although maybe
+that's because it's called interactively? that doesn't seem like it would be a
+problem though).
+
 ** Features to add [2/4]
 - [X] complete the switch from ~package.el~ to ~straight.el~
   - [X] automatically install missing packages on startup (finding out the hard
