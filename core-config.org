@@ -1339,8 +1339,11 @@ know how I ever lived without it.
   (use-package rainbow-delimiters
     :straight t
     :hook ((prog-mode . rainbow-delimiters-mode)
-           (inferior-emacs-lisp-mode . rainbow-delimiters-mode)))
+           (comint-mode . rainbow-delimiters-mode)))
 #+end_src
+
+Note: =comint-mode-hook= should affect modes that inherit from =comint-mode=, for
+example, IELM.
 
 ** TODO ~eshell~
 Seeing as how ~eshell~ natively accepts Emacs Lisp, this seems like a fine
