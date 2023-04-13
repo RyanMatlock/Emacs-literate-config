@@ -1243,6 +1243,24 @@ startup, I got the following message in ~*Warnings*~:
   Symbol's value as variable is void: inferior-emacs-lisp-mode-map
 #+end_example
 
+https://github.com/eXLabT/emacs-lisp/blob/master/ielm.elc has references to
+both =inferior-emacs-lisp-mode-map= and =ielm-map= (which appears to be an
+alias to the former).
+
+[[https://stackoverflow.com/a/25512676][Emacs: Symbol's value as variable is void | stackoverflow]] suggests either
+=require='ing IELM or using =eval-after-load=, but I tried the latter. It looks
+like I can't really =(require 'ielm-mode)= or any variation I can think of.
+
+#+begin_src emacs-lisp
+  (eval-after-load 'ielm
+    (progn
+      (define-key ielm-map (kbd "C-c M-<return>") 'ielm-return-for-effect)
+      (define-key ielm-map (kbd "M-<return>") 'ielm-return)
+      (define-key ielm-map (kbd "<return>") 'sp-newline)))
+#+end_src
+
+This appears to work!!
+
 #+begin_quote
 Good to know: ~C-c M-o~ is bound to =comint-clear-buffer=, and ~C-c C-l~ is
 bound to =comint-dynamic-list-input-ring=, which is basically the history of
