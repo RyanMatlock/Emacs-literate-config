@@ -1124,138 +1124,6 @@ Eldoc mode gives you hints in the minibuffer.
 #+end_src
 
 *** IELM keybindings
-I've been having to manually ~M-x ielm-return~ in order to evaluate
-s-expressions, which is annoying. Ideally, I'd like to simply hit ~RET~ or
-~M-RET~ at the end of an s-expression in order to evaluate it.
-
-# #+begin_src emacs-lisp
-#   (define-key ielm-map (kbd "M-<ret>") 'ielm-return)
-# #+end_src
-
-#+begin_example
-  RET (translated from <return>) runs the command paredit-RET (found in
-  paredit-mode-map), which is an interactive byte-compiled Lisp function in
-  ‘paredit.el’.
-
-  It is bound to RET.
-
-  (paredit-RET)
-#+end_example
-
-#+begin_example
-  IELM mode defined in ‘ielm.el’:
-  Major mode for interactively evaluating Emacs Lisp expressions.
-  Uses the interface provided by ‘comint-mode’ (which see).
-
-  ,* C-j evaluates the sexp following the prompt.  There must be at most
-    one top level sexp per prompt.
-
-  ,* RET inserts a newline and indents, or evaluates a
-    complete expression (but see variable ‘ielm-dynamic-return’).
-    Inputs longer than one line are moved to the line following the
-    prompt (but see variable ‘ielm-dynamic-multiline-inputs’).
-
-  ,* M-RET works like ‘ielm-return’, except
-    that it doesn’t print the result of evaluating the input.  This
-    functionality is useful when forms would generate voluminous
-    output.
-
-  ,* C-M-i completes Lisp symbols (or filenames, within strings),
-    or indents the line if there is nothing to complete.
-
-  ⋮
-
-  C-j             ielm-send-input
-    (this binding is currently shadowed)
-  RET             ielm-return
-    (this binding is currently shadowed)
-  ⋮
-  M-<ret>         ielm-return
-#+end_example
-
-#+begin_example
-  ielm-dynamic-return is a variable defined in ‘ielm.el’.
-
-  Its value is t
-
-  Controls whether RET has intelligent behavior in IELM.
-  If non-nil, RET evaluates input for complete sexps, or inserts a newline
-  and indents for incomplete sexps.  If nil, always inserts newlines.
-#+end_example
-
-=ielm-dynamic-return= sounds nice.
-
-[[https://stackoverflow.com/a/13966287][Unset key binding in emacs | stackoverflow]] is old but has info on how to unset
-the =paredit-mode= keybinding:
-
-# #+begin_src emacs-lisp
-#   (eval-after-load 'inferior-emacs-lisp-mode
-#     (eval-after-load 'paredit
-#       (define-key paredit-mode-map (kbd "<ret>") nil)))
-# #+end_src
-
-Still getting
-
-#+begin_example
-  RET (translated from <return>) runs the command paredit-RET (found in
-  paredit-mode-map), which is an interactive byte-compiled Lisp function in
-  ‘paredit.el’.
-
-  It is bound to RET.
-
-  (paredit-RET)
-
-  Default key binding for RET in Paredit Mode.
-  Normally, inserts a newline, like traditional Emacs RET.
-  With Electric Indent Mode enabled, inserts a newline and indents
-    the new line, as well as any subexpressions of it on subsequent
-    lines; see ‘paredit-newline’ for details and examples.
-#+end_example
-
-after that ¯\_(ツ)_/¯
-
-# #+begin_src emacs-lisp
-#   (let ((binding (kbd "<ret>")))
-#     (eval-after-load 'inferior-emacs-lisp-mode
-#       (progn
-#         (eval-after-load 'paredit
-#           (define-key paredit-mode-map binding nil))
-#         (define-key inferior-emacs-lisp-mode-map binding 'ielm-return))))
-# #+end_src
-
-# #+begin_src emacs-lisp
-#   (define-key inferior-emacs-lisp-mode-map
-#     (kbd "C-c M-<ret>")
-#     'ielm-return-for-effect)
-#   (define-key
-#     inferior-emacs-lisp-mode-map
-#     (kbd "M-<ret>")
-#     'ielm-return)
-# #+end_src
-
-With paredit out of the way, =RET= is bound to =ielm-return=, although I'd
-still like some easier way of inserting a newline.
-
-# #+begin_src emacs-lisp
-#   (eval-after-load 'inferior-emacs-lisp-mode
-#     (define-key inferior-emacs-lisp-mode-map (kbd "M-<ret>") 'sp-newline))
-# #+end_src
-
-Still not working how I would like it to. Just noticed that I had this section
-commented, +so maybe it'll work now.+ Nope. Worse than that, actually: on
-startup, I got the following message in ~*Warnings*~:
-
-#+begin_example
-  Symbol's value as variable is void: inferior-emacs-lisp-mode-map
-#+end_example
-
-https://github.com/eXLabT/emacs-lisp/blob/master/ielm.elc has references to
-both =inferior-emacs-lisp-mode-map= and =ielm-map= (which appears to be an
-alias to the former).
-
-[[https://stackoverflow.com/a/25512676][Emacs: Symbol's value as variable is void | stackoverflow]] suggests either
-=require='ing IELM or using =eval-after-load=, but I tried the latter. It looks
-like I can't really =(require 'ielm-mode)= or any variation I can think of.
 
 #+begin_src emacs-lisp
   (with-eval-after-load 'ielm
@@ -1265,16 +1133,22 @@ like I can't really =(require 'ielm-mode)= or any variation I can think of.
       (define-key ielm-map (kbd "<return>") 'sp-newline)))
 #+end_src
 
-+This appears to work!!+
-
-+This warning came up after restarting Emacs:+
-
-#+begin_example
-  Symbol's value as variable is void: ielm-map
-#+end_example
-
-Switching =eval-after-load= to =with-eval-after-load= seems to have made the
-warning go away.
+tl;dr:
+- While working on Exercism's Emacs Lisp track and using IELM to experiment, I
+  was using ~M-x ielm-return~ to evaluate expressions, which was a little
+  tedious but not /terrible/ given how I have my =execute-extended-command=
+  (i.e. ~M-x~) history set up
+- Paredit mode had =paredit-RET= bound to ~M-<return>~, and according to [[https://stackoverflow.com/a/16614083][Why
+  can't I change paredit keybindings | stackoverflow]], paredit mode doesn't play
+  nicely with the user trying to rebind keys ([[https://github.com/Fuco1/smartparens][smartparens]] is supposedly better
+  in that regard)
+- I want =<return>= to insert a newline, =M-<return>= to evaluate an
+  s-expression, and =C-c M-<return>= to evaluate an sexp for side
+  effects/without printing the result
+- =ielm-map= is an alias to =inferior-emacs-lisp-mode-map= (per
+  https://github.com/eXLabT/emacs-lisp/blob/master/ielm.elc)
+- =with-eval-after-load= works, =eval-after-load= doesn't, and I don't really
+  understand why at the moment.
 
 #+begin_quote
 Good to know: ~C-c M-o~ is bound to =comint-clear-buffer=, and ~C-c C-l~ is
