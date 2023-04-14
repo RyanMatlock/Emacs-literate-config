@@ -1316,12 +1316,8 @@ The reason I had an issue with =(void-variable org-iedit-in-src-block)= for so
 long was that I forgot (read: didn't know that I needed to) quote the function
 in =define-key= or =local-set-key=, but now everything works as it should.
 
-** TODO ~org-tempo~
-Enable old-style template blocks, e.g. make ~<s TAB~ create ~src~ blocks again; see
-[[https://emacs.stackexchange.com/a/46992][Why do easy templates, .e.g, "< s TAB" in org 9.2 not work? | Emacs
-StackExchange]]. Additional [[https://config.daviwil.com/emacs#block-templates][block templates]] courtesy of [[https://config.daviwil.com/emacs][daviwil's Emacs
-config]]. See [[https://orgmode.org/worg/org-contrib/babel/languages/index.html][Babel: Languages]] for list of supported languages and their ~src~
-block identifiers.
+** ~org-tempo~
+[[https://orgmode.org/manual/Structure-Templates.html][Org structure templates]] (~C-c c-,~: =org-insert-structure-template=)
 
 #+begin_src emacs-lisp
   (require 'org-tempo)
@@ -1333,22 +1329,52 @@ block identifiers.
 
   ;; more elegant way of doing it(?)
   ;; note: cdr needs to have 'src␣' prepended in order to work.
-  (setq org-structure-template-alist-extensions
+  (setq org-structure-template-src-alist-extensions
     '(("el"  . "emacs-lisp")
       ("hs"  . "haskell")
       ("ltx" . "latex")
       ("org" . "org")
       ("py"  . "python")
-      ;; ("rst" . "rust")  ;; not currently supported
+      ("rust" . "rustic")
       ("sql" . "sql")
       ("sh"  . "shell")
-      ("esh" . "eshell")))
+      ("esh" . "eshell")
+      ("yaml" . "yaml")
+      ("json" . "json")))
 
-  (dolist (cell org-structure-template-alist-extensions)
-    (add-to-list 'org-structure-template-alist
-                 (cons (car cell)
-                       (format "src %s" (cdr cell)))))
+  ;; (dolist (cell org-structure-template-src-alist-extensions)
+  ;;   (add-to-list 'org-structure-template-alist
+  ;;                (cons (car cell)
+  ;;                      (format "src %s" (cdr cell)))))
+
+  ;; (mapcan
+  ;;  #'(lambda (src-cell)
+  ;;      (let* ((key (car src-cell))
+  ;;             (name (format "src %s" (cdr src-cell)))
+  ;;             (entry (cons key name)))
+  ;;        (org-tempo-add-block entry)))
+  ;;  org-structure-template-src-alist-extensions)
+
+  (mapcan
+   #'(lambda (src-cell)
+       (let* ((key (car src-cell))
+              (name (format "src %s" (cdr src-cell)))
+              (entry (cons key name)))
+         (add-to-list 'org-structure-template-alist entry)))
+   org-structure-template-src-alist-extensions)
 #+end_src
+
+Getting the following message after trying to evaluate the =mapcan= block
+without restarting Emacs:
+
+#+begin_example
+  let*: List contains a loop: (("E" . "export") ("h" . "export html") ("l"
+  . "export latex") ("q" . "quote") ("s" . "src") ("v" . "verse") ("esh" . "src
+  eshell") ("sh" . "src shell") ("sql" . "src sql") ("py" . "src python") ...)
+#+end_example
+
+[Note: for Rust support, use [[https://github.com/brotzeit/rustic][rustic]]; see [[https://stackoverflow.com/a/62934702][Literate Programming with rust and org
+mode | stackoverflow]].]
 
 ** =org-pretty-entities=
 [[https://orgmode.org/manual/Special-Symbols.html][org-pretty-entities]] automatically converts appearance of things like ~\​to~ to →
