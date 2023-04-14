@@ -33,6 +33,11 @@ I haven't figured out where to stuff =sp-use-paredit-bindings= (although maybe
 that's because it's called interactively? that doesn't seem like it would be a
 problem though).
 
+*** TODO fuzzy file search like the old days with ~ivy~​(?)
+Remember when you could ~C-x C-f~ for a file that you'd recently worked on, and
+it didn't matter if it was in a different directory? That was a great feature
+that I'm missing from my current configuration.
+
 ** Features to add [2/4]
 - [X] complete the switch from ~package.el~ to ~straight.el~
   - [X] automatically install missing packages on startup (finding out the hard
