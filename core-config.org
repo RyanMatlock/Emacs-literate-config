@@ -1391,6 +1391,13 @@ StackExchange]]
   (add-hook 'org-mode-hook 'add-org-toggle-src-key)
 #+end_src
 
+** alphabetical lists
+See [[https://orgmode.org/manual/Plain-Lists.html#FOOT11][Org Manual §2.6 Plain Lists -- Fn 11]].
+
+#+begin_src emacs-lisp
+  (setq org-list-allow-alphabetical t)
+#+end_src
+
 ** TODO Export
 
 *** TODO HTML -- default stylesheet
