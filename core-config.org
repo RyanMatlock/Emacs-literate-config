@@ -495,11 +495,11 @@ to see them).
   (use-package whitespace
     :straight t
     :hook
-    (prog-mode . whitespace-mode)
-    (org-mode . whitespace-mode)
-    (tex-mode . whitespace-mode)
-    (latex-mode . whitespace-mode)
-    (LaTeX-mode . whitespace-mode)
+    ((prog-mode . whitespace-mode)
+     (org-mode . whitespace-mode)
+     (tex-mode . whitespace-mode)
+     (latex-mode . whitespace-mode)
+     (LaTeX-mode . whitespace-mode))
     :config
     (setq whitespace-display-characters
           ;; display <tab> as »
