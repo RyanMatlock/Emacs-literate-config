@@ -12,12 +12,6 @@ the way I want it at some point---and keep it that way!
 
 ** ~*Messages*~
 
-*** TODO ~org-iedit-in-src-block~
-
-#+begin_example
-File mode specification error: (void-variable org-iedit-in-src-block)
-#+end_example
-
 ** Other
 
 *** TODO restore ~custom.el~ settings as much as possible
@@ -645,6 +639,9 @@ without it. Really can't overstate how useful it is; see
     :bind ("C-c ;" . iedit-mode))
 #+end_src
 
+Here's something I just noticed in the documentation: "With digit prefix
+argument 0, only occurrences in current function are matched."
+
 *** Reload =.emacs=
 See
 http://stackoverflow.com/questions/24810079/key-binding-to-reload-emacs-after-changing-it
@@ -1264,6 +1261,7 @@ like your bash prompt, or even do some cool things like fish.
 
 * TODO Org mode
 ** Keybindings
+*** Still relevant?
 By default
 
 | key   | binding            | desired behavior    |
@@ -1284,38 +1282,41 @@ I'm constantly accidentally typing ~C-c ;~ when I mean to type ~C-c '~, so I wan
 time to time, I can always call it with ~M-x ...~ rather than keep it bound to a
 key.
 
+*** =iedit-mode= only available in ~src~ blocks
+
 #+begin_src emacs-lisp
-  (defun org-iedit-in-src-block ()
-    "Use this in Org mode to ensure iedit-mode only works in src block
+  (defun org-iedit-only-in-src-block ()
+    "Ensure iedit-mode only works in Org src block.
 
   Note: manually calling 「M-x iedit-mode⸥ will still work anywhere"
     (interactive)
-    (when (org-in-src-block-p t)
-      (iedit-mode)))
+    (cond ((org-in-src-block-p t) (iedit-mode))
+          (t (progn (ding)
+                    (message "You're not in an Org src block.")))))
+
+  (with-eval-after-load 'org
+    (define-key org-mode-map (kbd "C-c ;") 'org-iedit-only-in-src-block))
 #+end_src
 
-=org-iedit-in-src-block= works as expected.
+Note about =org-in-src-block-p=:
 
-#+begin_src emacs-lisp
-  (defun org-mode-keymap-rebindings ()
-    "My preferred Org mode key (un/re)bindings."
-    ;; doesn't work
-    ;; (define-key org-mode-map (kbd "C-c ;") nil)
-    ;; (define-key org-mode-map (kbd "C-c |") org-toggle-comment)
-    (local-set-key (kbd "C-c ;") org-iedit-in-src-block)
-    (local-set-key (kbd "C-c |") org-toggle-comment))
+#+begin_quote
+(org-in-src-block-p &optional INSIDE ELEMENT)
 
-  (add-hook 'org-mode-hook 'org-mode-keymap-rebindings)
+Whether point is in a code source block.
+When INSIDE is non-nil, don’t consider we are within a source
+block when point is at #+BEGIN_SRC or #+END_SRC.
+When ELEMENT is provided, it is considered to be element at point.
+#+end_quote
 
-  ;; this doesn't work either ¯\_(ツ)_/¯
-  ;; (add-hook 'org-mode-hook
-  ;;           (lambda ()
-  ;;             (local-set-key (kbd "C-c ;") org-iedit-in-src-block)))
-#+end_src
+=(org-in-src-block-p t)= is in fact the behavior I want and not a newbie
+mistake lingering on in here.
 
-These keybindings don't work as expected.
+The reason I had an issue with =(void-variable org-iedit-in-src-block)= for so
+long was that I forgot (read: didn't know that I needed to) quote the function
+in =define-key= or =local-set-key=, but now everything works as it should.
 
-** ~org-tempo~
+** TODO ~org-tempo~
 Enable old-style template blocks, e.g. make ~<s TAB~ create ~src~ blocks again; see
 [[https://emacs.stackexchange.com/a/46992][Why do easy templates, .e.g, "< s TAB" in org 9.2 not work? | Emacs
 StackExchange]]. Additional [[https://config.daviwil.com/emacs#block-templates][block templates]] courtesy of [[https://config.daviwil.com/emacs][daviwil's Emacs
