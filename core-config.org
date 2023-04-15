@@ -27,10 +27,20 @@ I haven't figured out where to stuff =sp-use-paredit-bindings= (although maybe
 that's because it's called interactively? that doesn't seem like it would be a
 problem though).
 
-*** TODO fuzzy file search like the old days with ~ivy~​(?)
+Note: when I manually enable =turn-on-smartparens-strict-mode= and
+=sp-use-paredit-bindings=, I've noticed that I've had issues with ~C-u 0 C-k~
+not working the way I expect it to. I've found that ~C-k~ is bound to
+=sp-kill-hybrid-sexp=, so I need to look into that, although I remember coming
+across some comments about some smartparens kill function that annoyed several
+people enough to switch back to paredit.
+
+*** TODO fuzzy file search like the old days with +~ivy~ or+ ~ido~​(?)
 Remember when you could ~C-x C-f~ for a file that you'd recently worked on, and
 it didn't matter if it was in a different directory? That was a great feature
 that I'm missing from my current configuration.
+
+Oh, right, I think it was ~ido~ because there's [[https://github.com/minad/vertico#extensions][vertico-directory]], which I've
+had trouble getting working.
 
 *** TODO study this amazing literate config file
 [[https://panadestein.github.io/emacsd/][Panadestein's literate Emacs config]]
