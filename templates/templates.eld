@@ -144,9 +144,9 @@ org-mode
 (hltx "#+latex_header: " )
 (hhtml "#+html_head: ")
 (eqn "\\begin{equation}\n" r> n> "\\end{equation}")
-(eqn* "\\begin{equation*}\n" r> n> "\\end{equation*}")
+(*eqn "\\begin{equation*}\n" r> n> "\\end{equation*}")
 (align "\\begin{align}\n" r> n> "\\end{align}")
-(align* "\\begin{align*}\n" r> n> "\\end{align*}")
+(*align "\\begin{align*}\n" r> n> "\\end{align*}")
 
 ;; Local Variables:
 ;; mode: lisp-data
