@@ -1415,8 +1415,6 @@ in =define-key= or =local-set-key=, but now everything works as it should.
 [[https://orgmode.org/manual/Structure-Templates.html][Org structure templates]] (~C-c c-,~: =org-insert-structure-template=)
 
 #+begin_src emacs-lisp
-  (require 'org-tempo)
-
   ;; daviwil's strategy:
   ;; (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
   ;; ...
@@ -1424,49 +1422,30 @@ in =define-key= or =local-set-key=, but now everything works as it should.
 
   ;; more elegant way of doing it(?)
   ;; note: cdr needs to have 'src␣' prepended in order to work.
-  (setq org-structure-template-src-alist-extensions
-    '(("el"  . "emacs-lisp")
-      ("hs"  . "haskell")
-      ("ltx" . "latex")
-      ("org" . "org")
-      ("py"  . "python")
-      ("rust" . "rustic")
-      ("sql" . "sql")
-      ("sh"  . "shell")
-      ("esh" . "eshell")
-      ("yaml" . "yaml")
-      ("json" . "json")))
+  (with-eval-after-load 'org
+    (progn
+      (setq org-structure-template-src-alist-extensions
+            '(("el"  . "emacs-lisp")
+              ("hs"  . "haskell")
+              ("ltx" . "latex")
+              ("org" . "org")
+              ("py"  . "python")
+              ("rust" . "rustic")
+              ("sql" . "sql")
+              ("sh"  . "shell")
+              ("esh" . "eshell")
+              ("yaml" . "yaml")
+              ("json" . "json")))
 
-  ;; (dolist (cell org-structure-template-src-alist-extensions)
-  ;;   (add-to-list 'org-structure-template-alist
-  ;;                (cons (car cell)
-  ;;                      (format "src %s" (cdr cell)))))
+      (seq-do
+       #'(lambda (src-cell)
+           (let* ((key (car src-cell))
+                  (name (format "src %s" (cdr src-cell)))
+                  (entry (cons key name)))
+             (add-to-list 'org-structure-template-alist entry)))
+       org-structure-template-src-alist-extensions)))
 
-  ;; (mapcan
-  ;;  #'(lambda (src-cell)
-  ;;      (let* ((key (car src-cell))
-  ;;             (name (format "src %s" (cdr src-cell)))
-  ;;             (entry (cons key name)))
-  ;;        (org-tempo-add-block entry)))
-  ;;  org-structure-template-src-alist-extensions)
-
-  (mapcan
-   #'(lambda (src-cell)
-       (let* ((key (car src-cell))
-              (name (format "src %s" (cdr src-cell)))
-              (entry (cons key name)))
-         (add-to-list 'org-structure-template-alist entry)))
-   org-structure-template-src-alist-extensions)
 #+end_src
-
-Getting the following message after trying to evaluate the =mapcan= block
-without restarting Emacs:
-
-#+begin_example
-  let*: List contains a loop: (("E" . "export") ("h" . "export html") ("l"
-  . "export latex") ("q" . "quote") ("s" . "src") ("v" . "verse") ("esh" . "src
-  eshell") ("sh" . "src shell") ("sql" . "src sql") ("py" . "src python") ...)
-#+end_example
 
 [Note: for Rust support, use [[https://github.com/brotzeit/rustic][rustic]]; see [[https://stackoverflow.com/a/62934702][Literate Programming with rust and org
 mode | stackoverflow]].]
