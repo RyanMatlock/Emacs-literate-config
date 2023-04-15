@@ -32,6 +32,13 @@ Remember when you could ~C-x C-f~ for a file that you'd recently worked on, and
 it didn't matter if it was in a different directory? That was a great feature
 that I'm missing from my current configuration.
 
+*** TODO study this amazing literate config file
+[[https://panadestein.github.io/emacsd/][Panadestein's literate Emacs config]]
+
+**** packages to look into [0/2]
+- [ ] =so-long= for long lines
+- [ ] =vterm= terminal emulator written in C, so I guess it's fast?
+
 ** Features to add [2/4]
 - [X] complete the switch from ~package.el~ to ~straight.el~
   - [X] automatically install missing packages on startup (finding out the hard
@@ -1263,6 +1270,91 @@ EmacsWiki has some ideas for how to change thee [[https://www.emacswiki.org/emac
 like your bash prompt, or even do some cool things like fish.
 
 * TODO Org mode
+** Main config
+Per [[https://panadestein.github.io/emacsd/#org55146ca][Panadestein's Emacs's config | Org mode]], it seems like I can put this all
+the way down here and remove =(use-package org)= from ~dotemacs.el~. I'm not
+ready to make that change yet, but when I do, it'll go here.
+
+#+begin_src emacs-lisp
+  (use-package org
+    :straight t
+    :init
+    (defun display-ansi-colors ()
+      "Fixes kernel output in emacs-jupyter"
+      (ansi-color-apply-on-region (point-min) (point-max)))
+    :hook
+    (org-mode . (lambda ()
+                  (progn
+                    (add-hook
+                     'after-save-hook #'org-babel-tangle :append :local)
+                    (add-hook
+                     'org-babel-after-execute-hook #'display-ansi-colors))))
+    :config
+    ;; (require 'ox-beamer)
+    ;; (require 'ol-bibtex)
+    (add-to-list 'org-modules 'org-tempo)
+    (org-babel-do-load-languages
+     'org-babel-load-languages '((python . t)
+                                 (jupyter . t)
+                                 (scheme . t)
+                                 (haskell . t)
+                                 (lisp . t)
+                                 (emacs-lisp . t)
+                                 ;; (clojure . t)
+                                 (C . t)
+                                 (org . t)
+                                 ;; (gnuplot . t)
+                                 (sql . t)
+                                 (eshell . t)
+                                 (awk . t)
+                                 (latex . t)
+                                 (shell . t)))
+    ;; (setq org-babel-clojure-backend 'cider)
+    ;; (setq org-latex-pdf-process '("latexmk -shell-escape -pdf -outdir=%o %f"))
+    ;; (setq org-preview-latex-default-process 'imagemagick)
+    ;; (setq org-src-window-setup 'current-window)
+    ;; (setq org-startup-indented t)
+    (setq org-latex-listings 'minted
+          org-latex-packages-alist '(("" "minted")))
+    (setq org-startup-with-inline-images t)
+    (setq org-todo-keywords
+          '((sequence "TODO(t)"
+                      "BROKEN(b)"
+                      "RUNNING(r)"
+                      "VERIFY(v)"
+                      "URGENT(u)"
+                      "PARTIAL(p)"
+                      "|"
+                      "DONE(d)"
+                      "OPTIONAL(o)"
+                      "DELEGATED(e)"
+                      "IRRELEVANT(i)")))
+    (setq org-todo-keyword-faces
+          '(("BROKEN" . "red")
+            ("RUNNING" . "yellow")
+            ("VERIFY" . "light goldenrod")
+            ("URGENT" . "orange")
+            ("PARTIAL" . "burlywood")
+            ("OPTIONAL" . "green")
+            ("IRRELEVANT" . "LightBlue1")
+            ("DELEGATED" . "aquamarine3")))
+    (setq org-format-latex-options
+          (plist-put org-format-latex-options :scale 2.0))
+    (add-hook 'org-babel-after-execute-hook 'org-redisplay-inline-images))
+
+  (use-package org-superstar
+    :straight t
+    :config
+    (add-hook 'org-mode-hook (lambda () (org-superstar-mode 1))))
+#+end_src
+
+Some explanations:
+- =org-src-window-setup=: [[https://stackoverflow.com/questions/20909393/how-to-open-a-code-block-using-emacs-org-mode-in-a-specific-window][How to open a code block using emacs org-mode in a
+  specific window | stackoverflow]] (you don't want it in =current-window=, and
+  the default behavior seems to work the way you like it)
+- =org-format-latex-options=: [[https://stackoverflow.com/a/11272625][How to make formule bigger in org-mode of
+  Emacs? | stackoverflow]]
+
 ** Keybindings
 *** Still relevant?
 By default
