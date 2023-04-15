@@ -1167,7 +1167,10 @@ Eldoc mode gives you hints in the minibuffer.
     (progn
       (define-key ielm-map (kbd "C-c M-<return>") 'ielm-return-for-effect)
       (define-key ielm-map (kbd "M-<return>") 'ielm-return)
-      (define-key ielm-map (kbd "<return>") 'sp-newline)))
+      (define-key ielm-map (kbd "<return>") 'sp-newline)
+      (when 'paredit-mode
+        (message "paredit-mode is available"
+                 (define-key ielm-map (kbd "C-c <tab>") 'ielm-return)))))
 #+end_src
 
 tl;dr:
