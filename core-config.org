@@ -1295,7 +1295,7 @@ ready to make that change yet, but when I do, it'll go here.
     (add-to-list 'org-modules 'org-tempo)
     (org-babel-do-load-languages
      'org-babel-load-languages '((python . t)
-                                 (jupyter . t)
+                                 ;; (jupyter . t)
                                  (scheme . t)
                                  (haskell . t)
                                  (lisp . t)
@@ -1341,11 +1341,6 @@ ready to make that change yet, but when I do, it'll go here.
     (setq org-format-latex-options
           (plist-put org-format-latex-options :scale 2.0))
     (add-hook 'org-babel-after-execute-hook 'org-redisplay-inline-images))
-
-  (use-package org-superstar
-    :straight t
-    :config
-    (add-hook 'org-mode-hook (lambda () (org-superstar-mode 1))))
 #+end_src
 
 Some explanations:
