@@ -1202,26 +1202,22 @@ the input.
 
 ** Parentheses
 *** TODO +Paredit+ smartparens
-Balance parentheses automatically; see http://www.emacswiki.org/emacs/ParEdit.
+**** Basic config
+Balance parentheses automatically; see [[http://www.emacswiki.org/emacs/ParEdit][ParEdit | EmacsWiki]].
 
-# #+begin_src emacs-lisp
-#   (use-package paredit
-#     :straight t
-#     :hook ((emacs-lisp-mode . paredit-mode)
-#            (lisp-mode . paredit-mode)
-#            (common-lisp-mode . paredit-mode)
-#            (lisp-interaction-mode . paredit-mode)
-#            (geiser-repl-mode . paredit-mode)
-#            (slime-repl-mode . paredit-mode)
-#            (ielm-mode . paredit-mode)
-#            (scheme-mode . paredit-mode)))
-# #+end_src
-
-# #+begin_src emacs-lisp
-#   (define-key paredit-mode-map (kbd "<ret>") nil)
-#   (define-key paredit-mode-map (kbd "C-j") 'paredit-newline)
-#   (define-key inferior-emacs-lisp-mode-map (kbd "<ret>") 'ielm-return)
-# #+end_src
+#+begin_src emacs-lisp
+  (use-package paredit
+    :straight t
+    ;; :hook ((emacs-lisp-mode . paredit-mode)
+    ;;        (lisp-mode . paredit-mode)
+    ;;        (common-lisp-mode . paredit-mode)
+    ;;        (lisp-interaction-mode . paredit-mode)
+    ;;        (geiser-repl-mode . paredit-mode)
+    ;;        (slime-repl-mode . paredit-mode)
+    ;;        (ielm-mode . paredit-mode)
+    ;;        (scheme-mode . paredit-mode))
+    )
+#+end_src
 
 Per [[https://stackoverflow.com/a/16614083][Why can't I change paredit keybindings]] (which is almost 10 years old at the
 time of visiting this), I should use [[https://github.com/Fuco1/smartparens][smartparens]] instead of paredit because of
@@ -1231,10 +1227,15 @@ much trouble!).
 #+begin_src emacs-lisp
   (use-package smartparens
     :straight t
-    :hook ((emacs-lisp-mode . 'turn-on-smartparens-strict-mode)
-           (lisp-mode . 'turn-on-smartparens-strict-mode)
-           (comint-mode . 'turn-on-smartparens-strict-mode))
-    :config (require 'smartparens-config))
+    ;; :hook ((emacs-lisp-mode . 'turn-on-smartparens-strict-mode)
+    ;;        (lisp-mode . 'turn-on-smartparens-strict-mode)
+    ;;        (comint-mode . 'turn-on-smartparens-strict-mode))
+    :config
+    (require 'smartparens-config)
+    ;; (sp-with-modes sp--lisp-modes
+    ;;   (turn-on-smartparens-strict-mode)
+    ;;   (sp-use-paredit-bindings))
+    )
 
   ;; (sp-with-modes sp--lisp-modes
   ;;   'turn-on-smartparens-strict-mode)
@@ -1245,6 +1246,33 @@ much trouble!).
 
   ;; sp-use-paredit-bindings
 #+end_src
+
+**** Issues
+
+#+begin_example
+  Error (use-package): smartparens/:config: Invalid function: (require
+  'smartparens-config) Disable showing Disable logging
+  Error (use-package): smartparens/:config: Wrong number of arguments: (0 . 0), 1
+  Disable showing Disable logging
+#+end_example
+
+That issue seemed to come up when I had
+
+# #+begin_src emacs-lisp :eval no
+#   :config
+#   (require 'smartparens-config)
+#   (sp-with-modes sp--lisp-modes
+#     (turn-on-smartparens-strict-mode)
+#     (sp-use-paredit-bindings))
+
+#   ;; or
+
+#   :config (progn
+#             (require 'smartparens-config)
+#             (sp-with-modes sp--lisp-modes
+#               (turn-on-smartparens-strict-mode)
+#               (sp-use-paredit-bindings)))
+# #+end_src
 
 #+begin_example
   Warning (defvaralias): Overwriting value of ‘inferior-emacs-lisp-mode-hook’ by
@@ -1272,6 +1300,59 @@ Here's what I want
   least for now; perhaps at some point I'll want to update that) ---
   =smartparens-strict-mode= actually seems to handle slurping and barfing th
   way I'm used to
+
+**** Stolen from [[https://github.com/Fuco1/.emacs.d/blob/master/files/smartparens.el][author's config]]
+
+#+begin_src emacs-lisp
+  (sp-with-modes 'org-mode
+    (sp-local-pair "=" "=" :wrap "C-=")
+    (sp-local-pair "~" "~" :wrap "M-`")
+    ;; yeah, I'm bringing 「」 back
+    (sp-local-pair "「" "」" :wrap "C-c e"))
+
+  ;; conflict with RefTeX?
+  ;; (sp-with-modes '(tex-mode plain-tex-mode latex-mode LaTeX-mode)
+  ;;   (sp-local-pair "\\left(" "\\right)" :wrap "C-c (")
+  ;;   (sp-local-pair "\\left[" "\\right]" :wrap "C-c ["))
+
+  (--each sp--lisp-modes
+    (eval-after-load it
+      '(turn-on-smartparens-strict-mode)))
+#+end_src
+
+This still isn't calling =turn-on-smartparens-strict-mode= for some reason.
+
+Since I couldn't find an =apropos= entry for it,
+
+#+begin_example
+  ELISP> sp--lisp-modes
+  (cider-repl-mode clojure-mode clojurec-mode clojurescript-mode clojurex-mode
+                   common-lisp-mode emacs-lisp-mode eshell-mode fennel-mode
+                   fennel-repl-mode geiser-repl-mode gerbil-mode inf-clojure-mode
+                   inferior-emacs-lisp-mode inferior-lisp-mode
+                   inferior-scheme-mode lisp-interaction-mode lisp-mode
+                   monroe-mode racket-mode racket-repl-mode
+                   scheme-interaction-mode scheme-mode slime-repl-mode
+                   sly-mrepl-mode stumpwm-mode)
+#+end_example
+
+so that's really everything.
+
+I'm also having issues with
+
+#+begin_example
+    (sp-local-pair "~「" "」~" :wrap "C-c M-`")
+    (sp-local-pair "=「" "」=" :wrap "C-c r")
+#+end_example
+
+#+begin_example
+  Debugger entered--Lisp error: (wrong-type-argument char-or-string-p nil)
+    sp-wrap-with-pair("=「")
+    (lambda (&optional arg) (interactive "*P") (sp-wrap-with-pair "=「"))(nil)
+    funcall-interactively((lambda (&optional arg) (interactive "*P") (sp-wrap-with-pair "=「")) nil)
+    call-interactively((lambda (&optional arg) (interactive "*P") (sp-wrap-with-pair "=「")) nil nil)
+    command-execute((lambda (&optional arg) (interactive "*P") (sp-wrap-with-pair "=「")))
+#+end_example
 
 *** ~rainbow-delimiters~
 [[https://github.com/Fanael/rainbow-delimiters][rainbow-delimiters]]: useful for more than just Lisp, this mode color codes
