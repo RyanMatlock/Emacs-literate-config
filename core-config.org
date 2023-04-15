@@ -36,7 +36,6 @@ that I'm missing from my current configuration.
 [[https://panadestein.github.io/emacsd/][Panadestein's literate Emacs config]]
 
 **** packages to look into [0/2]
-- [ ] =so-long= for long lines
 - [ ] =vterm= terminal emulator written in C, so I guess it's fast?
 
 ** Features to add [2/4]
@@ -154,6 +153,22 @@ errors.
 It's helpful to automatically have a log of sorts, kind of like
 ~.bash_history~. Having this first ensures that it's done when setting up this
 configuration on a new machine.
+
+** ~so-long~ -- say goodbye to poor performance with minified files
+From [[https://elpa.gnu.org/packages/so-long.html][so-long | GNU ELPA]]:
+
+#+begin_quote
+When the lines in a file are so long that performance could suffer to an
+unacceptable degree, we say "so long" to the slow modes and options enabled in
+that buffer, and invoke something much more basic in their place.
+#+end_quote
+
+#+begin_src emacs-lisp
+  (use-package so-long
+    :straight nil
+    :hook
+    (after-init-hook . global-so-long-mode))
+#+end_src
 
 ** Startup behavior
 *** ~*scratch*~ behavior
