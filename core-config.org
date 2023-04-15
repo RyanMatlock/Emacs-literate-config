@@ -1313,8 +1313,9 @@ ready to make that change yet, but when I do, it'll go here.
     :hook
     (org-mode . (lambda ()
                   (progn
-                    (add-hook
-                     'after-save-hook #'org-babel-tangle :append :local)
+                    ;; not sure what this does
+                    ;; (add-hook
+                    ;;  'after-save-hook #'org-babel-tangle :append :local)
                     (add-hook
                      'org-babel-after-execute-hook #'display-ansi-colors))))
     :config
