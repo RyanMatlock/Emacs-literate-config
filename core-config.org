@@ -647,14 +647,13 @@ Here's something I just noticed in the documentation: "With digit prefix
 argument 0, only occurrences in current function are matched."
 
 *** Reload =.emacs=
-See
-http://stackoverflow.com/questions/24810079/key-binding-to-reload-emacs-after-changing-it
+See [[http://stackoverflow.com/questions/24810079/key-binding-to-reload-emacs-after-changing-it][Key binding to reload .emacs after changing it? | stackoverflow]]
 
 #+begin_src emacs-lisp
   (defun reload-dotemacs ()
     (interactive)
     (load-file "~/.emacs"))
-  (global-set-key (kbd "C-c <f12>") 'reload-dotemacs)
+  (define-key global-map (kbd "C-c <f12>") 'reload-dotemacs)
 #+end_src
 
 *** Copy selection without killing
