@@ -54,6 +54,13 @@ built in).
     :hook ((markdown-mode . pandoc-mode)))
 #+end_src
 
+** JSON
+
+#+begin_src emacs-lisp
+  (use-package json-mode
+    :straight t)
+#+end_src
+
 * Minor modes
 
 ** ~yasnippet~
