@@ -1201,28 +1201,30 @@ the input.
 #+end_quote
 
 ** Parentheses
-*** TODO +Paredit+ smartparens
+*** TODO +ParEdit+ +smartparens+ ParEdit
 **** Basic config
 Balance parentheses automatically; see [[http://www.emacswiki.org/emacs/ParEdit][ParEdit | EmacsWiki]].
 
 #+begin_src emacs-lisp
   (use-package paredit
     :straight t
-    ;; :hook ((emacs-lisp-mode . paredit-mode)
-    ;;        (lisp-mode . paredit-mode)
-    ;;        (common-lisp-mode . paredit-mode)
-    ;;        (lisp-interaction-mode . paredit-mode)
-    ;;        (geiser-repl-mode . paredit-mode)
-    ;;        (slime-repl-mode . paredit-mode)
-    ;;        (ielm-mode . paredit-mode)
-    ;;        (scheme-mode . paredit-mode))
-    )
+    :hook ((emacs-lisp-mode . paredit-mode)
+           (lisp-mode . paredit-mode)
+           (common-lisp-mode . paredit-mode)
+           (lisp-interaction-mode . paredit-mode)
+           (geiser-repl-mode . paredit-mode)
+           (slime-repl-mode . paredit-mode)
+           (ielm-mode . paredit-mode)
+           (lisp-data-mode . paredit-mode)
+           (scheme-mode . paredit-mode)))
 #+end_src
 
 Per [[https://stackoverflow.com/a/16614083][Why can't I change paredit keybindings]] (which is almost 10 years old at the
 time of visiting this), I should use [[https://github.com/Fuco1/smartparens][smartparens]] instead of paredit because of
 the convoluted way paredit handles keybindings (no wonder you've been having so
 much trouble!).
+
+**** COMMENT smartparens
 
 #+begin_src emacs-lisp
   (use-package smartparens
@@ -1301,7 +1303,7 @@ Here's what I want
   =smartparens-strict-mode= actually seems to handle slurping and barfing th
   way I'm used to
 
-**** Stolen from [[https://github.com/Fuco1/.emacs.d/blob/master/files/smartparens.el][author's config]]
+**** COMMENT Stolen from [[https://github.com/Fuco1/.emacs.d/blob/master/files/smartparens.el][author's config]]
 
 #+begin_src emacs-lisp
   (sp-with-modes 'org-mode
