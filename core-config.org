@@ -490,7 +490,7 @@ to see them).
     :straight t
     :hook
     ((prog-mode . whitespace-mode)
-     (org-mode . whitespace-mode)
+     ;; (org-mode . whitespace-mode)
      (tex-mode . whitespace-mode)
      (latex-mode . whitespace-mode)
      (LaTeX-mode . whitespace-mode))
@@ -507,6 +507,10 @@ to see them).
                              tabs
                              tab-mark)))
 #+end_src
+
+=whitespace-mode= is a little weird in Org mode; as an example, shortened links
+can make text appear that it's over 80 characters per line when it isn't
+visually exceeding that limit.
 
 *** TODO Tab/space handling -- improve this
 Tip: ~M-x~ [[http://pragmaticemacs.com/emacs/convert-tabs-to-spaces/][untabify]] works on a region, ~C-u M-x untabify~ works on a whole
