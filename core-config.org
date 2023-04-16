@@ -1427,7 +1427,9 @@ ready to make that change yet, but when I do, it'll go here.
     ;; (setq org-src-window-setup 'current-window)
     ;; (setq org-startup-indented t)
     (setq org-latex-listings 'minted
-          org-latex-packages-alist '(("" "minted")))
+          org-latex-packages-alist
+          '(("" "minted")
+            ("" "siunitx")))
     ;; (add-to-list 'org-latex-default-packages-alist
     ;;              (concat "\\PassOptionsToPackage"
     ;;                      "{colorlinks=true,allcolors=magenta}{hyperref}"))
