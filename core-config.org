@@ -1428,6 +1428,20 @@ ready to make that change yet, but when I do, it'll go here.
     ;; (setq org-startup-indented t)
     (setq org-latex-listings 'minted
           org-latex-packages-alist '(("" "minted")))
+    ;; (add-to-list 'org-latex-default-packages-alist
+    ;;              (concat "\\PassOptionsToPackage"
+    ;;                      "{colorlinks=true,allcolors=magenta}{hyperref}"))
+    (customize-set-value
+     'org-latex-hyperref-template
+     (concat "\\hypersetup{\n"
+             "pdfauthor={%a},\n"
+             "pdftitle={%t},\n"
+             "pdfkeywords={%k},\n"
+             "pdfsubject={%d},\n"
+             "pdfcreator={%c},\n"
+             "pdflang={%L},\n"
+             "colorlinks=true,\n"
+             "allcolors=magenta}"))
     (setq org-startup-with-inline-images t)
     (setq org-todo-keywords
           '((sequence "TODO(t)"
@@ -1461,6 +1475,10 @@ Some explanations:
   the default behavior seems to work the way you like it)
 - =org-format-latex-options=: [[https://stackoverflow.com/a/11272625][How to make formule bigger in org-mode of
   Emacs? | stackoverflow]]
+- +[[https://emacs.stackexchange.com/a/46226][How to change style of hyperlinks within PDF published from org-mode
+  document? | stackoverflow]]: =... \\PassOptionsToPackage{hyperref} ...=+
+  Actually, that answer looks wrong, but [[https://emacs.stackexchange.com/a/61200][changing the hyperref tamplate |
+  stackoverflow]] (=org-latex-hyperref-template=) looks promising
 
 ** Keybindings
 *** Still relevant?
