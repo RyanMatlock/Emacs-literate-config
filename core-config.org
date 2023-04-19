@@ -1167,7 +1167,7 @@ Eldoc mode gives you hints in the minibuffer.
     (progn
       (define-key ielm-map (kbd "C-c M-<return>") 'ielm-return-for-effect)
       (define-key ielm-map (kbd "M-<return>") 'ielm-return)
-      (define-key ielm-map (kbd "<return>") 'sp-newline)
+      (define-key ielm-map (kbd "<return>") 'newline)
       (when 'paredit-mode
         (message "paredit-mode is available"
                  (define-key ielm-map (kbd "C-c <tab>") 'ielm-return)))))
@@ -1426,10 +1426,12 @@ ready to make that change yet, but when I do, it'll go here.
     ;; (setq org-preview-latex-default-process 'imagemagick)
     ;; (setq org-src-window-setup 'current-window)
     ;; (setq org-startup-indented t)
-    (setq org-latex-listings 'minted
-          org-latex-packages-alist
-          '(("" "minted")
-            ("" "siunitx")))
+    (setq
+     ;; org-latex-listings 'minted
+     org-latex-packages-alist
+     '(
+       ;; ("" "minted")
+       ("" "siunitx")))
     ;; (add-to-list 'org-latex-default-packages-alist
     ;;              (concat "\\PassOptionsToPackage"
     ;;                      "{colorlinks=true,allcolors=magenta}{hyperref}"))
@@ -1481,6 +1483,8 @@ Some explanations:
   document? | stackoverflow]]: =... \\PassOptionsToPackage{hyperref} ...=+
   Actually, that answer looks wrong, but [[https://emacs.stackexchange.com/a/61200][changing the hyperref tamplate |
   stackoverflow]] (=org-latex-hyperref-template=) looks promising
+- had an issue where =minted= appeared to break listings export---*look into
+  this!*
 
 ** Keybindings
 *** Still relevant?
