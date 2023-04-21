@@ -1366,6 +1366,9 @@ know how I ever lived without it.
   (use-package rainbow-delimiters
     :straight t
     :hook ((prog-mode . rainbow-delimiters-mode)
+           (tex-mode . rainbow-delimiters-mode)
+           (latex-mode . rainbow-delimiters-mode)
+           (LaTeX-mode . rainbow-delimiters-mode)
            (comint-mode . rainbow-delimiters-mode)))
 #+end_src
 
