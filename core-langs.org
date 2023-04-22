@@ -304,12 +304,36 @@ Note: SyncTeX is setup via ~/.latexmkrc (see below)
                  t
                  :help "Run latexmk on file")
                TeX-command-list)))
+
   (add-hook 'LaTeX-mode-hook
             (lambda ()
               (push
                '("xelatexmk" "latexmk -xelatex -pdf %s" TeX-run-TeX nil t
                  :help "Run latexmk -xelatex on file")
                TeX-command-list)))
+
+  (add-hook 'LaTeX-mode-hook
+            (lambda ()
+              (let* ((shell-cmd (concat "pdflatex "
+                                        ;; "-synctex=1 "
+                                        "-interaction=nonstopmode "
+                                        "-output-format=pdf "
+                                        "-shell-escape "
+                                        "%s"))
+                     (pdflatex-cmd
+                      (list "pdflatex" shell-cmd TeX-run-TeX nil t)))
+                (push pdflatex-cmd TeX-command-list))))
+  ;; TeX-command-expand: Wrong type argument: stringp, (concat "pdflatex "
+  ;;           "-synctex=1 " "-interaction=nonstopmode " "--shell-escape " "%s")
+  ;; ¯\_(ツ)_/¯
+
+  ;; (add-hook 'LaTeX-mode-hook
+  ;;           (lambda ()
+  ;;             (let* ((shell-cmd  "pdflatex -interaction=nonstopmode -output-format=pd -shell-escape %s")
+  ;;                    (pdflatex-cmd
+  ;;                     (list "pdflatex" shell-cmd TeX-run-TeX nil t)))
+  ;;               (push pdflatex-cmd TeX-command-list))))
+
   ;; (add-hook 'LaTeX-mode-hook
   ;;           (lambda ()
   ;;             (push
