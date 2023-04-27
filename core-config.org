@@ -21,7 +21,31 @@ modeline and the way Org mode hides things like tildes. Fix it, and ensure that
 you can't mess this up again, maybe by keeping ~custom.el~ out of this repo and
 only symlinking to it.
 
-*** TODO get =smartparens= to behave like =paredit=
+*** TODO get =org-latex-preview= working
+Getting a warning like
+
+#+begin_example
+  org-compile-file: File
+"/var/folders/kg/8239hvp97h72ls99bmc6tf3m0000gn/T/orgtexX2ws3S.png" wasn’t
+producedPlease adjust ‘dvipng’ part of ‘org-preview-latex-process-alist’.
+#+end_example
+
+even though
+
+#+begin_example
+  /var/folders/kg/8239hvp97h72ls99bmc6tf3m0000gn/T $ ls | grep orgtexX2ws
+  orgtexX2ws3S.aux
+  orgtexX2ws3S.dvi
+  orgtexX2ws3S.log
+  orgtexX2ws3S.tex
+  /var/folders/kg/8239hvp97h72ls99bmc6tf3m0000gn/T $ which dvipng
+  /Library/TeX/texbin/dvipng
+#+end_example
+
+and I can manually run =dvipng <options> orgtex<identifier>.dvi= and get a PNG
+output that looks right.
+
+*** OPTIONAL get =smartparens= to behave like =paredit=
 Still having trouble with =turn-on-smartparens-strict-mode= for Lisp modes, and
 I haven't figured out where to stuff =sp-use-paredit-bindings= (although maybe
 that's because it's called interactively? that doesn't seem like it would be a
@@ -1215,6 +1239,7 @@ Balance parentheses automatically; see [[http://www.emacswiki.org/emacs/ParEdit]
   (use-package paredit
     :straight t
     :hook ((emacs-lisp-mode . paredit-mode)
+           ;; (eshell-mode . paredit-mode) ;; shadows <RET>
            (lisp-mode . paredit-mode)
            (common-lisp-mode . paredit-mode)
            (lisp-interaction-mode . paredit-mode)
