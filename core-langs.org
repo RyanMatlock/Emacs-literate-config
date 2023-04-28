@@ -244,6 +244,10 @@ Let's try [[https://github.com/daviwil/emacs-from-scratch/wiki/LaTeX-config-(Auc
     (require 'auctex-latexmk)
     (auctex-latexmk-setup)
     (setq auctex-latexmk-inherit-TeX-PDF-mode t))
+
+  (add-hook 'latex-mode-hook 'turn-on-reftex)
+  (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
+  (setq reftex-plug-into-auctex t)
 #+end_src
 
 Well, I didn't get any warnings with this.
