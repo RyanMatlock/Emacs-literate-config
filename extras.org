@@ -8,6 +8,9 @@
 Configuration taken from [[https://systemcrafters.cc/build-a-second-brain-in-emacs/getting-started-with-org-roam/#inserting-node-links-using-completions][System Crafters: Build a Second Brain in Emacs with
 Org Roam | Inserting node links using completions]].
 
+Update: use Org Roam for journalling: [[https://youtu.be/3-sLBaJAtew][Org Roam: The Best Way to Keep a Journal
+in Emacs  | System Crafters | YouTube]] ([[https://systemcrafters.net/build-a-second-brain-in-emacs/keep-a-journal/][show notes | System Crafters]])
+
 #+begin_src emacs-lisp
   (use-package org-roam
     :straight t
@@ -19,14 +22,20 @@ Org Roam | Inserting node links using completions]].
       (cond ((file-directory-p full-roam-dir)
              (setq org-roam-directory full-roam-dir))
             (t (warn (format "Org roam directory not found at %s." roam-dir)))))
+    (setq org-roam-dailies-directory "journal")
     (org-roam-completion-everywhere t)
     :bind (("C-c n l" . org-roam-buffer-toggle)
            ("C-c n f" . org-roam-node-find)
            ("C-c n i" . org-roam-node-insert)
            :map org-mode-map
-           ("C-M-i" . completion-at-point))
+           ("C-M-i" . completion-at-point)
+           :map org-roam-dailies-map
+           ("Y" . org-roam-dailies-capture-yesterday)
+           ("T" . org-roam-dailies-capture-tomorrow))
+    :bind-keymap
+    ("C-c n d" . org-roam-dailies-map)
     :config
-    (org-roam-setup)
+    (require 'org-roam-dailies)
     (org-roam-db-autosync-mode))
 #+end_src
 
@@ -38,6 +47,7 @@ I think I'd like to have my directory structure set up as
 #+begin_example
   .
   ├── ideas
+  ├── journal
   ├── observations
   ├── references
   ├── synthesis
@@ -48,6 +58,8 @@ I think I'd like to have my directory structure set up as
 where
 - ~ideas~ contains my own novel ideas; these may link to ~observations~ and
   ~references~;
+- ~journal~ is a daily journal, which may link to ~ideas~, ~observations~,
+  ~references~, and ~synthesis~
 - ~observations~ contains concepts I've observed myself (e.g. helpful tips I've
   come up with through experience); these may be atonic or point to
   ~references~;
