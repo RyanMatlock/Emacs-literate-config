@@ -2,9 +2,9 @@
 #+subtitle: Extras
 #+author: Ryan Matlock
 
-* Extensions to major modes
-** Org mode
-*** Org-roam
+* Org mode extensions
+** Org-roam
+*** Main configuration
 Configuration taken from [[https://systemcrafters.cc/build-a-second-brain-in-emacs/getting-started-with-org-roam/#inserting-node-links-using-completions][System Crafters: Build a Second Brain in Emacs with
 Org Roam | Inserting node links using completions]].
 
@@ -14,7 +14,11 @@ Org Roam | Inserting node links using completions]].
     :init
     (setq org-roam-v2-ack t)
     :custom
-    (org-roam-directory "~/Dropbox/documents-etc/org-roam")
+    (let* ((roam-dir "~/Dropbox/org-roam")
+           (Full-roam-dir (file-truename roam-dir)))
+      (cond ((file-directory-p full-roam-dir)
+             (setq org-roam-directory full-roam-dir))
+            (t (warn (format "Org roam directory not found at %s." roam-dir)))))
     (org-roam-completion-everywhere t)
     :bind (("C-c n l" . org-roam-buffer-toggle)
            ("C-c n f" . org-roam-node-find)
@@ -22,10 +26,83 @@ Org Roam | Inserting node links using completions]].
            :map org-mode-map
            ("C-M-i" . completion-at-point))
     :config
-    (org-roam-setup))
+    (org-roam-setup)
+    (org-roam-db-autosync-mode))
 #+end_src
 
-*** Org Tree Slide
+*** Capture templates
+Ideas for capture templates: [[https://jethrokuan.github.io/org-roam-guide/][How I Take Notes with Org-roam | jethrokuan]].
+
+I think I'd like to have my directory structure set up as
+
+#+begin_example
+  .
+  ├── ideas
+  ├── observations
+  ├── references
+  ├── synthesis
+  ├── biblio.bib
+  └── inbox.org
+#+end_example
+
+where
+- ~ideas~ contains my own novel ideas; these may link to ~observations~ and
+  ~references~;
+- ~observations~ contains concepts I've observed myself (e.g. helpful tips I've
+  come up with through experience); these may be atonic or point to
+  ~references~;
+- ~references~ contains concepts I've found in books, articles, videos, etc.;
+  these will link back to their source;
+- ~synthesis~ takes concepts from ~ideas~, ~observations~, and ~references~ and
+  packages them into a larger whole; and
+- ~inbox.org~ contains unprocessed thoughts.
+
+#+begin_src emacs-lisp
+  (setq org-roam-capture-templates
+        '(("i" "ideas" plain "%?"
+           :if-new (file+head "ideas/${slug}.org"
+                              "#+title: ${title}\n")
+           :immediate-finish t
+           :unnarrowed t)
+          ("r" "references" plain "%?"
+           :if-new
+           (file+head "references/${slug}.org"
+                      "#+title: ${title}\n")
+           :immediate-finish t
+           :unnarrowed t)
+          ("o" "observations" plain "%?"
+           :if-new
+           (file+head "observations/${slug}.org"
+                      "#+title: ${title}\n")
+           :immediate-finish t
+           :unnarrowed t)
+          ("s" "synthesis" plain "%?"
+           :if-new
+           (file+head "synthesis/${slug}.org"
+                      "#+title: ${title}\n")
+           :immediate-finish t
+           :unnarrowed t)))
+#+end_src
+
+Stealing jethrokuan's method for displaying property types and display the
+type for each node:
+
+#+begin_src emacs-lisp
+  (cl-defmethod org-roam-node-type ((node org-roam-node))
+    "Return the TYPE of NODE."
+    (condition-case nil
+        (file-name-nondirectory
+         (directory-file-name
+          (file-name-directory
+           (file-relative-name (org-roam-node-file node) org-roam-directory))))
+      (error "")))
+
+  (setq org-roam-node-display-template
+        (concat "${type:15} ${title:*} "
+                (propertize "${tags:10}" 'face 'org-tag)))
+#+end_src
+
+** Org Tree Slide
 [[https://github.com/takaxp/org-tree-slide][Org Tree Slide]] makes for quick and easy presentations with your Org mode files
 (similar to [[https://github.com/yjwen/org-reveal][org-reveal]] + [[https://revealjs.com][reveal.js]], but lighter weight).
 
