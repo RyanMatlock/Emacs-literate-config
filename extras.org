@@ -17,7 +17,7 @@ in Emacs  | System Crafters | YouTube]] ([[https://systemcrafters.net/build-a-se
     :init
     (setq org-roam-v2-ack t)
     :custom
-    (let* ((roam-dir "~/Dropbox/org-roam")
+    (let* ((roam-dir "~/Dropbox/org/roam")
            (Full-roam-dir (file-truename roam-dir)))
       (cond ((file-directory-p full-roam-dir)
              (setq org-roam-directory full-roam-dir))
@@ -72,7 +72,8 @@ where
   packages them into a larger whole; and
 - ~inbox.org~ contains unprocessed thoughts.
 
-#+begin_src emacs-lisp
+**** COMMENT suggested way of doing it
+#+begin_src emacs-lisp :eval no
   (setq org-roam-capture-templates
         '(("i" "ideas" plain "%?"
            :if-new (file+head "ideas/${slug}.org"
@@ -99,6 +100,29 @@ where
            :unnarrowed t)))
 #+end_src
 
+**** +wrong+ +slightly+ programmatic/DRY way to do it
+#+begin_src emacs-lisp
+  (defun org-roam--create-basic-capture-template (name &optional key)
+    "Create a basic capture template with NAME and shortcut KEY (default: first
+  letter of NAME)."
+    (let ((key (or key (string (elt name 0))))
+          (default-title "#+title: ${title}\n")
+          (slug "${slug}.org"))
+      (list
+       key name
+       'plain "%?"
+       :if-new (list 'file+head (concat (file-name-as-directory name)
+                                        slug)
+                     default-title)
+       :immediate-finish t
+       :unnarrowed t)))
+
+  (setq org-roam-capture-templates
+        (mapcar #'org-roam--create-basic-capture-template
+                '("ideas" "references" "observations" "synthesis")))
+#+end_src
+
+**** Display property types
 Stealing jethrokuan's method for displaying property types and display the
 type for each node:
 
