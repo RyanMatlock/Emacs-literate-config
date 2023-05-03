@@ -148,6 +148,8 @@ org-mode
 (align "\\begin{align}\n" r> n> "\\end{align}")
 (*align "\\begin{align*}\n" r> n> "\\end{align*}")
 (target "<<" (p "target: " target t) target ">>" q)
+(latexpreview "#+startup: latexpreview")
+(filetags "#+filetags: ")
 
 ;; Local Variables:
 ;; mode: lisp-data
