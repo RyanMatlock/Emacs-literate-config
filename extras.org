@@ -49,9 +49,8 @@ I think I'd like to have my directory structure set up as
 
 #+begin_example
   .
-  ├── ideas
   ├── journal
-  ├── observations
+  ├── main
   ├── references
   ├── synthesis
   ├── biblio.bib
@@ -59,17 +58,14 @@ I think I'd like to have my directory structure set up as
 #+end_example
 
 where
-- ~ideas~ contains my own novel ideas; these may link to ~observations~ and
+- ~main~ contains my own observations as well as groupings of ideas from
   ~references~;
-- ~journal~ is a daily journal, which may link to ~ideas~, ~observations~,
-  ~references~, and ~synthesis~
-- ~observations~ contains concepts I've observed myself (e.g. helpful tips I've
-  come up with through experience); these may be atonic or point to
-  ~references~;
+- ~journal~ is a daily journal, which may link to ~main~, ~references~, and
+  ~synthesis~
 - ~references~ contains concepts I've found in books, articles, videos, etc.;
   these will link back to their source;
-- ~synthesis~ takes concepts from ~ideas~, ~observations~, and ~references~ and
-  packages them into a larger whole; and
+- ~synthesis~ takes concepts from ~main~, and ~references~ and packages them
+  into a larger whole; and
 - ~inbox.org~ contains unprocessed thoughts.
 
 **** COMMENT suggested way of doing it
@@ -119,7 +115,7 @@ where
 
   (setq org-roam-capture-templates
         (mapcar #'org-roam--create-basic-capture-template
-                '("ideas" "references" "observations" "synthesis")))
+                '("main" "references" "synthesis")))
 #+end_src
 
 **** Display property types
