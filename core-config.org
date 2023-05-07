@@ -45,7 +45,19 @@ had trouble getting working.
 *** TODO study this amazing literate config file
 [[https://panadestein.github.io/emacsd/][Panadestein's literate Emacs config]]
 
-**** packages to look into [0/2]
+*** TODO figure out what to do with ~s-n~ (i.e. ~⌘-n~)
+It's bound to =ns-new-frame=, and it looks like you can customize some features
+of what the new frame (i.e. window in regular GUI speak) looks like.
+
+Ooh, this is good to know:
+
+#+begin_example :eval no
+  (add-to-list 'default-frame-alist '(width  . 90))
+  (add-to-list 'default-frame-alist '(height . 40))
+  (add-to-list 'default-frame-alist '(font . "Monospace-10"))
+#+end_example
+
+*** TODO packages to look into [0/2]
 - [ ] =vterm= terminal emulator written in C, so I guess it's fast?
 
 ** Features to add [2/4]
@@ -120,7 +132,6 @@ This seems to work well, and it's pretty clear what's going on.
 isn't being picked up as I'd expect. It's looking for something like
 ~$HOME/core-langs.org~ instead of ~$HOME/config/emacs/core-langs.org~.+ Fixed: kind
 of a hack, but I hard coded ~~/config/emacs~ into =expand-file-name= below.
-
 
 * TODO COMMENT Customize
 It seems like the less I use ~customize~ outside of the literate configuration
@@ -1466,7 +1477,8 @@ ready to make that change yet, but when I do, it'll go here.
                       "|"
                       "DONE(d)"
                       "OPTIONAL(o)"
-                      "DELEGATED(e)")))
+                      "DELEGATED(e)"
+                      "CANCELLED(c)")))
     (setq org-todo-keyword-faces
           '(("TODO" . "cyan")
             ("BROKEN" . "red")
@@ -1475,7 +1487,8 @@ ready to make that change yet, but when I do, it'll go here.
             ("URGENT" . "orange")
             ("DONE" . "forest green")
             ("OPTIONAL" . "dark cyan")
-            ("DELEGATED" . "sea green")))
+            ("DELEGATED" . "sea green")
+            ("CANCELLED" . "deep sky blue")))
     (setq org-format-latex-options
           (plist-put org-format-latex-options :scale 2.0))
     (add-hook 'org-babel-after-execute-hook 'org-redisplay-inline-images))
