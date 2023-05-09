@@ -14,13 +14,6 @@ the way I want it at some point---and keep it that way!
 
 ** Other
 
-*** TODO restore ~custom.el~ settings as much as possible
-You seem to have clobbered your ~custom.el~​/​~customize~ settings (I think by
-merging back into git main or something like that), and it's messed up your
-modeline and the way Org mode hides things like tildes. Fix it, and ensure that
-you can't mess this up again, maybe by keeping ~custom.el~ out of this repo and
-only symlinking to it.
-
 *** OPTIONAL get =smartparens= to behave like =paredit=
 Still having trouble with =turn-on-smartparens-strict-mode= for Lisp modes, and
 I haven't figured out where to stuff =sp-use-paredit-bindings= (although maybe
@@ -50,7 +43,7 @@ see [[https://emacs.stackexchange.com/questions/450/intelligent-spell-checking-i
 
 *** TODO fix minibuffer character wrap width
 
-*** TODO figure out what to do with ~s-n~ (i.e. ~⌘-n~)
+*** PARTIAL figure out what to do with ~s-n~
 It's bound to +=ns-new-frame=+ =make-frame=, and it looks like you can customize some features
 of what the new frame (i.e. window in regular GUI speak) looks like.
 
@@ -62,8 +55,7 @@ Ooh, this is good to know:
   (add-to-list 'default-frame-alist '(font . "Monospace-10"))
 #+end_example
 
-*** TODO packages to look into [0/2]
-- [ ] =vterm= terminal emulator written in C, so I guess it's fast?
+*** DONE packages to look into [0/0]
 
 ** Features to add [2/4]
 - [X] complete the switch from ~package.el~ to ~straight.el~
