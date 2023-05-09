@@ -45,6 +45,11 @@ had trouble getting working.
 *** TODO study this amazing literate config file
 [[https://panadestein.github.io/emacsd/][Panadestein's literate Emacs config]]
 
+*** TODO turn on spell check for Org mode
+see [[https://emacs.stackexchange.com/questions/450/intelligent-spell-checking-in-org-mode][Intelligent spell-checking in org-mode | emacs.stackexchange]]
+
+*** TODO fix minibuffer character wrap width
+
 *** TODO figure out what to do with ~s-n~ (i.e. ~⌘-n~)
 It's bound to +=ns-new-frame=+ =make-frame=, and it looks like you can customize some features
 of what the new frame (i.e. window in regular GUI speak) looks like.
@@ -133,7 +138,7 @@ isn't being picked up as I'd expect. It's looking for something like
 ~$HOME/core-langs.org~ instead of ~$HOME/config/emacs/core-langs.org~.+ Fixed: kind
 of a hack, but I hard coded ~~/config/emacs~ into =expand-file-name= below.
 
-* TODO COMMENT Customize
+* Customize
 It seems like the less I use ~customize~ outside of the literate configuration
 files, the better because I can always use =(use-package ... :custom ...)= or
 =setq= and annotate everything using Org mode. See [[https://emacs.stackexchange.com/questions/102/advantages-of-setting-variables-with-setq-instead-of-custom-el][Advantages of setting
@@ -147,14 +152,27 @@ have to dig through the configuration. Bleh.
 although I'm curious how much of a pressing need there is given that with a
 literate =.emacs= config, I can explain my reasoning for a setting.+
 
-#+begin_src emacs-lisp :eval no
+#+begin_src emacs-lisp
   (setq custom-file (expand-file-name "~/config/emacs/custom.el"))
   (load custom-file)
 #+end_src
 
-~custom.el~ must have gotten clobbered by a git merge. I guess the smart thing
-to do would be to keep it in a separate directory so that doesn't happen in the
-future, or I could see how easy it is to keep settings synced across devices.
+While ~custom.el~ isn't literate, which is kind of a bummer, it does seem like it
+can elegantly ensure that certain setting are confined to one location. Maybe
+it's a good idea to move as many settings as possible out over time, and then
+leave things like =custom-set-faces=. As it stands, ~custom.el~ is only 149 lines
+long, which isn't too bad, and it looks like it could be shrunk further.
+
+#+begin_example
+  (custom-set-faces
+   ;; custom-set-faces was added by Custom.
+   ;; If you edit it by hand, you could mess it up, so be careful.
+   ;; Your init file should contain only one such instance.
+   ;; If there is more than one, they won't work right.
+   '(org-level-1 ((t (:inherit default :foreground "#cb4b16" :weight bold))))
+   '(org-level-2 ((t (:inherit default :foreground "#859900" :weight semi-bold))))
+   '(org-level-3 ((t (:inherit default :foreground "#268bd2" :weight semi-bold)))))
+#+end_example
 
 * General interface & minor modes
 ** TODO ~package.el~ \to ~straight.el~
