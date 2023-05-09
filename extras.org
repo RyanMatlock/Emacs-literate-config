@@ -122,15 +122,20 @@ where
 Stealing jethrokuan's method for displaying property types and display the
 type for each node:
 
+Edit: needed to use [[https://github.com/jethrokuan/org-roam-guide/issues/2#issuecomment-1240626498][spjuhel's fix]] for ~error: Unknown specializer
+org-roam-node~ warning.
+
 #+begin_src emacs-lisp
-  (cl-defmethod org-roam-node-type ((node org-roam-node))
-    "Return the TYPE of NODE."
-    (condition-case nil
-        (file-name-nondirectory
-         (directory-file-name
-          (file-name-directory
-           (file-relative-name (org-roam-node-file node) org-roam-directory))))
-      (error "")))
+  (with-eval-after-load 'org-roam
+    (cl-defmethod org-roam-node-type ((node org-roam-node))
+      "Return the TYPE of NODE."
+      (condition-case nil
+          (file-name-nondirectory
+           (directory-file-name
+            (file-name-directory
+             (file-relative-name (org-roam-node-file node)
+                                 org-roam-directory))))
+        (error ""))))
 
   (setq org-roam-node-display-template
         (concat "${type:15} ${title:*} "
