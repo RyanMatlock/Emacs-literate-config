@@ -1,7 +1,8 @@
-# most .el files are derived from Org files with two exceptions, so keep those
-!dotemacs.el
-!legacy-dotemacs.el
-*.el
+# explicitly name Org-derived Emacs Lisp files to ignore
+README.el
+core-config.el
+core-langs.el
+extras.el
 
 # derived from Org files
 *.html
