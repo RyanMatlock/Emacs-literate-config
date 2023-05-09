@@ -46,7 +46,7 @@ had trouble getting working.
 [[https://panadestein.github.io/emacsd/][Panadestein's literate Emacs config]]
 
 *** TODO figure out what to do with ~s-n~ (i.e. ~⌘-n~)
-It's bound to =ns-new-frame=, and it looks like you can customize some features
+It's bound to +=ns-new-frame=+ =make-frame=, and it looks like you can customize some features
 of what the new frame (i.e. window in regular GUI speak) looks like.
 
 Ooh, this is good to know:
@@ -337,8 +337,15 @@ see [[https://www.gnu.org/software/emacs/manual/html_node/efaq/Turning-on-auto_0
                  [triple-mouse-4] [mouse-5] [down-mouse-5] [drag-mouse-5]
                  [double-mouse-5] [triple-mouse-5]))
       (global-unset-key k))
-    (global-unset-key (kbd "C-z"))
-    (setq visible-bell nil))
+    ;; C-z previously bound to suspend-frame (minimizes the window); C-x C-z
+    ;; still bound to suspend-frame
+    (define-key global-map (kbd "C-z") nil)
+    (setq visible-bell nil)
+    ;; s-t previously bound to ns-popup-font-panel
+    (define-key global-map (kbd "s-t") nil)
+    (define-key global-map (kbd "s-N") 'make-frame)
+    ;; s-n previously bound to make-frame
+    (define-key global-map (kbd "s-n") nil))
 #+end_src
 
 *** Prettier mode line
