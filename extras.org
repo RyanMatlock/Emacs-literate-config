@@ -16,17 +16,8 @@ in Emacs  | System Crafters | YouTube]] ([[https://systemcrafters.net/build-a-se
     :straight t
     :init
     (setq org-roam-v2-ack t)
-    :custom
-    (let* ((roam-dir "~/Dropbox/org/roam")
-           (Full-roam-dir (file-truename roam-dir)))
-      (cond ((file-directory-p full-roam-dir)
-             (setq org-roam-directory full-roam-dir))
-            (t (warn (format "Org roam directory not found at %s." roam-dir)))))
-    (setq org-roam-dailies-directory "journal")
-    (org-roam-completion-everywhere t)
-    (org-roam-dailies-capture-templates
-     '(("d" "default" entry "* %?"
-        :if-new (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d (%A)>\n"))))
+
+
     :bind (("C-c n l" . org-roam-buffer-toggle)
            ("C-c n f" . org-roam-node-find)
            ("C-c n i" . org-roam-node-insert)
@@ -38,7 +29,18 @@ in Emacs  | System Crafters | YouTube]] ([[https://systemcrafters.net/build-a-se
     :bind-keymap
     ("C-c n d" . org-roam-dailies-map)
     :config
+    (let* ((roam-dir "~/Dropbox/org/roam")
+           (full-roam-dir (file-truename roam-dir)))
+      (cond ((file-directory-p full-roam-dir)
+             (setq org-roam-directory full-roam-dir))
+            (t (warn (format "Org roam directory not found at %s." roam-dir)))))
     (require 'org-roam-dailies)
+    (setq org-roam-dailies-directory "journal")
+    (setq org-roam-completion-everywhere t)
+    (setq org-roam-dailies-capture-templates
+          '(("d" "default" entry "* %?"
+             :if-new (file+head "%<%Y-%m-%d>.org"
+                                "#+title: %<%Y-%m-%d (%A)>\n"))))
     (org-roam-db-autosync-mode))
 #+end_src
 
