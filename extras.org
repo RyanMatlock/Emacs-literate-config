@@ -180,6 +180,19 @@ built in).
     :straight t)
 #+end_src
 
+** PARTIAL =vterm=
+[[https://github.com/akermu/emacs-libvterm][Emacs-libvterm]] is C library-based terminal emulator.
+
+#+begin_src emacs-lisp
+  (cond ((executable-find "vterm-ctrl")
+         (use-package vterm
+           :straight t))
+        (t (message "vterm requirements not installed on this device.")))
+#+end_src
+
+Note that the documentation recommends some [[https://github.com/akermu/emacs-libvterm#shell-side-configuration][shell-side configuration]] to get the
+most out of ~vterm~, but I haven't done this.
+
 * Minor modes
 
 ** COMMENT ~yasnippet~
