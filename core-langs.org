@@ -334,27 +334,26 @@ Note: SyncTeX is setup via ~/.latexmkrc (see below)
                  :help "Run latexmk -xelatex on file")
                TeX-command-list)))
 
-  (add-hook 'LaTeX-mode-hook
-            (lambda ()
-              (let* ((shell-cmd (concat "pdflatex "
-                                        ;; "-synctex=1 "
-                                        "-interaction=nonstopmode "
-                                        "-output-format=pdf "
-                                        "-shell-escape "
-                                        "%s"))
-                     (pdflatex-cmd
-                      (list "pdflatex" shell-cmd TeX-run-TeX nil t)))
-                (push pdflatex-cmd TeX-command-list))))
+  ;; (add-hook 'LaTeX-mode-hook
+  ;;           (lambda ()
+  ;;             (let* ((shell-cmd (concat "pdflatex "
+  ;;                                       ;; "-synctex=1 "
+  ;;                                       "-interaction=nonstopmode "
+  ;;                                       "-output-format=pdf "
+  ;;                                       "-shell-escape "
+  ;;                                       "%s"))
+  ;;                    (pdflatex-cmd
+  ;;                     (list "pdflatex" shell-cmd TeX-run-TeX nil t)))
+  ;;               (push pdflatex-cmd TeX-command-list))))
   ;; TeX-command-expand: Wrong type argument: stringp, (concat "pdflatex "
   ;;           "-synctex=1 " "-interaction=nonstopmode " "--shell-escape " "%s")
   ;; ¯\_(ツ)_/¯
 
-  ;; (add-hook 'LaTeX-mode-hook
-  ;;           (lambda ()
-  ;;             (let* ((shell-cmd  "pdflatex -interaction=nonstopmode -output-format=pd -shell-escape %s")
-  ;;                    (pdflatex-cmd
-  ;;                     (list "pdflatex" shell-cmd TeX-run-TeX nil t)))
-  ;;               (push pdflatex-cmd TeX-command-list))))
+  (add-hook 'LaTeX-mode-hook
+            (lambda ()
+              (let ((shell-cmd  "pdflatex -interaction=nonstopmode -output-format=pd -shell-escape %s")))
+              (push (list "new-pdflatex" shell-cmd TeX-run-TeX nil t)
+                    TeX-command-list)))
 
   ;; (add-hook 'LaTeX-mode-hook
   ;;           (lambda ()
@@ -373,6 +372,52 @@ Note: SyncTeX is setup via ~/.latexmkrc (see below)
   (add-hook 'TeX-mode-hook
             #'(lambda () (setq TeX-command-default "latexmk")))
 #+end_src
+
+#+begin_example
+  ELISP> (stringp (concat "pdflatex "
+                          "-synctex=1 "
+                          "-interaction=nonstopmode "
+                          "--shell-escape "
+                          "%s"))
+  t
+#+end_example
+
+This is still so confusing.
+
+*** COMMENT possible solution
+
+#+begin_src emacs-lisp :eval no
+  (add-hook 'LaTeX-mode-hook
+            (lambda ()
+              (let* ((shell-cmd (concat "pdflatex "
+                                        ;; "-synctex=1 "
+                                        "-interaction=nonstopmode "
+                                        "-output-format=pdf "
+                                        "-shell-escape "
+                                        "%s"))
+                     (pdflatex-cmd
+                      (list "pdflatex" shell-cmd 'TeX-run-TeX nil t)))
+                (push pdflatex-cmd TeX-command-list))))
+
+#+end_src
+
+For reference, here's one of the entries from =TeX-command-list=:
+
+#+begin_src emacs-lisp
+  ("LatexMk" "latexmk %(-PDF)%S%(mode) %(file-line-error) %(extraopts) %t"
+   TeX-run-latexmk nil
+    (plain-tex-mode latex-mode doctex-mode)
+    :help "Run LatexMk")
+#+end_src
+
+So it doesn't appear to be a plist because there are 7 elements.
+
+Info on =TeX-command-list=:
+
+#+begin_quote
+The second element is the string handed to the shell after being expanded.  The
+expansion is done using the information found in ‘TeX-expand-list’.
+#+end_quote
 
 ** Set Skim as default PDF viewer on MacOS
 Skim's displayline is used for forward search (from .tex to .pdf); option -b
@@ -409,6 +454,15 @@ See [[https://github.com/daviwil/emacs-from-scratch/wiki/LaTeX-config-(AucteX)-i
 modifications.]
 
 #+begin_src emacs-lisp
+  (defun outshine-hook-config ()
+    (outshine-mode 1)
+    (setq outline-level #'LaTeX-outline-level)
+    (setq outline-regexp (LaTeX-outline-regexp t))
+    (setq outline-heading-alist
+          (mapcar #'(lambda (x)
+                      (cons (concat "\\" (car x)) (cdr x)))
+                  LaTeX-section-alist)))
+
   (use-package outshine
     :config
     (setq LaTeX-section-alist
@@ -420,15 +474,7 @@ modifications.]
             ("paragraph" . 5)
             ("subparagraph" . 6)
             ("begin" . 7)))
-  (add-hook 'LaTeX-mode-hook
-            #'(lambda ()
-                (outshine-mode 1)
-                (setq outline-level #'LaTeX-outline-level)
-                (setq outline-regexp (LaTeX-outline-regexp t))
-                (setq outline-heading-alist
-                      (mapcar #'(lambda (x)
-                                  (cons (concat "\\" (car x)) (cdr x)))
-                              LaTeX-section-alist)))))
+    :hook (LaTeX-mode . outshine-hook-config))
 
   ;; this is when using general.el, which you aren't doing
   ;; (general-define-key
