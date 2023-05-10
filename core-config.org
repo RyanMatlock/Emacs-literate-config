@@ -73,64 +73,16 @@ Ooh, this is good to know:
   also good Emacs Lisp practice).
 - [ ] [[https://github.com/abo-abo/hydra][hydra]] for fancy keybindings
 
-* TODO Switches for additional configuration
+* Switches for additional configuration
 See [[* Load additional org configuration files][code for handling processing of additional config files]] below.
 
-+Since these are boolean, they should probably end in =-p=. Currently have ~C-c ;~
-bound to =org-toggle-comment= but I want to use the appropriate ~iedit~ function,
-so fix that first, then fix this.+
-
-# #+begin_src emacs-lisp :eval no
-#   (setq core-config-core-langs-switch nil)
-#   (setq core-config-extras-switch t)
-# #+end_src
-
-# Figure out a smarter way of doing the above by using code like the following:
-
-# #+begin_src emacs-lisp :eval no
-#   ;; (defvar additional-config-files-alist
-#   ;;   (("./core-langs.org" . t)
-#   ;;    ("./extras.org" . t))
-#   ;;   "Avoids repeating myself with analyzing switches for each file...")
-
-#   ;; (defvar additional-config-files-nested-alist
-#   ;;   (('core-langs
-#   ;;     . (('name . "Core langs")
-#   ;;        ('path . "./core-langs.org")
-#   ;;        ('enable . t)))
-#   ;;    ('extras
-#   ;;     . (('name . "Extras")
-#   ;;        ('path . "./extras.org")
-#   ;;        ('enable . t)))
-#   ;;    ('experimental
-#   ;;     . (('name . "Experimental")
-#   ;;        ('path . "./experimental-config.org")
-#   ;;        ('enable . nil))))
-#   ;;   "maybe a better way of doing this?")
-# #+end_src
-
-# It looks like I may be better off using a [[http://xahlee.info/emacs/emacs/elisp_hash_table.html][hash table]] or [[http://xahlee.info/emacs/emacs/elisp_property_list.html][property list (plist)]]
-# instead of an [[http://xahlee.info/emacs/emacs/elisp_association_list.html][association list (alist)]] :thinking: ...or not?
-
-This seems to work well, and it's pretty clear what's going on.
-
 #+begin_src emacs-lisp
-  (setq config-additional-org-config-files
-    '(((name . "Core languages")
-       (path . "./core-langs.org")
-       (enable . t))
-      ((name . "Extras")
-       (path . "./extras.org")
-       (enable . t))
-      ((name . "Experimental configuration")
-       (path . "./experimental-config.org")
-       (enable . nil))))
+  (setq emacs-config-directory (expand-file-name "~/config/emacs/"))
+  (setq emacs-config-additional-files-alist
+        '(("core-langs.org" . t)
+          ("extras.org" . t)
+          ("experimental.org" . nil)))
 #+end_src
-
-+That's almost working as expected, although the relative path to this file
-isn't being picked up as I'd expect. It's looking for something like
-~$HOME/core-langs.org~ instead of ~$HOME/config/emacs/core-langs.org~.+ Fixed: kind
-of a hack, but I hard coded ~~/config/emacs~ into =expand-file-name= below.
 
 * Customize
 It seems like the less I use ~customize~ outside of the literate configuration
@@ -147,7 +99,7 @@ although I'm curious how much of a pressing need there is given that with a
 literate =.emacs= config, I can explain my reasoning for a setting.+
 
 #+begin_src emacs-lisp
-  (setq custom-file (expand-file-name "~/config/emacs/custom.el"))
+  (setq custom-file (expand-file-name "custom.el" emacs-config-directory))
   (load custom-file)
 #+end_src
 
@@ -1847,51 +1799,24 @@ the documentation is a little spotty.
 * Load additional org configuration files
 See [[* Switches for additional configuration][configuration switches]] to see what's loaded.
 
-Old/dumb way of doing it:
-
-# #+begin_src emacs-lisp :eval no
-#   (when core-config-core-langs-switch
-#     (progn
-#       ;; (org-babel-load-file
-#       ;;  (expand-file-name "~/config/emacs/core-langs.org"))
-#       (message "Core langs config loaded.")))
-#   (when core-config-extras-switch
-#     (progn
-#       ;; (org-babel-load-file (expand-file-name "~/config/emacs/extras.org"))
-#       (message "Extras config loaded.")))
-# #+end_src
-
-# #+begin_src emacs-lisp :eval no
-#   ;; there's probably a nicer way of doing it without the let
-#   (dolist (config-file-alist config-additional-org-config-files)
-#     (let ((name (alist-get 'name config-file-alist))
-#           (full-path (expand-file-name (alist-get 'path config-file-alist)))
-#           (enable (alist-get 'enable config-file-alist)))
-#       (when enable
-#         (progn
-#           (org-babel-load-file full-path)
-#           (message (format "%s successfully loaded." name))))))
-# #+end_src
-
-
-New/fancier/better way of doing it:
+Newest/fanciest/best way of doing it:
 
 #+begin_src emacs-lisp
-  (dolist (config-file-alist config-additional-org-config-files)
-    (let ((name (alist-get 'name config-file-alist))
-          (full-path (expand-file-name (alist-get 'path config-file-alist)
-                                       "~/config/emacs"))
-          (enable (alist-get 'enable config-file-alist)))
-      (when enable
-        (if (file-readable-p full-path)
-            (progn
-              (org-babel-load-file full-path)
-              (message (format "%s loaded." name)))
-          (display-warning
-           :warning
-           (format "%s NOT loaded (%s missing or unreadable)."
-                   name
-                   full-path))))))
+  (seq-do
+   #'(lambda (ccell)
+       (let* ((file (car ccell))
+              (name (upcase-initials
+                     (replace-regexp-in-string "-" " " (file-name-base file))))
+              (path (expand-file-name file emacs-config-directory))
+              (enable (cdr ccell)))
+         (when enable
+           (cond ((file-readable-p path)
+                  (org-babel-load-file path)
+                  (message "%s loaded." name))
+                 (t (warn (format "%s NOT loaded ('%s' missing or unreadable)."
+                                  name
+                                  path)))))))
+   emacs-config-additional-files-alist)
 #+end_src
 
 * Package graveyard
