@@ -27,14 +27,6 @@ not working the way I expect it to. I've found that ~C-k~ is bound to
 across some comments about some smartparens kill function that annoyed several
 people enough to switch back to paredit.
 
-*** TODO fuzzy file search like the old days with +~ivy~ or+ ~ido~​(?)
-Remember when you could ~C-x C-f~ for a file that you'd recently worked on, and
-it didn't matter if it was in a different directory? That was a great feature
-that I'm missing from my current configuration.
-
-Oh, right, I think it was ~ido~ because there's [[https://github.com/minad/vertico#extensions][vertico-directory]], which I've
-had trouble getting working.
-
 *** TODO study this amazing literate config file
 [[https://panadestein.github.io/emacsd/][Panadestein's literate Emacs config]]
 
@@ -1103,7 +1095,7 @@ looking for.
 This feels a little familiar, but I don't think I'm getting the behavior that I
 remember in terms of opening recent buffers.
 
-*** ~ido~ + ~flx~
+*** ~ido~ + ~flx~: the =find-file= behavior I've missed
 I saw that I had [[https://github.com/lewang/flx][flx]] and ~flx-ido~ in the commented-out =custom-set-variables=
 block of ~legacy-dotemacs.el~, so maybe that's how I got the file completion I
 miss so much.
@@ -1136,8 +1128,12 @@ Mode | Mastering Emacs]] for info on =ido-file-extensions-order=.
 #+end_src
 
 Ok, this actually gives me the recent file matching I remember, and ~C-x C-fC-x
-C-f~ brings up =vertico= matching, so maybe there's some nice way of merging the
+C-f~ brings up ~vertico~ matching, so maybe there's some nice way of merging the
 two. Actually, with the vertical display, maybe I don't even need to do that.
+
+Now that I'm playing around with it a little, I see that I can use
+~vertico~-style commands to navigate through the options, i.e. ~C-n~ and ~C-p~ don't
+let me scroll through the options once I've narrowed them.
 
 ** TODO Project handling: ~projectile~
 [[https://github.com/bbatsov/projectile][projectile]]: per [[https://youtu.be/bFS0V_4YfhY][Lukewh's short projectile introduction | YouTube]], it's useful
