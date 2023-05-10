@@ -169,9 +169,13 @@ notes]])
 #+begin_src emacs-lisp
   (setq emacs-temp-directory (expand-file-name "~/.emacs-tmp/"))
 
-  (seq-do #'(lambda (dir)
-              (make-directory (expand-file-name dir emacs-temp-directory) t))
-          '("backups/" "auto-saves/"))
+  (defun make-emacs-temp-subdirectories ()
+      "Create subdirectories in 'emacs-temp-directory'."
+    (seq-do #'(lambda (dir)
+                (make-directory (expand-file-name dir emacs-temp-directory) t))
+            '("backups/" "auto-saves/sessions/")))
+
+  (make-emacs-temp-subdirectories)
 
   (setq backup-directory-alist
         (list (cons "." (expand-file-name "backups/" emacs-temp-directory))))
@@ -180,6 +184,16 @@ notes]])
         (expand-file-name "auto-saves/sessions/" emacs-temp-directory)
         auto-save-file-name-transforms
         `((".*" ,(expand-file-name "auto-saves/" emacs-temp-directory) t)))
+
+  (defun clean-emacs-temp-files ()
+    "Delete temporary files in 'emacs-temp-directory'."
+    (interactive)
+    (when (yes-or-no-p
+           (format "Do you really want to delete everything in '%s'? "
+                   emacs-temp-directory))
+      (delete-directory emacs-temp-directory t)
+      (message "Temporary files deleted.")
+      (make-emacs-temp-subdirectories)))
 #+end_src
 
 #+begin_quote
