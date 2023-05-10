@@ -43,6 +43,11 @@ see [[https://emacs.stackexchange.com/questions/450/intelligent-spell-checking-i
 
 *** TODO fix minibuffer character wrap width
 
+*** TODO Save last $n$ ~*Messages*~ buffers
+It's helpful to automatically have a log of sorts, kind of like
+~.bash_history~. Having this first ensures that it's done when setting up this
+configuration on a new machine.
+
 *** PARTIAL figure out what to do with ~s-n~
 It's bound to +=ns-new-frame=+ =make-frame=, and it looks like you can customize some features
 of what the new frame (i.e. window in regular GUI speak) looks like.
@@ -67,9 +72,6 @@ Ooh, this is good to know:
   doesn't, and 2) try to write it myself because it seems straightforward but
   also good Emacs Lisp practice).
 - [ ] [[https://github.com/abo-abo/hydra][hydra]] for fancy keybindings
-
-*** TODO ~vertico-directory~
-Not sure how to get this to work with straight.
 
 * TODO Switches for additional configuration
 See [[* Load additional org configuration files][code for handling processing of additional config files]] below.
@@ -179,11 +181,6 @@ necessary to evaluate the Emacs Lisp blocks in this file; see
 https://cestlaz.github.io/posts/using-emacs-10-org-init/. However, if using
 this config file on a new machine, the lack of installed packages will lead to
 errors.
-
-** TODO Save last n ~*Messages*~ buffers
-It's helpful to automatically have a log of sorts, kind of like
-~.bash_history~. Having this first ensures that it's done when setting up this
-configuration on a new machine.
 
 ** ~so-long~ -- say goodbye to poor performance with minified files
 From [[https://elpa.gnu.org/packages/so-long.html][so-long | GNU ELPA]]:
@@ -879,11 +876,12 @@ nice to have again; configuration taken from [[https://github.com/minad/vertico#
 
 #+begin_src emacs-lisp
   (use-package vertico
-    :straight t
+    :straight (vertico :includes vertico-directory
+                       :files (:defaults "extensions/vertico-directory.el"))
     :bind (:map vertico-map
-           ("C-f" . vertico-exit)
-           :map minibuffer-local-map
-           ("M-h" . backward-kill-word))
+                ("C-f" . vertico-exit)
+                :map minibuffer-local-map
+                ("M-h" . backward-kill-word))
     :custom
     (vertico-cycle t)
     :init
@@ -949,6 +947,37 @@ Error (use-package): auctex/:catch: Loading file
 /Users/matlock/.emacs.d/straight/build/auctex/auctex.elc failed to provide
 feature ‘auctex’ Disable showing Disable logging
 #+end_example
+
+**** ~vertico-directory~
+See [[https://github.com/radian-software/straight.el/issues/819#issuecomment-882039946][Can not find vertico-directory package #819 | GitHub]]
+
+#+begin_src emacs-lisp
+  ;; (straight-use-package
+  ;;  '(vertico :files (:defaults "extensions/*")
+  ;;            :includes (vertico-buffer
+  ;;                       vertico-directory
+  ;;                       vertico-flat
+  ;;                       vertico-indexed
+  ;;                       vertico-mouse
+  ;;                       vertico-quick
+  ;;                       vertico-repeat
+  ;;                       vertico-reverse)
+  ;;            )
+  ;;  )
+
+  (use-package vertico-directory
+    :after vertico
+    ;; :load-path "straight/build/vertico/extensions"
+    :straight nil
+    :ensure nil
+    ;; More convenient directory navigation commands
+    :bind (:map vertico-map
+                ("RET" . vertico-directory-enter)
+                ("DEL" . vertico-directory-delete-char)
+                ("M-DEL" . vertico-directory-delete-word))
+    ;; Tidy shadowed file names
+    :hook (rfn-eshadow-update-overlay . vertico-directory-tidy))
+#+end_src
 
 *** ~corfu~
 ``Corfu is the minimalistic ~completion-in-region~ counterpart of the ~vertico~
@@ -1016,6 +1045,63 @@ minibuffer UI.'' -- https://github.com/minad/corfu
     ;; `completion-at-point' is often bound to M-TAB.
     (setq tab-always-indent 'complete))
 #+end_src
+
+*** TODO COMMENT ~consult.el~: Consulting =completing-read= + ~recentf-mode~
+[[https://github.com/minad/consult][consult]]
+
+Among the things that it can do is provide a list of recent files using
+[[https://www.emacswiki.org/emacs/RecentFiles][recentf-mode]]. ~recentf~ doesn't quite have the behavior I remember ~ido~ having,
+but I can't find anything in ~legacy-dotemacs.el~ that suggests the behavior I'm
+looking for.
+
+#+begin_src emacs-lisp
+  (recentf-mode 1)
+  (setq recentf-max-menu-items 25)
+  (setq recentf-max-saved-items 25)
+  (define-key global-map (kbd "C-x M-f") 'recentf-open-files)
+
+  ;; (use-package consult
+  ;;   :straight t)
+#+end_src
+
+*** TODO COMMENT ~ivy~ + ~counsel~ + ~swiper~
+[[https://github.com/abo-abo/swiper][ivy, counsel, and swiper]]: tools for minibuffer completion.
+
+#+begin_src emacs-lisp
+  (use-package ivy
+    :straight t
+    :config
+    (ivy-mode)
+    (setq ivy-use-virtual-buffers t)
+    (setq enable-recursive-minibuffers t)
+    ;; enable this if you want `swiper' to use it
+    ;; (setq search-default-mode #'char-fold-to-regexp)
+  )
+
+  (use-package counsel
+    :straight t)
+
+  ;; (global-set-key "\C-s" 'swiper)
+  ;; (global-set-key (kbd "C-c C-r") 'ivy-resume)
+  ;; (global-set-key (kbd "<f6>") 'ivy-resume)
+  ;; (global-set-key (kbd "M-x") 'counsel-M-x)
+  ;; (global-set-key (kbd "C-x C-f") 'counsel-find-file)
+  ;; (global-set-key (kbd "<f1> f") 'counsel-describe-function)
+  ;; (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
+  ;; (global-set-key (kbd "<f1> o") 'counsel-describe-symbol)
+  ;; (global-set-key (kbd "<f1> l") 'counsel-find-library)
+  ;; (global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
+  ;; (global-set-key (kbd "<f2> u") 'counsel-unicode-char)
+  ;; (global-set-key (kbd "C-c g") 'counsel-git)
+  ;; (global-set-key (kbd "C-c j") 'counsel-git-grep)
+  ;; (global-set-key (kbd "C-c k") 'counsel-ag)
+  ;; (global-set-key (kbd "C-x l") 'counsel-locate)
+  ;; (global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
+  ;; (define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history)
+#+end_src
+
+This feels a little familiar, but I don't think I'm getting the behavior that I
+remember in terms of opening recent buffers.
 
 ** TODO Project handling: ~projectile~
 [[https://github.com/bbatsov/projectile][projectile]]: per [[https://youtu.be/bFS0V_4YfhY][Lukewh's short projectile introduction | YouTube]], it's useful
