@@ -12,6 +12,14 @@ the way I want it at some point---and keep it that way!
 
 ** ~*Messages*~
 
+*** TODO =(void-function org-journal-update-auto-mode-alist)=
+When opening the first ~.org~ file after restarting Emacs, I got the following
+message:
+
+#+begin_example
+  File mode specification error: (void-function org-journal-update-auto-mode-alist)
+#+end_example
+
 ** Other
 
 *** OPTIONAL get =smartparens= to behave like =paredit=
@@ -1127,9 +1135,10 @@ Mode | Mastering Emacs]] for info on =ido-file-extensions-order=.
     (setq ido-use-faces nil))
 #+end_src
 
-Ok, this actually gives me the recent file matching I remember, and ~C-x C-fC-x
-C-f~ brings up ~vertico~ matching, so maybe there's some nice way of merging the
-two. Actually, with the vertical display, maybe I don't even need to do that.
+Ok, this actually gives me the recent file matching I remember, and +C-x C-f C-x
+C-f+ ~C-x C-f C-f~ (although ~C-x C-f C-x C-f~ works too) brings up ~vertico~
+matching, so maybe there's some nice way of merging the two. Actually, with the
+vertical display, maybe I don't even need to do that.
 
 Now that I'm playing around with it a little, I see that I can use
 ~vertico~-style commands to navigate through the options, i.e. ~C-n~ and ~C-p~ don't
