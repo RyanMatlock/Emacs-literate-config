@@ -213,6 +213,33 @@ that buffer, and invoke something much more basic in their place.
   (setq inhibit-startup-message t)
 #+end_src
 
+** Cleaner directories (make Emacs produce less clutter)
+See [[https://youtu.be/XZjyJG-sFZI][Teach Emacs to Keep Your Folders Clean | System Crafters | YouTube]] ([[https://github.com/daviwil/emacs-from-scratch/blob/master/show-notes/Emacs-Tips-Cleaning.org][show
+notes]])
+
+#+begin_src emacs-lisp
+  (setq emacs-temp-directory (expand-file-name "~/.emacs-tmp/"))
+
+  (seq-do #'(lambda (dir)
+              (make-directory (expand-file-name dir emacs-temp-directory) t))
+          '("backups/" "auto-saves/"))
+
+  (setq backup-directory-alist
+        (list (cons "." (expand-file-name "backups/" emacs-temp-directory))))
+
+  (setq auto-save-list-file-prefix
+        (expand-file-name "auto-saves/sessions/" emacs-temp-directory)
+        auto-save-file-name-transforms
+        `((".*" ,(expand-file-name "auto-saves/" emacs-temp-directory) t)))
+#+end_src
+
+#+begin_quote
+Aside: I just learned about the [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Backquote.html][backquote]] in Emacs Lisp---very cool!
+#+end_quote
+
+As referenced at the bottom of the show notes, [[https://github.com/emacscollective/no-littering][no-littering]] looks like a good
+option to keep Emacs cleaner.
+
 ** TODO General look & feel
 *** Solarized Dark theme
 [[https://github.com/bbatsov/solarized-emacs][solarized-emacs]]
