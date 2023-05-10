@@ -1103,6 +1103,42 @@ looking for.
 This feels a little familiar, but I don't think I'm getting the behavior that I
 remember in terms of opening recent buffers.
 
+*** ~ido~ + ~flx~
+I saw that I had [[https://github.com/lewang/flx][flx]] and ~flx-ido~ in the commented-out =custom-set-variables=
+block of ~legacy-dotemacs.el~, so maybe that's how I got the file completion I
+miss so much.
+
+See [[http://xahlee.info/emacs/emacs/emacs_ido_setup.html][Ido Mode Setup | Xah Lee]] for vertical display and [[https://masteringemacs.org/article/introduction-to-ido-mode][Introduction to Ido
+Mode | Mastering Emacs]] for info on =ido-file-extensions-order=.
+
+#+begin_src emacs-lisp
+  (use-package ido
+    :straight t
+    :config
+    (ido-mode 1)
+    (ido-everywhere 1)
+    (setf (nth 2 ido-decorations) "\n")
+    (setq ido-file-extensions-order '(".org"
+                                      ".el"
+                                      ".py"
+                                      ".tex"
+                                      ".yaml"
+                                      ".js"
+                                      ".md"
+                                      ".txt")))
+
+  (use-package flx-ido
+    :straight t
+    :config
+    (flx-ido-mode 1)
+    (setq ido-enable-flex-matching t)
+    (setq ido-use-faces nil))
+#+end_src
+
+Ok, this actually gives me the recent file matching I remember, and ~C-x C-fC-x
+C-f~ brings up =vertico= matching, so maybe there's some nice way of merging the
+two. Actually, with the vertical display, maybe I don't even need to do that.
+
 ** TODO Project handling: ~projectile~
 [[https://github.com/bbatsov/projectile][projectile]]: per [[https://youtu.be/bFS0V_4YfhY][Lukewh's short projectile introduction | YouTube]], it's useful
 simply for navigating between and within projects, as defined by the presence
