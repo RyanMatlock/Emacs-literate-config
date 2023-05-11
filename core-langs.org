@@ -7,19 +7,30 @@ TeX/LaTeX. In order to enable these configurations, =core-config-core-langs-swit
 must be set to =t= in ~core-config.org~.
 
 * TODO Language Server Protocol: ~lsp-mode~
-I think you have a lot of this over in ~core-config.org~, so you ought to clean
-that up.
-
 See [[https://github.com/emacs-lsp/lsp-mode][lsp-mode]] for project details, and see [[https://emacs-lsp.github.io/lsp-mode/page/installation/#use-package][LSP Mode installation instructions §
 use-package]] for config source.
+
+Other resources:
+- [[https://www.mattduck.com/lsp-python-getting-started.html][Getting started with ~lsp-mode~ for Python | matt duck]]
+- [[https://github.com/emacs-lsp/lsp-haskell][lsp-haskell | GitHub]]
+- [[https://haskell-language-server.readthedocs.io/en/latest/installation.html][Haskell Language Server | Installation | Read the Docs]]
+- [[https://abailly.github.io/posts/a-modern-haskell-env.html][Modern Emacs for Haskell | igitur.io]]
 
 #+begin_src emacs-lisp
   (use-package lsp-mode
     :straight t
     :init
     ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
-    (setq lsp-keymap-prefix "C-c l")
+    (setq lsp-keymap-prefix "C-l")
+    :config
+      (progn (lsp-register-custom-settings
+              '(("pyls.plugins.pyls_mypy.enabled" t t)
+                ("pyls.plugins.pyls_mypy.live_mode" nil t)
+                ("pyls.plugins.pyls_black.enabled" t t)
+                ("pyls.plugins.pyls_isort.enabled" t t)
+                ("pyls.plugins.flake8.enabled" t t))))
     :hook ((haskell-mode . lsp)
+           (haskell-literate-mode . lsp)
            (python-mode . lsp)
            ;; if you want which-key integration
            (lsp-mode . lsp-enable-which-key-integration))
@@ -44,37 +55,51 @@ use-package]] for config source.
     (which-key-mode))
 #+end_src
 
-** TODO Python: +~pylsp~+ ~ruff-lsp~
-*** Installation
-# Ran
+* Haskell
+** Basic Haskell configuration
 
-# #+begin_src shell :eval no
-#   pip install 'python-lsp-server[all]'
-# #+end_src
+#+begin_src emacs-lisp
+  (use-package haskell-mode
+    :straight t)
 
-# Looking at [[https://www.mattduck.com/lsp-python-getting-started.html][Getting started with lsp-mode for Python]] (from [2020-04-26 Sun])
-# plus the current config file, it looks a little hairy. I'm getting some degree
-# of linting and code completion in Python right now, but I need to come back to
-# this later. [[https://emacs-lsp.github.io/lsp-mode/page/lsp-pylsp/][lsp-pylsp]] seems to have a daunting number of options.
+  (use-package lsp-haskell
+    :ensure t
+    :config
+    ;; (let ((hls-wrapper "haskell-language-server-wrapper"))
+    ;;   (if (executable-find hls-wrapper)
+    ;;       (setq lsp-haskell-server-path hls-wrapper)
+    ;;     (message (format "%s not found." hls-wrapper))))
+    (setq lsp-haskell-server-path "haskell-language-server-wrapper")
+    (setq lsp-haskell-server-args ())
+    ;; Comment/uncomment this line to see interactions between lsp client/server.
+    ;; (setq lsp-log-io t)
+    )
 
-[[https://github.com/charliermarsh/ruff-lsp][ruff-lsp | GitHub]]
+  (add-hook 'lsp-after-initialize-hook
+            #'(lambda ()
+                (lsp--set-configuration
+                 '(:haskell
+                   (:plugin
+                    (:tactics
+                     (:config
+                      (:timeout_duration 5))))))))
+#+end_src
 
-Ran
+*** TODO COMMENT figure out this weirdness
+In ~IELM~, I get
+
+#+begin_src emacs-lisp :eval no
+  ELISP> (executable-find "haskell-language-server-wrapper")
+  nil
+#+end_src
+
+but in ~ansi-term~, I get
 
 #+begin_src shell
-  pip3 install ruff-lsp
+  $ which haskell-language-server-wrapper
+  <$HOME>/.ghcup/bin/haskell-language-server-wrapper
 #+end_src
 
-*** TODO COMMENT Configuration
-[[https://emacs-lsp.github.io/lsp-mode/page/lsp-ruff-lsp/][lsp-ruff-lsp | LSP Mode]]
-
-#+Begin_src emacs-lisp
-  (eval-after-load 'lsp
-    (custom-set-variables
-     '(lsp-ruff-lsp-show-notifications 'onWarning)))
-#+end_src
-
-* Haskell
 ** ~hindent~
 [[https://github.com/mihaimaruseac/hindent][hindent]] is a Haskell pretty printer.
 
@@ -107,6 +132,35 @@ Ran
 #+end_src
 
 * Python
+** TODO +~pylsp~+ ~ruff-lsp~
+*** Installation
+# Ran
+
+# #+begin_src shell :eval no
+#   pip install 'python-lsp-server[all]'
+# #+end_src
+
+# Looking at [[https://www.mattduck.com/lsp-python-getting-started.html][Getting started with lsp-mode for Python]] (from [2020-04-26 Sun])
+# plus the current config file, it looks a little hairy. I'm getting some degree
+# of linting and code completion in Python right now, but I need to come back to
+# this later. [[https://emacs-lsp.github.io/lsp-mode/page/lsp-pylsp/][lsp-pylsp]] seems to have a daunting number of options.
+
+[[https://github.com/charliermarsh/ruff-lsp][ruff-lsp | GitHub]]
+
+Ran
+
+#+begin_src shell
+  pip3 install ruff-lsp
+#+end_src
+
+*** TODO COMMENT Configuration
+[[https://emacs-lsp.github.io/lsp-mode/page/lsp-ruff-lsp/][lsp-ruff-lsp | LSP Mode]]
+
+#+Begin_src emacs-lisp
+  (eval-after-load 'lsp
+    (custom-set-variables
+     '(lsp-ruff-lsp-show-notifications 'onWarning)))
+#+end_src
 
 * Rust
 
