@@ -1134,20 +1134,18 @@ Issue 2: =projectile-command-map= doesn't seem to be the right function to
 invoke. ~M-x projectile-commander~ seems to work, so try binding that? Yep, that
 seems to do the trick. Now I just need to remember what the commands do.
 
-
 ** TODO TRAMP
-*** TODO Fix problem with hanging -- confused about this/move to custom?
+*** TODO COMMENT Fix problem with hanging
 #+begin_src emacs-lisp
 (eval-after-load 'tramp '(setenv "SHELL" "/bin/bash"))
 #+end_src
 
-Maybe this should be updated to =/usr/local/bin/bash= or I should figure out how
-to symlink =/usr/local/bin/bash= to =/bin/bash=; if so, the above
-~explicit-shell-file-name~ in ANSI term section should be updated
+I haven't used TRAMP in a bit, so I have no idea if this is still an issue. It
+may be that this is the =$SHELL= value on the client device, in which case it
+seems like a good idea.
 
-*** TODO Use SSH -- move to custom?
-See
-https://www.gnu.org/software/emacs/manual/html_node/tramp/Default-Method.html
+*** Use SSH
+See [[https://www.gnu.org/software/emacs/manual/html_node/tramp/Default-Method.html][Selecting a Default Method | Configuring TRAMP | TRAMP User Manual]]
 
 #+begin_src emacs-lisp
   (setq tramp-default-method "ssh")
@@ -1238,7 +1236,6 @@ Type a line normally and cOnVeRt It To ThIs. Maybe pass a prefix argument to
 shift if it starts uppercase or lowercase?
 
 * TODO Emacs Lisp
-
 ** REPL
 
 #+begin_src emacs-lisp
@@ -1298,6 +1295,13 @@ Good to know: ~C-c M-o~ is bound to =comint-clear-buffer=, and ~C-c C-l~ is
 bound to =comint-dynamic-list-input-ring=, which is basically the history of
 the input.
 #+end_quote
+
+** Completion: use =ielm-auto-complete=
+See [[https://emacs.stackexchange.com/a/30783][Emacs - elisp code autocompletion in emacs-lisp-mode | emacs.stackexchange]]
+
+#+begin_src emacs-lisp
+  (add-hook 'emacs-lisp-mode-hook 'ielm-auto-complete)
+#+end_src
 
 ** Parentheses
 *** TODO +ParEdit+ +smartparens+ ParEdit
