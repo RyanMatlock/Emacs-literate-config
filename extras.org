@@ -193,6 +193,23 @@ built in).
 Note that the documentation recommends some [[https://github.com/akermu/emacs-libvterm#shell-side-configuration][shell-side configuration]] to get the
 most out of ~vterm~, but I haven't done this.
 
+#+begin_quote
+Tip: you don't need ~ansi-term~ anymore because ~vterm~ supports the equivalent of
+switching between ~line-mode~ and ~char-mode~: ~C-c c-t~ toggles =vterm-copy-mode=.
+#+end_quote
+
+Just noticed this on my MacBook Pro:
+
+#+begin_src shell
+  $ echo $SHELL
+  /bin/zsh
+  $ zsh --version
+  zsh 5.8.1 (x86_64-apple-darwin22.0)
+#+end_src
+
+Probably time to review something like [[https://systemcrafters.net/emacs-from-scratch/learn-to-love-the-terminal-modes/][Learn to Love the Terminal Modes |
+System Crafters]].
+
 * Minor modes
 
 ** COMMENT ~yasnippet~
