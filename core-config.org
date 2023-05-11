@@ -1693,8 +1693,8 @@ StackExchange]]
 
 #+begin_src emacs-lisp
   (defun org-toggle-src-eval-no ()
-    "Will toggle ':eval no' on the src block begin line"
-
+    "Will toggle \":eval no\" on the src block begin line"
+    (interactive)
     (defun in-src-block-p ()
       "Returns t when the point is inside a source code block"
       (string= "src" (org-in-block-p '("src"))))
@@ -1720,7 +1720,7 @@ StackExchange]]
 
   (defun add-org-toggle-src-key ()
     (local-set-key (kbd "C-c t")
-                   (lambda () (interactive) (org-toggle-src-eval-no))))
+                   #'org-toggle-src-eval-no))
 
   (add-hook 'org-mode-hook 'add-org-toggle-src-key)
 #+end_src
