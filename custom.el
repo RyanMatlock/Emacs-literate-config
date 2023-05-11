@@ -58,11 +58,11 @@
  '(org-hide-emphasis-markers t)
  '(org-hide-leading-stars nil)
  '(org-highlight-latex-and-related '(native))
- '(org-journal-date-format "%A, %F")
- '(org-journal-dir "~/Dropbox/journal/")
- '(org-journal-file-format "%Y/%m/week-%V-(%Y-%m-%d).org")
- '(org-journal-file-type 'weekly)
- '(org-journal-time-format "[%I:%M%P]")
+ ;; '(org-journal-date-format "%A, %F")
+ ;; '(org-journal-dir "~/Dropbox/journal/")
+ ;; '(org-journal-file-format "%Y/%m/week-%V-(%Y-%m-%d).org")
+ ;; '(org-journal-file-type 'weekly)
+ ;; '(org-journal-time-format "[%I:%M%P]")
  '(org-latex-default-packages-alist
    '(("AUTO" "inputenc" t
       ("pdflatex"))
@@ -80,21 +80,21 @@
      ("" "capt-of" nil nil)
      ("colorlinks=true" "hyperref" nil nil)
      ("" "siunitx" nil nil)))
- '(org-mode-hook
-   '(flyspell-mode
-     #[0 "\300\301\302\303\304$\207"
-         [add-hook change-major-mode-hook org-show-all append local]
-         5]
-     #[0 "\300\301\302\303\304$\207"
-         [add-hook change-major-mode-hook org-babel-show-result-all append local]
-         5]
-     org-babel-result-hide-spec org-babel-hide-all-hashes
-     #[0 "\301\211\207"
-         [imenu-create-index-function org-imenu-get-tree]
-         2]
-     (lambda nil
-       (hs-minor-mode))
-     org-journal-update-auto-mode-alist))
+ ;; '(org-mode-hook
+ ;;   '(flyspell-mode
+ ;;     #[0 "\300\301\302\303\304$\207"
+ ;;         [add-hook change-major-mode-hook org-show-all append local]
+ ;;         5]
+ ;;     #[0 "\300\301\302\303\304$\207"
+ ;;         [add-hook change-major-mode-hook org-babel-show-result-all append local]
+ ;;         5]
+ ;;     org-babel-result-hide-spec org-babel-hide-all-hashes
+ ;;     #[0 "\301\211\207"
+ ;;         [imenu-create-index-function org-imenu-get-tree]
+ ;;         2]
+ ;;     (lambda nil
+ ;;       (hs-minor-mode))
+ ;;     org-journal-update-auto-mode-alist))
  ;; '(org-pretty-entities t)
  ;; '(package-archives
  ;;   '(("melpa" . "https://melpa.org/packages/")
