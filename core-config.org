@@ -12,14 +12,6 @@ the way I want it at some point---and keep it that way!
 
 ** ~*Messages*~
 
-*** TODO =(void-function org-journal-update-auto-mode-alist)=
-When opening the first ~.org~ file after restarting Emacs, I got the following
-message:
-
-#+begin_example
-  File mode specification error: (void-function org-journal-update-auto-mode-alist)
-#+end_example
-
 ** Other
 
 *** OPTIONAL get =smartparens= to behave like =paredit=
@@ -37,9 +29,6 @@ people enough to switch back to paredit.
 
 *** TODO study this amazing literate config file
 [[https://panadestein.github.io/emacsd/][Panadestein's literate Emacs config]]
-
-*** TODO turn on spell check for Org mode
-see [[https://emacs.stackexchange.com/questions/450/intelligent-spell-checking-in-org-mode][Intelligent spell-checking in org-mode | emacs.stackexchange]]
 
 *** TODO fix minibuffer character wrap width
 
@@ -782,6 +771,8 @@ and http://blog.binchen.org/posts/effective-spell-check-in-emacs.html.
 Found a very old blog post ([[http://emacs-fu.blogspot.com/2008/12/running-some-external-program-only-if.html][running some external program only if it exists |
 Emacs-fu]]) that should allow me to bug myself if I don't have an ispell program
 installed.
+
+see [[https://emacs.stackexchange.com/questions/450/intelligent-spell-checking-in-org-mode][Intelligent spell-checking in org-mode | emacs.stackexchange]]
 
 #+begin_src emacs-lisp
   (setq ispell-program-name "aspell"
