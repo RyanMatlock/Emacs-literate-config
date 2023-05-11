@@ -424,18 +424,17 @@ get the value, and then run ~M-x reload-dotemacs~ and everything works.
 [[https://github.com/purcell/exec-path-from-shell][exec-path-from-shell]] fixes behavior of how environment variables are loaded in
 MacOS GUI Emacs.
 
-[Note that you need to use [[https://www.gnu.org/software/emacs/manual/html_node/eintr/progn.html][progn]] in order to evaluate the series of
-s-expressions in =:config=.]
++[Note that you need to use [[https://www.gnu.org/software/emacs/manual/html_node/eintr/progn.html][progn]] in order to evaluate the series of
+s-expressions in =:config=.]+  False!
 
 #+begin_src emacs-lisp
   (use-package exec-path-from-shell
     :straight t
-    :config (progn
-              (when (memq window-system '(mac ns x))
-                (exec-path-from-shell-initialize))
-              (when (daemonp)
-                (exec-path-from-shell-initialize))
-              (exec-path-from-shell-copy-env "PYTHONPATH")))
+    :config
+    (when (or (daemonp)
+              (memq window-system '(mac ns x)))
+      (exec-path-from-shell-initialize))
+    (exec-path-from-shell-copy-env "PYTHONPATH"))
 #+end_src
 
 **** TODO read ~.bashrc~ & use bash as default ANSI term
