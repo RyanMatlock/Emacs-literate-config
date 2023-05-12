@@ -55,6 +55,7 @@ Other resources:
     (which-key-mode))
 #+end_src
 
+
 * Haskell
 ** Basic Haskell configuration
 
@@ -132,7 +133,20 @@ but in ~ansi-term~, I get
 #+end_src
 
 * Python
-** TODO +~pylsp~+ ~ruff-lsp~
+** ~lsp-pyright~
+[[https://github.com/emacs-lsp/lsp-pyright][lsp-pyright | GitHub]]
+
+#+begin_src emacs-lisp
+  (use-package lsp-pyright
+    :straight t
+    :hook (python-mode . (lambda ()
+                            (require 'lsp-pyright)
+                            ;; (lsp)
+                            (lsp-deferred))))
+#+end_src
+
+This seems to work nicely!
+
 ** COMMENT Company (COMPlete ANYthing) -- replaced by ~corfu~
 ~corfu~ covers this now(?); in any case, I think I was only using this with
 Python.
@@ -153,6 +167,8 @@ Python.
   (add-hook 'python-mode-hook 'python-company-jedi-hook)
 #+end_src
 
+
+** TODO COMMENT +~pylsp~+ ~ruff-lsp~
 *** Installation
 # Ran
 
