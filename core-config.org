@@ -30,6 +30,13 @@ people enough to switch back to paredit.
 *** TODO study this amazing literate config file
 [[https://panadestein.github.io/emacsd/][Panadestein's literate Emacs config]]
 
+*** TODO directory tree sidebar?
+See [[https://www.reddit.com/r/emacs/comments/8k7ixs/modes_for_directory_tree_view/][Modes for directory tree view | /r/emacs]], which suggests
+- [[https://github.com/jaypei/emacs-neotree][neotree | GitHub]]
+- [[https://github.com/sebastiencs/sidebar.el][sidebar.el | GitHub]]
+- [[https://www.emacswiki.org/emacs/SpeedBar][SpeedBar | Emacs Wiki]]
+- learning to use [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Dired.html][Dired | GNU Emacs Manual]] (possibly with [[https://github.com/Fuco1/dired-hacks][dired-hacks | GitHub]])
+
 *** TODO fix minibuffer character wrap width
 
 *** TODO Save last $n$ ~*Messages*~ buffers
