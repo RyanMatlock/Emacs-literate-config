@@ -110,19 +110,6 @@ long, which isn't too bad, and it looks like it could be shrunk further.
 #+end_example
 
 * General interface & minor modes
-** TODO ~package.el~ \to ~straight.el~
-See https://github.com/raxod502/straight.el
-
-I think the better way of doing this might be to move the relevant =use-package=
-command to the natural place in the config file instead of all in one big list.
-
-Old info:
-=dotemacs.el= takes care of ~package~, ~use-package~, MELPA, and the ~org-babel~ stuff
-necessary to evaluate the Emacs Lisp blocks in this file; see
-https://cestlaz.github.io/posts/using-emacs-10-org-init/. However, if using
-this config file on a new machine, the lack of installed packages will lead to
-errors.
-
 ** ~so-long~ -- say goodbye to poor performance with minified files
 From [[https://elpa.gnu.org/packages/so-long.html][so-long | GNU ELPA]]:
 
