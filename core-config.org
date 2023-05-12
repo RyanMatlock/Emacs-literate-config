@@ -727,23 +727,6 @@ See http://www.emacswiki.org/emacs/AutoIndentation
   (add-hook 'c-mode-common-hook 'set-newline-and-indent)
 #+end_src
 
-** TODO Company (COMPlete ANYthing) (\to ~core-langs.org~ or delete)
-~corfu~ might cover this now? In any case, I think I was only using this with
-Python, so it ought to be moved to ~core-langs.org~.
-
-# #+begin_src emacs-lisp
-#   (add-hook 'after-init-hook 'global-company-mode)
-#   (global-set-key (kbd "C-c C-<tab>") 'company-complete)
-# #+end_src
-
-*** Python: company-jedi
-
-# #+begin_src emacs-lisp
-#   (defun python-company-jedi-hook ()
-#     (add-to-list 'company-backends 'company-jedi))
-#   (add-hook 'python-mode-hook 'python-company-jedi-hook)
-# #+end_src
-
 ** TODO Flycheck
 ** TODO ~ispell~ with ~aspell~
 Still need to sync ~aspell~ dictionaries across computers!

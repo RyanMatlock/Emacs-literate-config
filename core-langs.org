@@ -133,6 +133,26 @@ but in ~ansi-term~, I get
 
 * Python
 ** TODO +~pylsp~+ ~ruff-lsp~
+** COMMENT Company (COMPlete ANYthing) -- replaced by ~corfu~
+~corfu~ covers this now(?); in any case, I think I was only using this with
+Python.
+
+[[https://company-mode.github.io][company-mode | GitHub]]
+
+#+begin_src emacs-lisp
+  (add-hook 'after-init-hook 'global-company-mode)
+  (global-set-key (kbd "C-c C-<tab>") 'company-complete)
+#+end_src
+
+*** Python: ~company-jedi~
+[[https://github.com/emacsorphanage/company-jedi][comapny-jedi | GitHub]]
+
+#+begin_src emacs-lisp
+  (defun python-company-jedi-hook ()
+    (add-to-list 'company-backends 'company-jedi))
+  (add-hook 'python-mode-hook 'python-company-jedi-hook)
+#+end_src
+
 *** Installation
 # Ran
 
