@@ -245,3 +245,24 @@ terms of =org-babel= skipping the evaluation. See [[https://orgmode.org/manual/E
 Evaluating Code Blocks]] for more info.
 
 * ~extras.org~
+** Minor modes
+*** COMMENT ~yasnippet~ +-- configured under ~lsp-bridge~+
+[[https://github.com/joaotavora/yasnippet][yasnippet]] was something I used extensively back in the day for YAML templates
+and maybe some LaTeX stuff. It's probably still pretty useful.
+
+#+begin_src emacs-lisp
+  (use-package yasnippet
+    :straight t
+    ;; :hook
+    ;; ((prog-mode . yas-minor-mode))
+    :bind
+    (:map yas-minor-mode-map
+          ("M-TAB" . yas-expand))
+    :config
+    (yas-reload-all)
+    (yas-global-mode 1))
+#+end_src
+
+Not really sure about ~M-TAB~ for =yas-expand=, but it was in my old config :shrug:
+
+Still need to set snippet directory; see [[https://github.com/joaotavora/yasnippet#where-are-the-snippets][yasnippet | Where are the snippets?]]
