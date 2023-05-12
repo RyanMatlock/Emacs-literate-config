@@ -186,7 +186,9 @@ built in).
 #+begin_src emacs-lisp
   (cond ((executable-find "vterm-ctrl")
          (use-package vterm
-           :straight t))
+           :straight t
+           :config
+           (setq vterm-shell shell-file-name)))
         (t (message "vterm requirements not installed on this device.")))
 #+end_src
 
@@ -200,15 +202,102 @@ switching between ~line-mode~ and ~char-mode~: ~C-c c-t~ toggles =vterm-copy-mod
 
 Just noticed this on my MacBook Pro:
 
-#+begin_src shell
+#+begin_src shell :eval no
   $ echo $SHELL
   /bin/zsh
   $ zsh --version
   zsh 5.8.1 (x86_64-apple-darwin22.0)
 #+end_src
 
-Probably time to review something like [[https://systemcrafters.net/emacs-from-scratch/learn-to-love-the-terminal-modes/][Learn to Love the Terminal Modes |
-System Crafters]].
+Probably time to +review something like [[https://systemcrafters.net/emacs-from-scratch/learn-to-love-the-terminal-modes/][Learn to Love the Terminal Modes |System
+Crafters]].+ read the Emacs libvterm documentation.
+
+Ok, I explicitly set =vterm-shell=, and now I'm getting this behavior:
+
+#+begin_src shell :eval no
+  $ echo $SHELL
+  /bin/zsh
+  $ echo $0
+  /usr/local/bin/bash
+  $ echo $ZSH_NAME
+
+  $ ps
+    PID TTY           TIME CMD
+  30442 ttys000    0:00.08 -bash
+  44159 ttys001    0:00.02 /usr/local/bin/bash
+  94406 ttys003    0:00.01 -bash
+  68604 ttys005    0:00.02 -bash
+#+end_src
+
+According to [[https://stackoverflow.com/a/3327022][How to determine the current interactive shell that I'm in
+(command-line) | stackoverflow]], this suggests I'm using the Homebrew ~bash~ I
+expect, so I wonder why =$SHELL= is still set to ~/bin/zsh~. This also holds for
+~shell~ and ~term~.
+
+In ~iTerm2~, I get this:
+
+#+begin_src shell :eval no
+  $ echo $SHELL
+  /usr/local/bin/bash
+#+end_src
+
+#+begin_quote
+When starting ~shell-mode~ with ~M-x shell~, Emacs starts the shell you want
+(usually the same as your login shell, but this can be changed if you really
+want to) and then sources a file, if it exists, based on the shell's name. The
+places it looks are
+
+1. ~~/.emacs_$SHELLNAME~
+2. ~~/.emacs.d/init_${SHELLNAME}.sh~
+
+-- source: [[https://stackoverflow.com/a/54951844][Setting TERM variable for Emacs shell | stackoverflow]]
+#+end_quote
+
+...so maybe I should change my login shell; see [[https://superuser.com/questions/48226/how-do-i-set-my-shell-in-mac-os-x][How do I set my shell in Mac OS
+X? | superuser.stackexchange]].
+
+I reset my shell with
+
+#+begin_src shell
+  $ sudo chsh -s /usr/local/bin/bash matlock
+#+end_src
+
+which I can confirm worked because
+
+#+begin_src shell
+  $ dscacheutil -q user -a name matlock
+  name: matlock
+  password: ********
+  uid: xxx
+  gid: xx
+  dir: /Users/matlock
+  shell: /usr/local/bin/bash
+  gecos: Ryan Matlock
+#+end_src
+
+(See [[https://apple.stackexchange.com/a/29877][How can I list all user accounts in the terminal? | apple.stackexchange]];
+note that ~/etc/passwd~ doesn't contain user information the way it does on
+Linux.) It may be that a system reboot will fix this.
+
+Note: I'm definitely the user running Emacs:
+
+#+begin_src shell
+  $ ps aux | ack -i emacs
+  matlock          45403   3.0  0.3 35870716 172160   ??  S    12:54AM   0:22.28
+  /Applications/Emacs.app/Contents/MacOS/Emacs-x86_64-10_14
+#+end_src
+
+How =$SHELL= is set in ~bash~:
+
+#+begin_quote
+=SHELL=
+
+This environment variable expands to the full pathname to the shell. If it is
+not set when the shell starts, Bash assigns to it the full pathname of the
+current user’s login shell.
+
+-- [[https://www.gnu.org/software/bash/manual/html_node/Bash-Variables.html#index-SHELL][Bash Variables § =SHELL= | GNU Bash Manual]]
+#+end_quote
 
 * Minor modes
 
