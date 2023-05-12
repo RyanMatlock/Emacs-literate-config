@@ -1,0 +1,247 @@
+#+options: ^:{}
+#+title: Cruft from literate Emacs configuration with Org mode
+#+author: Ryan Matlock
+
+* Why though?
+Keeping abandoned configuration info readily on hand is easier than having to
+search through the commit history, and it lets me know at a glance if I've
+tried something and hated it or it simply didn't work. The documentation may
+also contain useful links and debugging information.
+
+* ~core-config.org~
+
+* ~core-langs.org~
+** COMMENT ~lsp-bridge~
+[[https://github.com/manateelazycat/lsp-bridge][lsp-bridge | GitHub]] is supposedly the fastest LSP client for Emacs.
+
+*** Dependencies
+
+**** ~posframe~
+[[https://github.com/tumashu/posframe][posframe | GitHub]]
+
+#+begin_src emacs-lisp
+  (use-package posframe
+    :straight (:host github
+               :repo "tumashu/posframe"
+               :branch "master"))
+#+end_src
+
+**** Markdown
+For when you can't use Org mode 🙃; see [[https://jblevins.org/projects/markdown-mode/][markdown-mode]].
+
+#+begin_src emacs-lisp
+  (use-package markdown-mode
+    :straight t
+    :commands (markdown-mode gfm-mode)
+    :mode (("README\\.md\\'" . gfm-mode)
+           ("\\.md\\'" . markdown-mode)
+           ("\\.markdown\\'" . markdown-mode))
+    :init (setq markdown-command "multimarkdown")
+    :bind (:map markdown-mode-map
+           ("C-c C-e" . markdown-do)))
+#+end_src
+
+***** ~pandoc-mode~
+[[http://joostkremers.github.io/pandoc-mode/][pandoc-mode]] makes it easier to interface with ~pandoc~, which is especially
+useful when editing Markdown files (Org mode has a lot of this functionality
+built in).
+
+#+begin_src emacs-lisp
+  (use-package pandoc-mode
+    :straight t
+    :hook ((markdown-mode . pandoc-mode)))
+#+end_src
+
+
+**** ~yasnippet~
+[[https://github.com/joaotavora/yasnippet][yasnippet]] was something I used extensively back in the day for YAML templates
+and maybe some LaTeX stuff. It's probably still pretty useful.
+
+#+begin_src emacs-lisp
+  (use-package yasnippet
+    :straight t
+    ;; :hook
+    ;; ((prog-mode . yas-minor-mode))
+    :bind
+    (:map yas-minor-mode-map
+          ("M-TAB" . yas-expand))
+    :config
+    (yas-reload-all)
+    (yas-global-mode 1))
+#+end_src
+
+Not really sure about ~M-TAB~ for =yas-expand=, but it was in my old config :shrug:
+
+Still need to set snippet directory; see [[https://github.com/joaotavora/yasnippet#where-are-the-snippets][yasnippet | Where are the snippets?]]
+
+** Python
+*** COMMENT Company (COMPlete ANYthing) -- replaced by ~corfu~
+~corfu~ covers this now(?); in any case, I think I was only using this with
+Python.
+
+[[https://company-mode.github.io][company-mode | GitHub]]
+
+#+begin_src emacs-lisp
+  (add-hook 'after-init-hook 'global-company-mode)
+  (global-set-key (kbd "C-c C-<tab>") 'company-complete)
+#+end_src
+
+**** Python: ~company-jedi~
+[[https://github.com/emacsorphanage/company-jedi][comapny-jedi | GitHub]]
+
+#+begin_src emacs-lisp
+  (defun python-company-jedi-hook ()
+    (add-to-list 'company-backends 'company-jedi))
+  (add-hook 'python-mode-hook 'python-company-jedi-hook)
+#+end_src
+
+
+*** TODO COMMENT +~pylsp~+ ~ruff-lsp~
+**** Installation
+# Ran
+
+# #+begin_src shell :eval no
+#   pip install 'python-lsp-server[all]'
+# #+end_src
+
+# Looking at [[https://www.mattduck.com/lsp-python-getting-started.html][Getting started with lsp-mode for Python]] (from [2020-04-26 Sun])
+# plus the current config file, it looks a little hairy. I'm getting some degree
+# of linting and code completion in Python right now, but I need to come back to
+# this later. [[https://emacs-lsp.github.io/lsp-mode/page/lsp-pylsp/][lsp-pylsp]] seems to have a daunting number of options.
+
+[[https://github.com/charliermarsh/ruff-lsp][ruff-lsp | GitHub]]
+
+Ran
+
+#+begin_src shell
+  pip3 install ruff-lsp
+#+end_src
+
+**** TODO COMMENT Configuration
+[[https://emacs-lsp.github.io/lsp-mode/page/lsp-ruff-lsp/][lsp-ruff-lsp | LSP Mode]]
+
+#+Begin_src emacs-lisp
+  (eval-after-load 'lsp
+    (custom-set-variables
+     '(lsp-ruff-lsp-show-notifications 'onWarning)))
+#+end_src
+
+** TeX/LaTeX
+*** AUCTeX
+Encountered warnings with the following:
+
+# #+begin_src emacs-lisp :eval no-export
+#   (use-package auctex
+#     :straight t)
+# #+end_src
+
+Stealing configuration from [[https://github.com/radian-software/straight.el/issues/836#issuecomment-927098560][Straight freezed at Building auctex forever. #836 |
+hongyi-zhao reply on 2021-09-25]]
+
+# #+begin_src emacs-lisp :eval no-export
+#   (use-package auctex
+#     :straight
+#     (:type git :host nil :repo "https://git.savannah.gnu.org/git/auctex.git"
+#            :pre-build (("./autogen.sh")
+#                        ("./configure" "--without-texmf-dir" "--with-lispdir=.")
+#                        ("make")))
+#     :mode
+#     ;; https://www.mail-archive.com/auctex@gnu.org/msg07608.html
+#     ;; https://www.gnu.org/software/emacs/manual/html_node/reftex/Installation.html
+#     ("\\.tex\\'" . latex-mode) ;; first activate the inferior Emacs latex mode
+#     :hook
+#     (LaTeX-mode . TeX-PDF-mode)
+#     (LaTeX-mode . company-mode)
+#     (LaTeX-mode . flyspell-mode)
+#     (LaTeX-mode . flycheck-mode)
+#     (LaTeX-mode . LaTeX-math-mode)
+#     (LaTeX-mode . turn-on-reftex)
+#     (LaTeX-mode . turn-on-cdlatex)
+#     :init
+#     (load "auctex.el" nil t t)
+#     (load "preview-latex.el" nil t t)
+#     (require 'reftex)
+#     (setq-default TeX-master 'dwim)
+#     (setq TeX-data-directory (straight--repos-dir "auctex")
+#           TeX-lisp-directory TeX-data-directory
+
+#           ;: Or custom-set-variables as follows.
+#           ;: M-x describe-variable RET preview-TeX-style-dir RET
+#           ;: `(preview-TeX-style-dir ,(concat ".:" (straight--repos-dir "auctex")
+#           ;;                                  "latex:"))
+#           preview-TeX-style-dir (concat ".:" (straight--repos-dir "auctex")
+#                                         "latex:")
+
+#           TeX-parse-self t ;; parse on load
+#           TeX-auto-save t  ;; parse on save
+#           TeX-auto-untabify t ;; Automatically remove all tabs from a file before
+#           ;; saving it.
+
+#                                           ;Type of TeX engine to use.
+#                                           ;It should be one of the following symbols:
+#                                           ;* ‘default’
+#                                           ;* ‘luatex’
+#                                           ;* ‘omega’
+#                                           ;* ‘xetex’
+#           TeX-engine 'xetex
+#           TeX-auto-local ".auctex-auto" ;; Directory containing automatically
+#           ;; generated TeX information.
+#           TeX-style-local ".auctex-style" ;; Directory containing hand generated
+#                                           ;; TeX information.
+
+#         ;; ##### Enable synctex correlation.
+#         ;; ##### From Okular just press `Shift + Left click' to go to the good
+#         ;; ##### line.
+#         ;; ##### From Evince just press `Ctrl + Left click' to go to the good
+#         ;; ##### line.
+#           ;; TeX-source-correlate-mode t
+#           ;; TeX-source-correlate-method 'synctex
+#           ;; TeX-source-correlate-start-server t
+
+#         ;; automatically insert braces after sub/superscript in math mode
+#           TeX-electric-sub-and-superscript t
+#         ;; If non-nil, then query the user before saving each file with
+#         ;; TeX-save-document.
+#           TeX-save-query nil
+
+#           TeX-view-program-selection '((output-pdf "PDF Tools"))
+#           ))
+# #+end_src
+
+Well, that's not working either.
+
+#+begin_example
+  Error (use-package): auctex/:catch: Loading file
+  /Users/matlock/.emacs.d/straight/build/auctex/auctex.elc failed to provide
+  feature ‘auctex’ Disable showing Disable logging
+  Warning (straight): Two different recipes given for "auctex" (:pre-build cannot
+  be both nil and (("./autogen.sh") ("./configure" "--without-texmf-dir"
+  "--with-lispdir=.") ("make"))) Disable showing Disable logging
+  Warning (initialization): An error occurred while loading ‘/Users/matlock/.emacs’:
+
+  error: :pre-build command error in "auctex" recipe in command "(\"./autogen.sh\")"
+
+  To ensure normal operation, you should investigate and remove the
+  cause of the error in your initialization file.  Start Emacs with
+  the ‘--debug-init’ option to view a complete error backtrace. Disable showing
+  Disable logging
+#+end_example
+
+It appears =autogen.sh= isn't in =.emacs.d/straight/repos/auctex/=. Per the end
+of =*straight-process*=:
+
+#+begin_example
+  [Return code: 0]
+
+  $ cd /Users/matlock/.emacs.d/straight/repos/auctex/
+  $ ./autogen.sh
+
+  Searching for programPermission denied
+  [Return code: file-error]
+#+end_example
+
+For some reason, =:eval no= and =:eval no-export= don't seem to be working (in
+terms of =org-babel= skipping the evaluation. See [[https://orgmode.org/manual/Evaluating-Code-Blocks.html][Org Mode Manual § 16.5
+Evaluating Code Blocks]] for more info.
+
+* ~extras.org~
