@@ -1244,8 +1244,8 @@ Mode | Mastering Emacs]] for info on =ido-file-extensions-order=.
   (use-package ido
     :straight t
     :config
-    (ido-mode 1)
-    (ido-everywhere 1)
+    ;; (ido-mode 1)
+    ;; (ido-everywhere 1)
     (setf (nth 2 ido-decorations) "\n")
     (setq ido-file-extensions-order '(".org"
                                       ".el"
@@ -1254,7 +1254,10 @@ Mode | Mastering Emacs]] for info on =ido-file-extensions-order=.
                                       ".yaml"
                                       ".js"
                                       ".md"
-                                      ".txt")))
+                                      ".txt"))
+    :bind
+    (:map global-map
+          ("C-c 2" . ido-mode)))
 
   (use-package flx-ido
     :straight t
@@ -1272,6 +1275,11 @@ vertical display, maybe I don't even need to do that.
 Now that I'm playing around with it a little, I see that I can use
 ~vertico~-style commands to navigate through the options, i.e. ~C-n~ and ~C-p~ don't
 let me scroll through the options once I've narrowed them.
+
+New decision: ~C-c 2~ is globally bound to =ido-mode=, which is off by default. The
+main issue is that while ~ido~ is nice for opening buffers, I find it more
+annoying than ~vertico~ for switching between buffers, which is something I do
+more frequently.
 
 ** TODO Project handling: ~projectile~
 [[https://github.com/bbatsov/projectile][projectile]]: per [[https://youtu.be/bFS0V_4YfhY][Lukewh's short projectile introduction | YouTube]], it's useful
