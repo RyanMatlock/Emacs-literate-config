@@ -207,25 +207,22 @@ see [[https://www.gnu.org/software/emacs/manual/html_node/efaq/Turning-on-auto_0
   (setq-default auto-fill-function 'do-auto-fill)
 #+end_src
 
-*** GUI
-- no menu bar; see see http://emacswiki.org/emacs/MenuBar#toc1
+*** TODO GUI
+- no menu bar; see [[http://emacswiki.org/emacs/MenuBar][Menu Bar | Emacs Wiki]]
 - no tool bar
 - no scroll bar
 - 96% opacity (matches OS X Terminal); see see
-  http://stackoverflow.com/questions/21946382/how-to-get-transparent-window-in-gnu-emacs-on-osx-mavericks
+  [[http://stackoverflow.com/questions/21946382/how-to-get-transparent-window-in-gnu-emacs-on-osx-mavericks][how to get transparent window in GNU Emacs on OSX? | stackoverflow]]
 - default frame size: 80w (+ padding b/c verbatim/code font for Org mode is
   slightly wider than Inconsolata) x 45h
+- enable =global-display-fill-column-indicator-mode=, which draws a line at the
+  fill column; see [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Displaying-Boundaries.html][Displaying Boundaries | GNU Emacs Manual]] (replaces
+  [[https://www.emacswiki.org/emacs/FillColumnIndicator][fill-column-indicator.el | Emacs Wiki]])
 - define ~std-frame~ to return to default 80w x 45h
 - define ~lrg-frame~, which accommodates two side-by-side windows
 - define ~xl-frame~, which accommodates three side-by-side-by-side windows
-- use Inconsolata size 15 font (maybe try JetBrains Mono?) see [[https://emacsredux.com/blog/2021/12/22/check-if-a-font-is-available-with-emacs-lisp/][Check if a Font
-  is Available with Emacs Lisp | Emacs Redux]] for font switching goodness
-- set unicode font to Unifont
-- +use Solarized Dark theme; see+
-  +https://emacs.stackexchange.com/questions/10246/emacs-always-ask-to-trust-colour-theme-at-startup+
 - disable =C-z=, which minimizes Emacs in GUI mode
-- disable ~visible-bell~; see
-  http://stackoverflow.com/questions/36805713/emacs-blank-square-on-mac-os-x/36813418#36813418
+- disable ~visible-bell~; see [[http://stackoverflow.com/questions/36805713/emacs-blank-square-on-mac-os-x/36813418#36813418][Emacs blank square on Mac OS X | stackoverflow]]
 
 Update: I think you've been doing this (sort of) incorrectly because you
 haven't been taking full advantage of =default-frame-alist=.
@@ -236,34 +233,38 @@ haven't been taking full advantage of =default-frame-alist=.
     (tool-bar-mode -1)
     (scroll-bar-mode -1)
 
-    (setq gui-config-fonts-alist
-          '(;; ("JetBrains Mono" . 14)
-            ("Inconsolata" . 15)
-            ("Fira Code" . 14)
-            ("Consolas" . 15)
-            ("Courier New" . 15)))
-    (let* ((font-names (mapcar #'car gui-config-fonts-alist))
-           (available-fonts
-            (seq-filter
-             #'(lambda (name) (find-font (font-spec :name name))) font-names))
-           (name (car available-fonts))
-           (size (cdr (assoc name gui-config-fonts-alist))))
-      (setq gui-config-font (format "%s-%d" name size))
-      (set-frame-font gui-config-font)
-      (add-to-list 'default-frame-alist `(font . ,gui-config-font))
-      (message (format "Set font to %s." gui-config-font)))
-
+    (add-to-list 'default-frame-alist '(vertical-scroll-bars . nil))
+    (setq gui-config-frame-transparency 96)
+    (set-frame-parameter
+     (selected-frame) 'alpha `(,gui-config-frame-transparency
+                               ,gui-config-frame-transparency))
+    (add-to-list 'default-frame-alist `(alpha ,gui-config-frame-transparency
+                                              ,gui-config-frame-transparency))
+    (setq gui-config-frame-width-padding 4)
+    (setq gui-config-frame-width (1+ (+ fill-column
+                                          gui-config-frame-width-padding)))
+    (setq gui-config-frame-height 45)
+    (add-to-list 'default-frame-alist `(width . ,gui-config-frame-width))
+    (add-to-list 'default-frame-alist `(height . ,gui-config-frame-height))
+    ;; (defun side-by-side ()
+    ;;   "resizes the frame to accommodate two windows side-by-side"
+    ;;   (interactive)
+    ;;   (set-frame-size (selected-frame)
+    ;;                   ;; used to be + 3, but I think there are some side columns
+    ;;                   ;; that take away screen real estate now?
+    ;;                   (+ (* gui-config-frame-width 2) 7)
+    ;;                   gui-config-frame-height))
     (defun std-frame ()
       "reverts framesize to standard"
       (interactive)
       (set-frame-size (selected-frame)
-                      (+ 1 gui-config-frame-width)
+                      (1+ gui-config-frame-width)
                       gui-config-frame-height))
     (defun gui-config-calculate-frame-width (num-windows)
       "calculate how wide the frame should be for a number of windows"
       (let ((inter-window-space 2))
         (+ (* gui-config-frame-width num-windows)
-           (* inter-window-space (- num-windows 1)))))
+           (* inter-window-space (1- num-windows)))))
     (defun lrg-frame ()
       "resize frame for 2 side-by-side windows (same as side-by-side function,
        which is being kept for now for the sake of legacy)"
@@ -287,6 +288,144 @@ haven't been taking full advantage of =default-frame-alist=.
     (define-key global-map (kbd "s-t") nil)
     (setq visible-bell nil)
     (std-frame))
+#+end_src
+
+*** TODO Fonts
+You may want to install fonts with [[https://github.com/Homebrew/homebrew-cask-fonts][homebrew-cask-fonts | GitHub]], so if you
+wanted to be insane, you could set fundamental, text, and Org modes Computer
+Modern Roman with something like
+
+#+begin_example
+    (set-face-attribute
+     'default nil :family "CMU Serif" :weight 'normal :slant 'normal)
+#+end_example
+
+ with a hook or something and then a monospace font for =prog-mode=.
+
+- use Inconsolata size 15 font (maybe try JetBrains Mono?) see [[https://emacsredux.com/blog/2021/12/22/check-if-a-font-is-available-with-emacs-lisp/][Check if a Font
+  is Available with Emacs Lisp | Emacs Redux]] for font switching goodness
+- set unicode font to Unifont
+
+Issue with JetBrains Mono being italic (but still bold when it ought to
+be). Output from ~M-x describe-font~:
+
+#+begin_example
+  name (opened by): -*-JetBrains Mono-normal-italic-normal-*-14-*-*-*-m-0-iso10646-1
+         full name: JetBrains Mono:pixelsize=14:weight=normal:slant=italic:width=normal:spacing=100:scalable=true
+#+end_example
+
+For comparison, here's Inconsolata:
+
+#+begin_example
+  name (opened by): -*-Inconsolata-normal-normal-normal-*-15-*-*-*-m-0-iso10646-1
+         full name: Inconsolata:pixelsize=15:weight=normal:slant=normal:width=normal:spacing=100:scalable=true
+#+end_example
+
+[[https://www.gnu.org/software/emacs/manual/html_node/elisp/Face-Attributes.html][Face Attributes | GNU Emacs Manual]]
+
+~M-x describe-face~ over default text (with JetBrains Mono):
+
+#+begin_example
+             Family: JetBrains Mono
+            Foundry: nil
+              Width: normal
+             Height: 140
+             Weight: normal
+              Slant: italic
+         Foreground: #839496
+  DistantForeground: unspecified
+         Background: #002b36
+          Underline: nil
+           Overline: nil
+     Strike-through: nil
+                Box: nil
+            Inverse: nil
+            Stipple: nil
+               Font: #<font-object -*-JetBrains Mono-normal-italic-normal-*-14-*-*-*-m-0-iso10646-1>
+            Fontset: -*-JetBrains Mono-normal-italic-normal-*-14-*-*-*-m-0-fontset-auto2
+             Extend: nil
+            Inherit: nil
+#+end_example
+
+So I just need to fix the slant.
+
+Tried =(set-face-attribute 'default nil :slant 'normal)= (see [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Attribute-Functions.html#index-set_002dface_002dattribute][Face Attribute
+Functions § =set-face-attribute= | GNU Emacs Manual]])
+
+#+begin_example
+             Family: JetBrains Mono
+            Foundry: nil
+              Width: normal
+             Height: 140
+             Weight: normal
+              Slant: italic
+         Foreground: #839496
+  DistantForeground: unspecified
+         Background: #002b36
+          Underline: nil
+           Overline: nil
+     Strike-through: nil
+                Box: nil
+            Inverse: nil
+            Stipple: nil
+               Font: #<font-object -*-JetBrains Mono-normal-italic-normal-*-14-*-*-*-m-0-iso10646-1>
+            Fontset: -*-JetBrains Mono-normal-italic-normal-*-14-*-*-*-m-0-fontset-auto2
+             Extend: nil
+            Inherit: nil
+#+end_example
+
+Still slanted.
+
+Cruft
+
+#+begin_example
+  ;; (setq gui-config-fonts-plist
+  ;;       '((:name "JetBrains Mono" :size 14 :weight "Regular")
+  ;;         (:name "Inconsolata" :size 15 :weight "Regular")
+  ;;         (:name "Fira Code" :size 14)
+  ;;         (:name "Consolas" :size 15)
+  ;;         (:name "Courier New" :size 15)))
+  ;; (setq gui-config-font-styles-alist
+  ;;       '((:base . "Regular")
+  ;;         (:comment . "Italic")
+  ;;         (:def . "Bold")
+  ;;         (:heading1 . "ExtraBold")
+  ;;         (:heading2 . "Bold")
+  ;;         (:heading3 . "SemiBold")
+  ;;         (:heading4 . "SemiBold")))
+#+end_example
+
+#+begin_src emacs-lisp
+  (setq gui-config-fonts-alist
+        '(("JetBrains Mono" . 14)
+          ("Inconsolata" . 15)
+          ("Fira Code" . 14)
+          ("Consolas" . 15)
+          ("Courier New" . 15)))
+  (defun font-available-p (font-name)
+    "Check if FONT-NAME is available on device."
+    (member font-name (font-family-list)))
+  (let* ((font-names (mapcar #'car gui-config-fonts-alist))
+         (available-fonts (seq-filter #'font-available-p font-names))
+         (name (car available-fonts))
+         (size (cdr (assoc name gui-config-fonts-alist))))
+    (setq gui-config-font (format "%s-%d" name size))
+    (set-frame-font gui-config-font)
+    ;; (set-face-attribute 'default t :slant 'unspecified)
+    ;; (set-face-attribute 'default nil :slant 'normal)
+    ;; (set-face-attribute
+    ;;  'default nil :family "Inconsolata" :slant 'normal)
+    (set-face-attribute
+     'default nil :family "JetBrains Mono" :slant 'normal)
+    ;; (set-face-attribute
+    ;;  'default nil :family "CMU Serif" :weight 'normal :slant 'normal)
+    (set-face-attribute
+     'font-lock-comment-face nil :slant 'italic)
+
+    (message (format "Set font to %s." gui-config-font)))
+
+  (set-fontset-font t 'unicode "Unifont" nil 'prepend)
+  ;; (add-to-list 'default-frame-alist `(font . ,gui-config-font))
 #+end_src
 
 *** ~s-N~ opens ~*scratch*~ buffer
