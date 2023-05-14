@@ -9,6 +9,24 @@ tried something and hated it or it simply didn't work. The documentation may
 also contain useful links and debugging information.
 
 * ~core-config.org~
+** General interface & minor modes
+*** General look & feel
+**** ~fill-column-indicator~
+[[https://www.emacswiki.org/emacs/FillColumnIndicator][fill-column-indicator]]
+
+#+begin_src emacs-lisp
+  (use-package fill-column-indicator
+    :straight t
+    :hook (prog-mode . fill-column-indicator-mode)
+    :config (setq fci-rule-width 1))
+#+end_src
+
+Not working:
+#+begin_verbatim
+command-execute: Autoloading file path/to/.emacs.d/straight/build/fill-column-indicator/fill-column-indicator.elc failed to define function fill-column-indicator-mode
+#+end_verbatim
+
+I don't think I've missed this.
 
 * ~core-langs.org~
 ** COMMENT ~lsp-bridge~

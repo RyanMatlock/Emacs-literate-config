@@ -207,21 +207,6 @@ see [[https://www.gnu.org/software/emacs/manual/html_node/efaq/Turning-on-auto_0
   (setq-default auto-fill-function 'do-auto-fill)
 #+end_src
 
-*** TODO ~fill-column-indicator~
-[[https://www.emacswiki.org/emacs/FillColumnIndicator][fill-column-indicator]]
-
-# #+begin_src emacs-lisp
-#   (use-package fill-column-indicator
-#     :straight t
-#     :hook (prog-mode . fill-column-indicator-mode)
-#     :config (setq fci-rule-width 1))
-# #+end_src
-
-# Not working:
-# #+begin_verbatim
-# command-execute: Autoloading file path/to/.emacs.d/straight/build/fill-column-indicator/fill-column-indicator.elc failed to define function fill-column-indicator-mode
-# #+end_verbatim
-
 *** GUI
 - no menu bar; see see http://emacswiki.org/emacs/MenuBar#toc1
 - no tool bar
