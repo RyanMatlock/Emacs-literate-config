@@ -233,7 +233,8 @@ see [[https://www.gnu.org/software/emacs/manual/html_node/efaq/Turning-on-auto_0
 - define ~std-frame~ to return to default 80w x 45h
 - define ~lrg-frame~, which accommodates two side-by-side windows
 - define ~xl-frame~, which accommodates three side-by-side-by-side windows
-- use Inconsolata size 15 font
+- use Inconsolata size 15 font (maybe try JetBrains Mono?) see [[https://emacsredux.com/blog/2021/12/22/check-if-a-font-is-available-with-emacs-lisp/][Check if a Font
+  is Available with Emacs Lisp | Emacs Redux]] for font switching goodness
 - set unicode font to Unifont
 - +use Solarized Dark theme; see+
   +https://emacs.stackexchange.com/questions/10246/emacs-always-ask-to-trust-colour-theme-at-startup+
@@ -241,29 +242,32 @@ see [[https://www.gnu.org/software/emacs/manual/html_node/efaq/Turning-on-auto_0
 - disable ~visible-bell~; see
   http://stackoverflow.com/questions/36805713/emacs-blank-square-on-mac-os-x/36813418#36813418
 
+Update: I think you've been doing this (sort of) incorrectly because you
+haven't been taking full advantage of =default-frame-alist=.
+
 #+begin_src emacs-lisp
   (when window-system
     (menu-bar-mode -1)  ;; not working?
     (tool-bar-mode -1)
     (scroll-bar-mode -1)
-    (set-frame-parameter (selected-frame) 'alpha '(96 96))
-    (add-to-list 'default-frame-alist '(alpha 96 96))
-    (defvar gui-config-frame-width-padding 4)
-    (defvar gui-config-frame-width (+ fill-column
-                                      gui-config-frame-width-padding
-                                      1))
-    (defvar gui-config-frame-height 45)
-    (set-frame-size (selected-frame)
-                    gui-config-frame-width
-                    gui-config-frame-height)
-    (defun side-by-side ()
-      "resizes the frame to accommodate two windows side-by-side"
-      (interactive)
-      (set-frame-size (selected-frame)
-                      ;; used to be + 3, but I think there are some side columns
-                      ;; that take away screen real estate now?
-                      (+ (* gui-config-frame-width 2) 7)
-                      gui-config-frame-height))
+
+    (setq gui-config-fonts-alist
+          '(;; ("JetBrains Mono" . 14)
+            ("Inconsolata" . 15)
+            ("Fira Code" . 14)
+            ("Consolas" . 15)
+            ("Courier New" . 15)))
+    (let* ((font-names (mapcar #'car gui-config-fonts-alist))
+           (available-fonts
+            (seq-filter
+             #'(lambda (name) (find-font (font-spec :name name))) font-names))
+           (name (car available-fonts))
+           (size (cdr (assoc name gui-config-fonts-alist))))
+      (setq gui-config-font (format "%s-%d" name size))
+      (set-frame-font gui-config-font)
+      (add-to-list 'default-frame-alist `(font . ,gui-config-font))
+      (message (format "Set font to %s." gui-config-font)))
+
     (defun std-frame ()
       "reverts framesize to standard"
       (interactive)
