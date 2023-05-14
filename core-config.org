@@ -13,7 +13,6 @@ the way I want it at some point---and keep it that way!
 ** ~*Messages*~
 
 ** Other
-
 *** OPTIONAL get =smartparens= to behave like =paredit=
 Still having trouble with =turn-on-smartparens-strict-mode= for Lisp modes, and
 I haven't figured out where to stuff =sp-use-paredit-bindings= (although maybe
@@ -43,18 +42,6 @@ See [[https://www.reddit.com/r/emacs/comments/8k7ixs/modes_for_directory_tree_vi
 It's helpful to automatically have a log of sorts, kind of like
 ~.bash_history~. Having this first ensures that it's done when setting up this
 configuration on a new machine.
-
-*** PARTIAL figure out what to do with ~s-n~
-It's bound to +=ns-new-frame=+ =make-frame=, and it looks like you can customize some features
-of what the new frame (i.e. window in regular GUI speak) looks like.
-
-Ooh, this is good to know:
-
-#+begin_example :eval no
-  (add-to-list 'default-frame-alist '(width  . 90))
-  (add-to-list 'default-frame-alist '(height . 40))
-  (add-to-list 'default-frame-alist '(font . "Monospace-10"))
-#+end_example
 
 *** DONE packages to look into [0/0]
 
@@ -304,22 +291,41 @@ see [[https://www.gnu.org/software/emacs/manual/html_node/efaq/Turning-on-auto_0
         (set-frame-size (selected-frame)
                         (gui-config-calculate-frame-width num-windows)
                         (floor (* gui-config-frame-height height-multiplier)))))
-    (defvar gui-config-font-face "Inconsolata")
-    (defvar gui-config-font-size 15)
-    (set-fontset-font t 'unicode "Unifont" nil 'prepend)
-    (set-frame-font (concat gui-config-font-face
-                            "-"
-                            (number-to-string gui-config-font-size)))
     ;; C-z previously bound to suspend-frame (minimizes the window); C-x C-z
     ;; still bound to suspend-frame
     (define-key global-map (kbd "C-z") nil)
-    (setq visible-bell nil)
     ;; s-t previously bound to ns-popup-font-panel
     (define-key global-map (kbd "s-t") nil)
-    (define-key global-map (kbd "s-N") 'make-frame)
-    ;; s-n previously bound to make-frame
-    (define-key global-map (kbd "s-n") nil))
+    (setq visible-bell nil)
+    (std-frame))
 #+end_src
+
+*** ~s-N~ opens ~*scratch*~ buffer
+I think I may start using frames to hold related sets of buffers to make
+context switching easier (i.e. I can switch between frames instead of
+constantly loading related sets of buffers into my usual two window setup).
+
+#+begin_src emacs-lisp
+  (setq make-new-frame-default-buffer "*scratch*")
+  (setq make-new-frame-alternate-buffer "*Buffer List*")
+
+  (defun make-new-frame (&optional alt-buffer)
+    "Open a new frame using 'make-frame', and switch to buffer specified by
+  'make-new-frame-default-buffer' unless a prefix argument is passed, in which
+  case the buffer specified by 'make-new-frame-alternate-buffer' is selected."
+    (interactive "P")
+    (let ((target-buffer
+           (if alt-buffer make-new-frame-alternate-buffer
+             make-new-frame-default-buffer)))
+      (make-frame)
+      (switch-to-buffer target-buffer)))
+
+  (define-key global-map (kbd "s-N") 'make-new-frame)
+  ;; s-n previously bound to make-frame
+  (define-key global-map (kbd "s-n") nil)
+#+end_src
+
+This is a good place to remind myself that =delete-frame= is bound to ~C-x 5 0~.
 
 *** Prettier mode line
 I checked Reddit to get some ideas for which mode line packages are popular
