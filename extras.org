@@ -345,7 +345,6 @@ Configuration stolen from the README.
 #+end_src
 
 * Miscellaneous
-
 ** Exercism
 [[https://exercism.org/tracks][Exercism]] seems like a neat way to learn concepts from dozens of programming
 languages.
@@ -366,6 +365,10 @@ should read up on [[https://www.gnu.org/software/emacs/manual/html_mono/ert.html
     (ert-delete-all-tests)
     (eval-buffer)
     (ert 't))
+
+  (eval-after-load 'emacs-lisp-mode
+    (define-key emacs-lisp-mode-map (kbd "C-c t")
+      'exercism-eval-and-run-all-tests-in-buffer))
 #+end_src
 
 * Sanity check
