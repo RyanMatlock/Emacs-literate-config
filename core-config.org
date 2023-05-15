@@ -1928,6 +1928,17 @@ The reason I had an issue with =(void-variable org-iedit-in-src-block)= for so
 long was that I forgot (read: didn't know that I needed to) quote the function
 in =define-key= or =local-set-key=, but now everything works as it should.
 
+*** =other-window=
+
+#+begin_src emacs-lisp
+  (defun other-window-back ()
+    "Go to previous window -- easier than explicitly passing an argument to
+  'other-window'."
+    (interactive)
+    (other-window -1))
+
+  (define-key global-map (kbd "C-x O") 'other-window-back)
+#+end_src
 ** ~org-tempo~
 [[https://orgmode.org/manual/Structure-Templates.html][Org structure templates]] (~C-c c-,~: =org-insert-structure-template=)
 
