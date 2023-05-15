@@ -500,87 +500,14 @@ editors/IDEs)
 #+end_src
 
 *** Prettier mode line
-I checked Reddit to get some ideas for which mode line packages are popular
-these days. A lot of people seem to be happy with Doom Emacs/[[https://github.com/seagle0128/doom-modeline][doom-modeline]], and
-[[https://gitlab.com/jessieh/mood-line][mood-line]] is a lightweight alternative.
-
-If that doesn't work out, [[https://github.com/tarsius/minions][minions]] (minor mode lighter \to separate menu) + [[https://github.com/tarsius/moody][moody]]
-also looks really nice. It looks like you could actually use ~mood-line~ with
-~minions~ with some tweaks; see [[https://gitlab.com/jessieh/mood-line/-/issues/21][Support Minions Mode]].
-
-By default, ~mood-line~'s git status looks unreadable in the active
-window/frame/buffer/whatever the right term is when using Solarized Dark theme
-(bright yellow text over light grey background) [note: only true when
-=(solarized-high-contrast-mode-line t)= ]. I think the issue can be
-traced to
-
-# #+begin_src emacs-lisp :eval no
-#   (defface mood-line-status-info
-#     '((t (:inherit (font-lock-keyword-face))))
-#     "Face used for generic status indicators in the mode-line."
-#     :group 'mood-line)
-# #+end_src
-
-so I'm going to try modifying that. Actually, looking at the Customize options,
-=mood-line-status-success= uses the same bright yellow color, and
-=mood-line-status-neutral= uses only a slightly darker grey than the background.
+[[https://gitlab.com/jessieh/mood-line][mood-line | GitLab]]
 
 #+begin_src emacs-lisp
   (use-package mood-line
     :straight t
-    ;; :requires solarized-theme
-    ;; :defer t
     :config
-    ;; having issues with solarized-dark-color-palette-alist :shrug:
-    ;; (progn
-    ;;   (when (and (member 'solarized-dark custom-enabled-themes)
-    ;;              solarized-high-contrast-mode-line)
-    ;;     (progn
-    ;;       ;; (message "You're using Solarized Dark")
-    ;;       ;; note: hex codes work just as well as color strings
-    ;;       (set-face-attribute
-    ;;        'mood-line-status-info
-    ;;        nil
-    ;;        :foreground
-    ;;        (cdr (assoc 'blue-d solarized-dark-color-palette-alist)))
-    ;;       (set-face-attribute
-    ;;        'mood-line-status-success
-    ;;        nil
-    ;;        :foreground
-    ;;        (cdr (assoc 'blue-d solarized-dark-color-palette-alist)))
-    ;;       (set-face-attribute
-    ;;        'mood-line-status-neutral
-    ;;        nil
-    ;;        :foreground
-    ;;        (cdr (assoc 'green-d solarized-dark-color-palette-alist))))))
-    ;;
-    ;; stll having trouble with solarized-dark-color-palette-alist
-    ;; ¯\_(ツ)_/¯
-    ;;
-    ;; (set-face-attribute
-    ;;  'mood-line-status-info
-    ;;  nil
-    ;;  :foreground
-    ;;  (cdr (assoc 'blue-d solarized-dark-color-palette-alist)))
-    ;; (set-face-attribute
-    ;;  'mood-line-status-success
-    ;;  nil
-    ;;  :foreground
-    ;;  (cdr (assoc 'blue-d solarized-dark-color-palette-alist)))
-    ;; (set-face-attribute
-    ;;  'mood-line-status-neutral
-    ;;  nil
-    ;;  :foreground
-    ;;  (cdr (assoc 'green-d solarized-dark-color-palette-alist)))
     (mood-line-mode))
 #+end_src
-
-Getting warning on startup now: ~Error (use-package): mood-line/:config:
-Symbol’s value as variable is void: solarized-dark-color-palette-alist~ even
-after adding =:requires solarized-theme= :shrug: Weirder still: when I run ~M-x
-reload-dotemacs~, I don't get the warning and instead get the expected
-behavior. Weirder still: I can run ~C-h v solarized-dark-color-palette-alist~,
-get the value, and then run ~M-x reload-dotemacs~ and everything works.
 
 *** ~exec-path-from-shell~ to fix ~exec-path~​/​~PATH~ behavior in MacOS GUI
 [[https://github.com/purcell/exec-path-from-shell][exec-path-from-shell]] fixes behavior of how environment variables are loaded in
@@ -659,31 +586,6 @@ It works how you'd want it to for the latter case.
 
 When I finally decide to join the modern era and use zsh or fish, it will be
 easy to =cons= onto =shell-paths-alist=.
-
-*** TODO COMMENT ~all-the-icons.el~ + ~all-the-icons-completion~
-[[https://github.com/domtronn/all-the-icons.el][all-the-icons.el]]
-
-[[https://github.com/iyefrat/all-the-icons-completion][all-the-icons-completion]]
-
-#+begin_src emacs-lisp :eval no
-  ;; (require 'font-lock)
-  ;; (use-package font-lock+
-  ;;   :straight t)
-  ;; not actually needed
-  ;; see https://github.com/domtronn/all-the-icons.el/pull/106
-
-  (use-package all-the-icons
-    :straight t
-    :if (display-graphic-p))
-
-  (use-package all-the-icons-completion
-    :straight t
-    ;; :requires (all-the-icons marginalia)
-    :requires all-the-icons
-    ;; :hook ((marginalia-mode . all-the-icons-completition-marginalia-setup))
-    :config
-    (all-the-icons-completion-mode))
-#+end_src
 
 *** ~whitespace~
 [[https://www.emacswiki.org/emacs/WhiteSpace][whitespace]] package: highlight lines >80 characters wide, [[https://www.emacswiki.org/emacs/WhiteSpace#h5o-9][highlight ~TAB~
