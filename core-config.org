@@ -36,7 +36,9 @@ It's helpful to automatically have a log of sorts, kind of like
 ~.bash_history~. Having this first ensures that it's done when setting up this
 configuration on a new machine.
 
-*** DONE packages to look into [0/0]
+*** TODO packages to look into [0/1]
+- [ ] [[https://github.com/emacs-circe/circe][circe | GitHub]]: an IRC client for Emacs (you know you only want this
+  because of the [[https://www.goodreads.com/book/show/35959740-circe][Madeline Miller book]])
 
 ** Features to add [2/4]
 - [X] complete the switch from ~package.el~ to ~straight.el~
@@ -160,7 +162,8 @@ notes]])
 #+end_src
 
 #+begin_quote
-Aside: I just learned about the [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Backquote.html][backquote]] in Emacs Lisp---very cool!
+Aside: I just learned about the [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Backquote.html][backquote | GNU Emacs Manual]] in Emacs
+Lisp---very cool!
 #+end_quote
 
 As referenced at the bottom of the show notes, [[https://github.com/emacscollective/no-littering][no-littering]] looks like a good
@@ -168,7 +171,7 @@ option to keep Emacs cleaner.
 
 ** TODO General look & feel
 *** Solarized Dark theme
-[[https://github.com/bbatsov/solarized-emacs][solarized-emacs]]
+[[https://github.com/bbatsov/solarized-emacs][solarized-emacs | GitHub]]
 
 Note: you need to =setq= various properties /before/ you load the theme,
 otherwise you'll get unexpected behaviors.
@@ -192,7 +195,7 @@ You ought to set one value as a number and then do the appropriate math with
 that value rather than what you've done with hard-coding 79 and 80 characters
 into this configuration.
 
-see [[https://www.gnu.org/software/emacs/manual/html_node/efaq/Turning-on-auto_002dfill-by-default.html][Turn on ~auto-fill-mode~ by default]]
+see [[https://www.gnu.org/software/emacs/manual/html_node/efaq/Turning-on-auto_002dfill-by-default.html][How do I turn on ~auto-fill-mode~ by default? | GNU Emacs Manual]]
 
 #+begin_src emacs-lisp
   ;; (add-hook 'text-mode-hook 'turn-on-auto-fill)
@@ -289,108 +292,28 @@ haven't been taking full advantage of =default-frame-alist=.
 
 *** TODO Fonts
 You may want to install fonts with [[https://github.com/Homebrew/homebrew-cask-fonts][homebrew-cask-fonts | GitHub]], so if you
-wanted to be insane, you could set fundamental, text, and Org modes Computer
-Modern Roman with something like
+wanted to be insane, you could set fundamental, text, and Org modes (and
+AUCTeX? maybe not for math mode though) Computer Modern Roman with something
+like
 
 #+begin_example
     (set-face-attribute
      'default nil :family "CMU Serif" :weight 'normal :slant 'normal)
 #+end_example
 
- with a hook or something and then a monospace font for =prog-mode=.
+with a hook or something and then a monospace font for =prog-mode=. [[https://zzamboni.org/post/beautifying-org-mode-in-emacs/][Beautifying
+Org Mode in Emacs | zzamboni.org]] looks like a good resource for this. [[https://lucidmanager.org/productivity/ricing-org-mode/][Ricing
+Org Mode: A Beautiful Writing Environment | lucidmanager.org]] also has some good
+tips, e.g. [[https://gitlab.com/jabranham/mixed-pitch][mixed-pitch | GitLab]].
 
-- use Inconsolata size 15 font (maybe try JetBrains Mono?) see [[https://emacsredux.com/blog/2021/12/22/check-if-a-font-is-available-with-emacs-lisp/][Check if a Font
-  is Available with Emacs Lisp | Emacs Redux]] for font switching goodness
-- set unicode font to Unifont
+See [[https://emacsredux.com/blog/2021/12/22/check-if-a-font-is-available-with-emacs-lisp/][Check if a Font is Available with Emacs Lisp | Emacs Redux]] for font
+switching goodness
 
-Issue with JetBrains Mono being italic (but still bold when it ought to
-be). Output from ~M-x describe-font~:
+Set unicode font to Unifont (for emojis?); see [[https://github.com/rolandwalker/unicode-fonts][unicode-fonts | GitHub]] (?) ---
+this is very old
 
-#+begin_example
-  name (opened by): -*-JetBrains Mono-normal-italic-normal-*-14-*-*-*-m-0-iso10646-1
-         full name: JetBrains Mono:pixelsize=14:weight=normal:slant=italic:width=normal:spacing=100:scalable=true
-#+end_example
-
-For comparison, here's Inconsolata:
-
-#+begin_example
-  name (opened by): -*-Inconsolata-normal-normal-normal-*-15-*-*-*-m-0-iso10646-1
-         full name: Inconsolata:pixelsize=15:weight=normal:slant=normal:width=normal:spacing=100:scalable=true
-#+end_example
-
-[[https://www.gnu.org/software/emacs/manual/html_node/elisp/Face-Attributes.html][Face Attributes | GNU Emacs Manual]]
-
-~M-x describe-face~ over default text (with JetBrains Mono):
-
-#+begin_example
-             Family: JetBrains Mono
-            Foundry: nil
-              Width: normal
-             Height: 140
-             Weight: normal
-              Slant: italic
-         Foreground: #839496
-  DistantForeground: unspecified
-         Background: #002b36
-          Underline: nil
-           Overline: nil
-     Strike-through: nil
-                Box: nil
-            Inverse: nil
-            Stipple: nil
-               Font: #<font-object -*-JetBrains Mono-normal-italic-normal-*-14-*-*-*-m-0-iso10646-1>
-            Fontset: -*-JetBrains Mono-normal-italic-normal-*-14-*-*-*-m-0-fontset-auto2
-             Extend: nil
-            Inherit: nil
-#+end_example
-
-So I just need to fix the slant.
-
-Tried =(set-face-attribute 'default nil :slant 'normal)= (see [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Attribute-Functions.html#index-set_002dface_002dattribute][Face Attribute
-Functions § =set-face-attribute= | GNU Emacs Manual]])
-
-#+begin_example
-             Family: JetBrains Mono
-            Foundry: nil
-              Width: normal
-             Height: 140
-             Weight: normal
-              Slant: italic
-         Foreground: #839496
-  DistantForeground: unspecified
-         Background: #002b36
-          Underline: nil
-           Overline: nil
-     Strike-through: nil
-                Box: nil
-            Inverse: nil
-            Stipple: nil
-               Font: #<font-object -*-JetBrains Mono-normal-italic-normal-*-14-*-*-*-m-0-iso10646-1>
-            Fontset: -*-JetBrains Mono-normal-italic-normal-*-14-*-*-*-m-0-fontset-auto2
-             Extend: nil
-            Inherit: nil
-#+end_example
-
-Still slanted.
-
-Cruft
-
-#+begin_example
-  ;; (setq gui-config-fonts-plist
-  ;;       '((:name "JetBrains Mono" :size 14 :weight "Regular")
-  ;;         (:name "Inconsolata" :size 15 :weight "Regular")
-  ;;         (:name "Fira Code" :size 14)
-  ;;         (:name "Consolas" :size 15)
-  ;;         (:name "Courier New" :size 15)))
-  ;; (setq gui-config-font-styles-alist
-  ;;       '((:base . "Regular")
-  ;;         (:comment . "Italic")
-  ;;         (:def . "Bold")
-  ;;         (:heading1 . "ExtraBold")
-  ;;         (:heading2 . "Bold")
-  ;;         (:heading3 . "SemiBold")
-  ;;         (:heading4 . "SemiBold")))
-#+end_example
+See [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Face-Attributes.html][Face Attributes | GNU Emacs Manual]] and [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Attribute-Functions.html#index-set_002dface_002dattribute][Face Attribute Functions §
+=set-face-attribute= | GNU Emacs Manual]]
 
 #+begin_src emacs-lisp
   (setq gui-config-fonts-alist
@@ -449,6 +372,9 @@ constantly loading related sets of buffers into my usual two window setup).
   ;; s-n previously bound to make-frame
   (define-key global-map (kbd "s-n") nil)
 #+end_src
+
+There's a slight bug with this in that if =buffer-menu= hasn't been called yet,
+switching to ~*Buffer List*~ will be empty.
 
 This is a good place to remind myself that =delete-frame= is bound to ~C-x 5 0~.
 
@@ -1939,6 +1865,7 @@ in =define-key= or =local-set-key=, but now everything works as it should.
 
   (define-key global-map (kbd "C-x O") 'other-window-back)
 #+end_src
+
 ** ~org-tempo~
 [[https://orgmode.org/manual/Structure-Templates.html][Org structure templates]] (~C-c c-,~: =org-insert-structure-template=)
 
