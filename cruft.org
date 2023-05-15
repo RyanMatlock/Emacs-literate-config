@@ -28,6 +28,18 @@ command-execute: Autoloading file path/to/.emacs.d/straight/build/fill-column-in
 
 I don't think I've missed this.
 
+*** Miscellaneous
+**** ~neotree~
+[[https://github.com/jaypei/emacs-neotree][neotree]] works like NerdTree for Vim (basically a directory tree that opens up
+beside your buffer). These days I prefer ~treemacs~.
+
+#+begin_src emacs-lisp
+  (use-package neotree
+    :straight t
+    :config
+    (global-set-key [f8] 'neotree-toggle))
+#+end_src
+
 * ~core-langs.org~
 ** COMMENT ~lsp-bridge~
 [[https://github.com/manateelazycat/lsp-bridge][lsp-bridge | GitHub]] is supposedly the fastest LSP client for Emacs.
