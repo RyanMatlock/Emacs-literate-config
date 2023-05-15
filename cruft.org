@@ -404,3 +404,15 @@ and maybe some LaTeX stuff. It's probably still pretty useful.
 Not really sure about ~M-TAB~ for =yas-expand=, but it was in my old config :shrug:
 
 Still need to set snippet directory; see [[https://github.com/joaotavora/yasnippet#where-are-the-snippets][yasnippet | Where are the snippets?]]
+
+* Package graveyard
+(from the before times)
+- [[https://github.com/auto-complete/auto-complete][auto-complete]]
+- [[https://github.com/technomancy/better-defaults][better-defaults]]
+- [[https://github.com/zk-phi/electric-case][electric-case]]
+- [[https://github.com/davidshepherd7/electric-operator][electric-operator]]
+- [[https://github.com/xwl/electric-spacing][electric-spacing]] (does the same thing as ~electric-operator~ ?)
+- [[https://github.com/remvee/elein][elein]]
+- [[https://elpy.readthedocs.io/en/latest/][elpy]] (Emacs Python Develpment Environment) (\to ~core-langs.org~ ?)
+- [[https://github.com/ikazuhiro/emoji-display][emoji-display]] (use ~emojify~ instead)
+- [[https://github.com/defunkt/gist.el][gist]]
