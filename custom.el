@@ -55,7 +55,7 @@
  '(org-adapt-indentation nil)
  '(org-export-backends '(ascii beamer html icalendar latex md odt))
  '(org-export-with-smart-quotes t)
- '(org-hide-emphasis-markers t)
+ ;; '(org-hide-emphasis-markers t)
  '(org-hide-leading-stars nil)
  '(org-highlight-latex-and-related '(native))
  ;; '(org-journal-date-format "%A, %F")

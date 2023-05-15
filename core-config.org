@@ -1843,6 +1843,7 @@ ready to make that change yet, but when I do, it'll go here.
              "colorlinks=true,\n"
              "allcolors=magenta}"))
     (setq org-startup-with-inline-images t)
+    (setq org-hide-emphasis-markers t)
     (setq org-todo-keywords
           '((sequence "TODO(t)"
                       "BROKEN(b)"
