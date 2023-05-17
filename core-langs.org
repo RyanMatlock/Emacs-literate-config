@@ -146,6 +146,19 @@ but in ~ansi-term~, I get
 
 This seems to work nicely!
 
+** ~hy-mode~: Lisp in Python
+[[https://docs.hylang.org/en/stable/][Oh, Hy!]] You can run Lisp in Python. [[https://github.com/hylang/hy-mode][hy-mode | GitHub]] gives you all the nice
+features for that.
+
+#+begin_src emacs-lisp
+  (use-package hy-mode
+    :straight t
+    :hook ((hy-mode . paredit-mode)
+           (inferior-hy-mode . paredit-mode))
+    :bind (:map inferior-hy-mode-map
+                ("C-c TAB" . hy-shell-eval-last-sexp)))
+#+end_src
+
 * Rust
 * TeX/LaTeX
 +Basically all+ Most of this (with the exception of the AUCTeX stuff towards the
