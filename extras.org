@@ -352,17 +352,28 @@ languages.
 *** Emacs Lisp
 
 **** Run test suite
-+Didn't test this before commit; not working for some reason, and the test suite
-isn't working as expected using ~M-x eval-buffer~ in the test buffer either.+
+This function was stolen from Exercism's provided ~HELP.md~ packaged with the
+exercises. As provided, if ~ert~ hasn't previously been run, =ert-delete-all-tests=
+is unbound, which raises an error message:
 
-+It looks like you need to+ Ok, for some reason it's working fine now, but you
-should read up on [[https://www.gnu.org/software/emacs/manual/html_mono/ert.html][ERT: Emacs Lisp Regression Testing]] anyway.
+#+begin_example
+  exercism-eval-and-run-all-tests-in-buffer: Symbol’s function definition is
+  void: ert-delete-all-tests
+#+end_example
+
+And checking if the symbol is bound using =boundp= fixes that. See [[https://stackoverflow.com/a/757593][In Emacs Lisp,
+how do I check if a variable is defined? | stackoverflow]].
+
+See also [[https://www.gnu.org/software/emacs/manual/html_mono/ert.html][ERT: Emacs Lisp Regression Testing | GNU Emacs Manual]].
 
 #+begin_src emacs-lisp
   (defun exercism-eval-and-run-all-tests-in-buffer ()
-    "Deletes all loaded tests from the runtime, evaluates the current buffer and runs all loaded tests with ert."
+    "Deletes all loaded tests from the runtime, evaluates the current buffer and
+  runs all loaded tests with ert."
     (interactive)
-    (ert-delete-all-tests)
+    (if (boundp 'ert-delete-all-tests)
+        (ert-delete-all-tests)
+      nil)
     (eval-buffer)
     (ert 't))
 
