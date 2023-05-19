@@ -1745,6 +1745,58 @@ Some explanations:
 - had an issue where =minted= appeared to break listings export---*look into
   this!*
 
+** TODO Beautified Org mode
+[[https://zzamboni.org/post/beautifying-org-mode-in-emacs/][Beautifying Org Mode in Emacs | zzamboni.org]]
+
+[[https://github.com/sabof/org-bullets][org-bullets | GitHub]]
+
+#+begin_src emacs-lisp
+  (use-package org-bullets
+    :straight t
+    :config
+    (setq org-bullets-bullet-alist
+          '(("White Square Containing Small Black Square" . "▣")
+            ("Fisheye" . "◉")
+            ("White Diamond Containing Small Black Diamond" . "◈")
+            ("Bullseye" . "◎")
+            ("White Diamond" . "◇")
+            ("White Circle" . "○")))
+    (setq org-bullets-bullet-list (mapcar #'cdr org-bullets-bullet-alist))
+    (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
+
+  ;; (add-hook 'org-mode-hook #'variable-pitch-mode)
+  ;; (remove-hook 'org-mode-hook #'variable-pitch-mode)
+
+  ;; (custom-theme-set-faces
+  ;;  'user
+  ;;  ;; '(variable-pitch ((t (:family "ETBembo" :height 200 :weight regular))))
+  ;;  '(variable-pitch ((t (:family "Helvetica" :height 160 :weight regular))))
+  ;;  '(fixed-pitch ((t (:family "JetBrainsMono Nerd Mono" :height 140))))
+  ;;  '(org-table ((t (:inherit fixed-pitch)))))
+#+end_src
+
+I'm not sure that this is actually easier/less fatiguing to read. Helvetica is
+actually pretty nice, but I'm not getting the desired behavior of having fixed
+width font actually displaying a fixed width face.
+
+Larger headlines:
+
+#+begin_src emacs-lisp
+  (let* ((org-headline-levels (reverse (take 4 org-level-faces)))
+         (scaling 1.05)
+         (height 1.1))
+    (seq-do
+     #'(lambda (org-level)
+         (setq height (* height scaling))
+         (set-face-attribute org-level nil :family "Helvetica" :height height))
+     org-headline-levels))
+
+  (set-face-attribute 'org-level-1 nil :weight 'extra-bold)
+  (set-face-attribute 'org-level-2 nil :weight 'bold)
+  (set-face-attribute 'org-level-3 nil :weight 'semi-bold)
+  (set-face-attribute 'org-level-4 nil :weight 'semi-bold)
+#+end_src
+
 ** Keybindings
 *** Still relevant?
 By default
