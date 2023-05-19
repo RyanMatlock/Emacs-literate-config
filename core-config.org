@@ -204,6 +204,7 @@ see [[https://www.gnu.org/software/emacs/manual/html_node/efaq/Turning-on-auto_0
 #+end_src
 
 ** TODO GUI
+*** TODO General GUI config
 - no menu bar; see [[http://emacswiki.org/emacs/MenuBar][Menu Bar | Emacs Wiki]]
 - no tool bar
 - no scroll bar
@@ -223,19 +224,15 @@ haven't been taking full advantage of =default-frame-alist=.
     (menu-bar-mode -1)  ;; not working?
     (tool-bar-mode -1)
     (scroll-bar-mode -1)
-
     (add-to-list 'default-frame-alist '(vertical-scroll-bars . nil))
+
     (setq gui-config-frame-transparency 96)
     (set-frame-parameter
      (selected-frame) 'alpha `(,gui-config-frame-transparency
                                ,gui-config-frame-transparency))
     (add-to-list 'default-frame-alist `(alpha ,gui-config-frame-transparency
                                               ,gui-config-frame-transparency))
-    ;; C-z previously bound to suspend-frame (minimizes the window); C-x C-z
-    ;; still bound to suspend-frame
-    (define-key global-map (kbd "C-z") nil)
-    ;; s-t previously bound to ns-popup-font-panel
-    (define-key global-map (kbd "s-t") nil)
+
     (setq visible-bell nil))
 #+end_src
 
@@ -767,6 +764,17 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Font-Lock.html
 #+end_src
 
 ** Preferred global keybindings
+*** Unbind keys
+- ~C-z~ previously bound to =suspend-frame=; still bound to ~C-x C-z~.
+- ~s-t~ previously bound to ~ns-popup-font-panel~.
+
+#+begin_src emacs-lisp
+  (let ((keys-to-unbind '("C-z"
+                          "s-t")))
+    (seq-do #'(lambda (key) (define-key global-map (kbd key) nil))
+            keys-to-unbind))
+#+end_src
+
 *** Disable mouse clicks
 See [[http://stackoverflow.com/questions/4906534/disable-mouse-clicks-in-emacs][Disable mouse clicks in Emacs | stackoverflow]]
 
