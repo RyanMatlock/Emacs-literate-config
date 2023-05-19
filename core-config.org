@@ -928,6 +928,25 @@ See [[https://www.gnu.org/software/emacs/manual/html_node/efaq/Displaying-the-cu
             keys-to-unbind))
 #+end_src
 
+*** TODO ~C-x 5 0~  (or ~s-w~?) minimizes other frame with prefix argument
+~C-x 5 0~ currently bound to =delete-frame=.
+
+#+begin_src emacs-lisp
+  (defun delete-frame-and-minimize-other-with-prefix (&optional minimizep)
+    (interactive "P")
+    (delete-frame)
+    (when minimizep
+      ;; (sit-for 0.5)
+      (suspend-frame)))
+
+  ;; (define-key global-map (kbd "C-x 5 0") delete-frame-and-minimize-with-prefix)
+
+  ;; (define-key global-map (kbd "s-w") nil)
+  ;; (define-key global-map (kbd "s-w") delete-frame-and-minimize-with-prefix)
+#+end_src
+
++This isn't working at all.+
+
 *** Disable mouse clicks
 See [[http://stackoverflow.com/questions/4906534/disable-mouse-clicks-in-emacs][Disable mouse clicks in Emacs | stackoverflow]]
 
