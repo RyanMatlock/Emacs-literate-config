@@ -146,7 +146,8 @@ but in ~ansi-term~, I get
 
 This seems to work nicely!
 
-** ~hy-mode~: Lisp in Python
+* COMMENT Hy: Lisp in Python
+** TODO COMMENT ~hy-mode~
 [[https://docs.hylang.org/en/stable/][Oh, Hy!]] You can run Lisp in Python. [[https://github.com/hylang/hy-mode][hy-mode | GitHub]] gives you all the nice
 features for that.
 
@@ -156,7 +157,47 @@ features for that.
     :hook ((hy-mode . paredit-mode)
            (inferior-hy-mode . paredit-mode))
     :bind (:map inferior-hy-mode-map
-                ("C-c TAB" . hy-shell-eval-last-sexp)))
+                ;; ("C-c TAB" . hy-shell-eval-last-sexp) ;; bound to C-c C-e
+                ))
+
+  ;; (add-to-list 'lsp-language-id-configuration
+  ;;              '(hy-mode . "python"))
+  ;; (add-to-list 'lsp-language-id-configuration
+  ;;              '("\\.hy$" . "python"))
+#+end_src
+
+~hy-mode~ is getting activated for ~.py~ files, which is very bad because ~lsp-mode~
+is freaking out about it.
+
+** TODO COMMENT Completion with ~company-mode~, etc...
+See [[https://company-mode.github.io][company-mode | GitHub.io]]
+
+#+begin_src emacs-lisp
+  (use-package company-mode
+    :straight t
+    ;; :hook ((company-mode . hy-mode)
+    ;;        (company-mode . inferior-hy-mode))
+    :bind (:map company-active-map
+                ("M-TAB" . company-indent-or-complete-common))
+    :config
+    (setq company-global-modes '(hy-mode
+                                 inferior-hy-mode))
+    (add-hook 'after-init-hook 'global-company-mode))
+#+end_src
+
+Not working as expected (maybe a clash with ~vertico~?).
+
+** COMMENT ~ob-hy~: Org-Babel support
+[[https://github.com/allison-casey/ob-hy][ob-hy | GitHub (fork)]] seems to be more up-to-date than the [[https://github.com/brantou/ob-hy][original branch of
+ob-hy]].
+
+#+begin_src emacs-lisp
+  (use-package ob-hy
+    :straight (ob-hy
+               :type git
+               :host github
+               :repo "allison-casey/ob-hy"
+               :branch "master"))
 #+end_src
 
 * Rust
