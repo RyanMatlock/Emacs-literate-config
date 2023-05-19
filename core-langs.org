@@ -244,6 +244,83 @@ Let's try [[https://github.com/daviwil/emacs-from-scratch/wiki/LaTeX-config-(Auc
 
 Well, I didn't get any warnings with this.
 
+** TODO Fonts
+Info from the =\section{}= macro font:
+
+#+begin_example
+  Face: font-latex-sectioning-2-face (sample) (customize this face)
+
+  Documentation:
+  Face for sectioning commands at level 2.
+
+  Probably you don’t want to customize this face directly.  Better
+  change the base face ‘font-latex-sectioning-5-face’ or customize the
+  variable ‘font-latex-fontify-sectioning’.
+
+  Defined in ‘font-latex.el’.
+
+
+             Family: unspecified
+            Foundry: unspecified
+              Width: unspecified
+             Height: 1.1
+             Weight: unspecified
+              Slant: unspecified
+         Foreground: unspecified
+  DistantForeground: unspecified
+         Background: unspecified
+          Underline: unspecified
+           Overline: unspecified
+     Strike-through: unspecified
+                Box: unspecified
+            Inverse: unspecified
+            Stipple: unspecified
+               Font: unspecified
+            Fontset: unspecified
+             Extend: unspecified
+            Inherit: font-latex-sectioning-3-face
+#+end_example
+
+=font-latex-fontify-sectioning=:
+
+#+begin_example
+  font-latex-fontify-sectioning is a variable defined in ‘font-latex.el’.
+
+  Its value is 1.1
+
+  Whether to fontify sectioning macros with varying height or a color face.
+
+  If it is a number, use varying height faces.  The number is used
+  for scaling starting from ‘font-latex-sectioning-5-face’.  Typically
+  values from 1.05 to 1.3 give best results, depending on your font
+  setup.  If it is the symbol ‘color’, use ‘font-lock-type-face’.
+
+  Caveats: Customizing the scaling factor applies to all sectioning
+  faces unless those face have been saved by customize.  Setting
+  this variable directly does not take effect unless you call
+  ‘font-latex-update-sectioning-faces’ or restart Emacs.
+
+  Switching from ‘color’ to a number or vice versa does not take
+  effect unless you call M-x font-lock-fontify-buffer or restart
+  Emacs.
+
+    You can customize this variable.
+#+end_example
+
+See [[https://emacs.stackexchange.com/a/47577][How do I set latex face attributes in ~init.el?~ | emacs.stackexchange]]
+
+#+begin_src emacs-lisp
+  (with-eval-after-load 'font-latex
+    (set-face-attribute 'font-latex-sectioning-5-face nil :family "Helvetica")
+    ;; (set-face-attribute 'default nil :family "Helvetica")
+    ;; (set-face-attribute 'font-latex-math-face nil
+    ;;                     :family "JetBrainsMono Nerd Mono")
+    )
+#+end_src
+
+Note that this doesn't affect the =\title{}= and =\author{}= (and presumably
+=\subtitle{}=) macros.
+
 ** Indentation
 
 #+begin_src emacs-lisp
