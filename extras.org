@@ -190,7 +190,8 @@ built in).
          (use-package vterm
            :straight t
            :config
-           (setq vterm-shell shell-file-name)))
+           (setq vterm-shell shell-file-name)
+           (setq vterm-copy-exclude-prompt t)))
         (t (message "vterm requirements not installed on this device.")))
 #+end_src
 
