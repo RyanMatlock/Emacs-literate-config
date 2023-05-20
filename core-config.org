@@ -1835,6 +1835,7 @@ ready to make that change yet, but when I do, it'll go here.
     ;; (require 'ox-beamer)
     ;; (require 'ol-bibtex)
     (add-to-list 'org-modules 'org-tempo)
+    (setq org-use-sub-superscripts '{})
     (org-babel-do-load-languages
      'org-babel-load-languages '((python . t)
                                  ;; (jupyter . t)
