@@ -26,6 +26,11 @@ not working the way I expect it to. I've found that ~C-k~ is bound to
 across some comments about some smartparens kill function that annoyed several
 people enough to switch back to paredit.
 
+*** TODO get modeline to display file edit state with nice icons
+Currently I have a red ~*~ for edited, a grey ~#~ for read-only, but before I
+remember having essentially stoplight colors to indicate the state. (It may
+still be like that on he M1 Mac Mini).
+
 *** TODO study this amazing literate config file
 [[https://panadestein.github.io/emacsd/][Panadestein's literate Emacs config]]
 

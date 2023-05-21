@@ -6,7 +6,7 @@ This contains configuration for my essential languages: Haskell, Python, Rust an
 TeX/LaTeX. In order to enable these configurations, =core-config-core-langs-switch=
 must be set to =t= in ~core-config.org~.
 
-* Language Server Protocol: ~lsp-mode~
+* TODO Language Server Protocol: ~lsp-mode~
 See [[https://github.com/emacs-lsp/lsp-mode][lsp-mode]] for project details, and see [[https://emacs-lsp.github.io/lsp-mode/page/installation/#use-package][LSP Mode installation instructions §
 use-package]] for config source.
 
@@ -15,6 +15,10 @@ Other resources:
 - [[https://github.com/emacs-lsp/lsp-haskell][lsp-haskell | GitHub]]
 - [[https://haskell-language-server.readthedocs.io/en/latest/installation.html][Haskell Language Server | Installation | Read the Docs]]
 - [[https://abailly.github.io/posts/a-modern-haskell-env.html][Modern Emacs for Haskell | igitur.io]]
+
+Bind +=completion-at-point=+ =complete-symbol= (in =global-map=) to something like
+~<TAB>~ or ~M-<TAB>~. Is there some sort of "do what I mean" tab-or-completion
+function?
 
 #+begin_src emacs-lisp
   (use-package lsp-mode
