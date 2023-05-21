@@ -863,20 +863,32 @@ See http://www.emacswiki.org/emacs/AutoIndentation
 *** Prettier mode line
 [[https://gitlab.com/jessieh/mood-line][mood-line | GitLab]]
 
+Note that the glyphs must be of type char, /not/ string.
+
+As for the =...-buffer-status-...= colors, I kind of like the explicit traffic
+light color scheme I have going on now.
+
 #+begin_src emacs-lisp
   (use-package mood-line
     :straight t
     :config
     (setq mood-line-glyph-alist mood-line-glyphs-unicode)
     (setcdr (assq :buffer-read-only mood-line-glyph-alist)
-            (alist-get :buffer-modified mood-line-glyph-alist))
+            ?✖)
     (setcdr (assq :buffer-narrowed mood-line-glyph-alist)
-            (alist-get :buffer-modified mood-line-glyph-alist))
+            ?◆)
+    (face-spec-set 'mood-line-buffer-status-modified
+                   ;; '((t (:inherit link :weight normal :underline nil)))
+                   '((t (:foreground "#b58900"))) ;; solarized dark link
+                   )
     (face-spec-set 'mood-line-buffer-status-read-only
-                   '((t (:foreground "#b58900"))))
+                   ;; '((t (:inherit error :weight normal)))
+                   '((t (:foreground "#cb4b16")))) ;; solarized dark error
     (face-spec-set 'mood-line-buffer-status-narrowed
-                   '((t (:foreground "green"))))
+                   '((t (:foreground "green3"))))
     (mood-line-mode))
+
+  (error "foo")
 #+end_src
 
 *** ~treemacs~
