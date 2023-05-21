@@ -546,30 +546,13 @@ switching to ~*Buffer List*~ will be empty.
 
 This is a good place to remind myself that =delete-frame= is bound to ~C-x 5 0~.
 
-*** ~exec-path-from-shell~ to fix ~exec-path~​/​~PATH~ behavior in MacOS GUI
-[[https://github.com/purcell/exec-path-from-shell][exec-path-from-shell]] fixes behavior of how environment variables are loaded in
-MacOS GUI Emacs.
-
-+[Note that you need to use [[https://www.gnu.org/software/emacs/manual/html_node/eintr/progn.html][progn]] in order to evaluate the series of
-s-expressions in =:config=.]+  False!
-
-#+begin_src emacs-lisp
-  (use-package exec-path-from-shell
-    :straight t
-    :config
-    (when (or (daemonp)
-              (memq window-system '(mac ns x)))
-      (exec-path-from-shell-initialize))
-    (exec-path-from-shell-copy-env "PYTHONPATH"))
-#+end_src
-
-**** TODO read ~.bashrc~ & use bash as default ANSI term
+*** TODO read ~.bashrc~ & use bash as default ANSI term
 Bear in mind that on your MacBook Pro, ~bash~ (the Homebrew version you use) is
 located at ~/usr/local/bin/bash~, but your M1 Mac Mini, it's located at
 ~/opt/homebrew/bin/bash~, so maybe that's an issue? Probably helpful to know
 which sort of device you're on.
 
-https://osxdaily.com/2011/07/15/get-cpu-info-via-command-line-in-mac-os-x/
+[[https://osxdaily.com/2011/07/15/get-cpu-info-via-command-line-in-mac-os-x/][Get CPU Info via Command Line in Mac OS X | OSXDaily]]
 
 #+begin_src bash :eval no
   $ sysctl -n machdep.cpu.brand_string
@@ -623,6 +606,89 @@ It works how you'd want it to for the latter case.
 
 When I finally decide to join the modern era and use zsh or fish, it will be
 easy to =cons= onto =shell-paths-alist=.
+
+*** ~exec-path-from-shell~ to fix ~exec-path~​/​~PATH~ behavior in MacOS GUI
+[[https://github.com/purcell/exec-path-from-shell][exec-path-from-shell]] fixes behavior of how environment variables are loaded in
+MacOS GUI Emacs.
+
++[Note that you need to use [[https://www.gnu.org/software/emacs/manual/html_node/eintr/progn.html][progn]] in order to evaluate the series of
+s-expressions in =:config=.]+  False!
+
+#+begin_src emacs-lisp
+  (use-package exec-path-from-shell
+    :straight t
+    :config
+    (when (or (daemonp)
+              (memq window-system '(mac ns x)))
+      (exec-path-from-shell-initialize))
+    (exec-path-from-shell-copy-env "PYTHONPATH"))
+#+end_src
+
+I'm having an issue with ~lsp-haskell~ not finding
+~haskell-language-server-wrapper~, which is on my =PATH= in ~bash~ at
+~~/.ghcup/bin/haskell-language-server-wrapper~.
+
+From ~iTerm2~:
+
+#+begin_src shell
+  Last login: Wed May 17 02:35:31 on ttys004
+  [<user>@<hostname>:~] $ which haskell-language-server-wrapper
+  /<User>s/matlock/.ghcup/bin/haskell-language-server-wrapper
+  [<user>@<hostname>:~] $ echo $SHELL
+  /usr/local/bin/bash
+#+end_src
+
+...but in ~eshell~...
+
+#+begin_src shell
+  Welcome to the Emacs shell
+
+  ~ $ echo $SHELL
+  /bin/zsh
+  ~ $ echo $PATH
+  /usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Library/TeX/texbin:/Applications/Emacs.app/Contents/MacOS/bin-x86_64-10_14:/Applications/Emacs.app/Contents/MacOS/libexec-x86_64-10_14
+#+end_src
+
+I bet I need to set my default =shell-file-name= /before/ calling
+=exec-path-from-shell-initialize=.
+
+Wait a minute, this is from ~C-h k shell-file-name <RET>~:
+
+#+begin_example
+  shell-file-name is a variable defined in ‘C source code’.
+
+  Its value is "/usr/local/bin/bash"
+  Original value was "/bin/bash"
+
+  File name to load inferior shells from.
+  Initialized from the SHELL environment variable, or to a system-dependent
+  default if SHELL is unset.  See Info node ‘(elisp)Security Considerations’.
+#+end_example
+
+See [[https://www.gnu.org/software/emacs/manual/html_node/emacs/General-Variables.html#index-SHELL_002c-environment-variable][General Variables § =SHELL= | GNU Emacs Manual]] and [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Environment.html][Environment Variables |
+GNU Emacs Manual]] for info on =initial-environment=, whose value is currently
+
+#+begin_example
+  initial-environment is a variable defined in ‘C source code’.
+
+  Its value is
+  ("LANG=en_US.UTF-8" ... "SHELL=/bin/zsh" "PWD=/"
+  "PATH=/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Library/TeX/texbin:/Applications/Emacs.app/Contents/MacOS/bin-x86_64-10_14:/Applications/Emacs.app/Contents/MacOS/libexec-x86_64-10_14"
+  ... "COMMAND_MODE=unix2003")
+
+  List of environment variables inherited from the parent process.
+  Each element should be a string of the form ENVVARNAME=VALUE.
+  The elements must normally be decoded (using ‘locale-coding-system’) for use.
+#+end_example
+
+[Note: the ellipses are because you don't need to see /everything/.]
+
+Let's see what happens if I set my shell to =bash= first.
+
+It worked! Well, at least my =PATH= is right, but my =SHELL= is still
+~/bin/zsh~. ~haskell-language-server-wrapper~ is working as it should too (after
+some fiddling with ~ghcup~ because that Haskell tooling is not the most
+user-friendly).
 
 *** ~whitespace~
 [[https://www.emacswiki.org/emacs/WhiteSpace][whitespace]] package: highlight lines >80 characters wide, [[https://www.emacswiki.org/emacs/WhiteSpace#h5o-9][highlight ~TAB~
