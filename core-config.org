@@ -868,6 +868,14 @@ See http://www.emacswiki.org/emacs/AutoIndentation
     :straight t
     :config
     (setq mood-line-glyph-alist mood-line-glyphs-unicode)
+    (setcdr (assq :buffer-read-only mood-line-glyph-alist)
+            (alist-get :buffer-modified mood-line-glyph-alist))
+    (setcdr (assq :buffer-narrowed mood-line-glyph-alist)
+            (alist-get :buffer-modified mood-line-glyph-alist))
+    (face-spec-set 'mood-line-buffer-status-read-only
+                   '((t (:foreground "#b58900"))))
+    (face-spec-set 'mood-line-buffer-status-narrowed
+                   '((t (:foreground "green"))))
     (mood-line-mode))
 #+end_src
 
