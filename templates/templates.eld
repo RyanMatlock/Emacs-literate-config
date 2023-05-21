@@ -149,6 +149,7 @@ org-mode
 (*align "\\begin{align*}\n" r> n> "\\end{align*}")
 (target "<<" (p "target: " target t) target ">>" q)
 (latexpreview "#+startup: latexpreview")
+(nolatexpreview "#+startup: nolatexpreview")
 (filetags "#+filetags: ")
 
 ;; Local Variables:
