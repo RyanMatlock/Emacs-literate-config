@@ -1751,43 +1751,56 @@ width font actually displaying a fixed width face.
 Larger headlines:
 
 #+begin_src emacs-lisp
-  (let* ((org-headline-levels (reverse (take 4 org-level-faces)))
-         (headline-family "Helvetica")
-         (scaling 1.05)
-         (height 1.1))
+  (defun org-prettier-title-and-headlines ()
+    "Set attributes like font family and size for Org mode titles and section
+  headings."
+    (let* ((org-headline-levels (reverse (take 4 org-level-faces)))
+           (headline-family "Helvetica")
+           (scaling 1.05)
+           (height 1.1))
 
-    ;; set family and weight for all org-level-faces
-    (seq-do
-     #'(lambda (org-level)
-         (set-face-attribute org-level
-                             nil
-                             :family headline-family
-                             :weight 'semi-bold))
-     org-level-faces)
+      ;; set family and weight for all org-level-faces
+      (seq-do
+       #'(lambda (org-level)
+           (set-face-attribute org-level
+                               nil
+                               :family headline-family
+                               :weight 'semi-bold))
+       org-level-faces)
 
-    (set-face-attribute 'org-document-info
-                        nil
-                        :family headline-family
-                        :weight 'semi-bold
-                        :height height)
+      (set-face-attribute 'org-document-info
+                          nil
+                          :family headline-family
+                          :weight 'semi-bold
+                          :height height)
 
-    ;; set height for some org-level-faces
-    (seq-do
-     #'(lambda (org-level)
-         (setq height (* height scaling)) ;; note successive increases
-         (set-face-attribute org-level
-                             nil
-                             :height height))
-     org-headline-levels)
+      ;; set height for some org-level-faces
+      (seq-do
+       #'(lambda (org-level)
+           (setq height (* height scaling)) ;; note successive increases
+           (set-face-attribute org-level
+                               nil
+                               :height height))
+       org-headline-levels)
 
-    (set-face-attribute 'org-document-title
-                        nil
-                        :family headline-family
-                        :height (* height scaling))
+      (set-face-attribute 'org-document-title
+                          nil
+                          :family headline-family
+                          :height (* height scaling))
 
-    (set-face-attribute 'org-level-1 nil :weight 'extra-bold)
-    (set-face-attribute 'org-level-2 nil :weight 'bold))
+      (set-face-attribute 'org-level-1 nil :weight 'extra-bold)
+      (set-face-attribute 'org-level-2 nil :weight 'bold)))
+
+  (with-eval-after-load 'org
+    (org-prettier-title-and-headlines))
 #+end_src
+
+[[https://stackoverflow.com/a/2736153][eval-after-load vs. mode hook | stackoverflow]]; tl,dr: use =eval-after-load= for
+code that should be run only once (e.g. set global values); use mode hooks for
+code that should be run each time a buffer is open.
+
+Weird: when I first open an Org file, the title/subtitle/author are the default
+font, but the headlines are ok ¯\_(ツ)_/¯
 
 ** Keybindings
 *** Still relevant?
