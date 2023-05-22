@@ -1260,21 +1260,15 @@ of Emacs's killer apps.
   ;; (global-set-key (kbd "C-c 0") 'magit-status)
 #+end_src
 
-** TODO Completions: ~vertico~ + ~corfu~
-I used to use a combination of ~ido~ and ~ivy~, but having seen a ~vertico~ demo, I
-thought I'd give it a try. ~ido~ is supposedly a bit outdated now anyway.
+** Completions
+I used to use a combination of ~ido~ and ~ivy~, but now I'm mostly using ~vertico~
+with the option to use ~ido~.
 
-*** TODO ~vertico~
-Following config taken from
-https://systemcrafters.cc/emacs-tips/streamline-completions-with-vertico/ and
-lightly edited.
+*** ~vertico~
+Following config taken from [[https://systemcrafters.cc/emacs-tips/streamline-completions-with-vertico/][Streamline Your Emacs Completions with Vertico |
+System Crafters]] and lightly edited.
 
-So far I'm loving ~vertico~ + ~savehist~ for ~M-x~ commands! However, it seems like
-=ido-everywhere= is still set to =t= by default for some reason. Oh, I have an
-idea: I bet it's in =custom.el=! I'm starting to think the smarter/better way to
-do most customizations is with =:custom= inside of =(straight-)use-package=
-statements. Yep, that was it! Going forward, I'll try to move what I can out of
-~custom.el~.
+~vertico~ + ~savehist~ are great for ~M-x~ commands!
 
 ~vertico-directory~ provides for "Ido-like directory navigation," which sounds
 nice to have again; configuration taken from [[https://github.com/minad/vertico#extensions][vertico | Extensions]].
@@ -1292,84 +1286,6 @@ nice to have again; configuration taken from [[https://github.com/minad/vertico#
     :init
     (vertico-mode))
 
-  (use-package savehist
-    :straight t
-    :init
-    (savehist-mode))
-
-  ;; (use-package vertico-directory
-  ;;   ;; see https://github.com/minad/vertico/issues/83#issuecomment-883762831
-  ;;   :straight (vertico :includes vertico-directory
-  ;;                      :files (:defaults "extensions/vertico-directory.el"))
-  ;;   :after vertico
-  ;;   :ensure nil
-  ;;   ;; More convenient directory navigation commands
-  ;;   :bind (:map vertico-map
-  ;;               ("RET" . vertico-directory-enter)
-  ;;               ("DEL" . vertico-directory-delete-char)
-  ;;               ("M-DEL" . vertico-directory-delete-word))
-  ;;   ;; Tidy shadowed file names
-  ;;   :hook (rfn-eshadow-update-overlay . vertico-directory-tidy))
-  ;; still not working -- look into this later
-  ;; try restarting Emacs? -- nope
-
-  ;; (use-package marginalia
-  ;;   :after vertico
-  ;;   :straight t
-  ;;   :custom
-  ;;   (marginalia-annotators '(marginalia-annotators-heavy
-  ;;                            marginalia-annotators-light nil))
-  ;;   :init
-  ;;   (marginalia-mode))
-#+end_src
-
-#+begin_example
-Error (use-package): vertico/:init: Symbol’s value as variable is void:
-vertico-map Disable showing Disable logging
-Warning (straight): Two different recipes given for "vertico" (:files cannot be
-both ("*" (:exclude ".git")) and (:defaults "extensions/vertico-directory.el"))
-Disable showing Disable logging
-Error (use-package): corfu/:init: Symbol’s function definition is void:
-corfu-global-mode Disable showing Disable logging
-Error (use-package): auctex/:catch: Loading file
-/Users/matlock/.emacs.d/straight/build/auctex/auctex.elc failed to provide
-feature ‘auctex’ Disable showing Disable logging
-#+end_example
-
-Getting these warnings after restarting Emacs. Upgraded ~vertico~, commented out
-~vertico-directory~ stuff, restarted, and now ~vertico~ isn't working anymore.
-
-Somehow that really messed everything up, and I had to nuke my
-~$HOME/.emacs.d/straight/~ directory, although it seems to be fine now. Going to
-try to enable ~vertico-directory~ again. -- Nope, that didn't work.
-
-Now getting these warnings on startup:
-
-#+begin_example
-Error (use-package): corfu/:init: Symbol’s function definition is void:
-corfu-global-mode Disable showing Disable logging
-Error (use-package): auctex/:catch: Loading file
-/Users/matlock/.emacs.d/straight/build/auctex/auctex.elc failed to provide
-feature ‘auctex’ Disable showing Disable logging
-#+end_example
-
-**** ~vertico-directory~
-See [[https://github.com/radian-software/straight.el/issues/819#issuecomment-882039946][Can not find vertico-directory package #819 | GitHub]]
-
-#+begin_src emacs-lisp
-  ;; (straight-use-package
-  ;;  '(vertico :files (:defaults "extensions/*")
-  ;;            :includes (vertico-buffer
-  ;;                       vertico-directory
-  ;;                       vertico-flat
-  ;;                       vertico-indexed
-  ;;                       vertico-mouse
-  ;;                       vertico-quick
-  ;;                       vertico-repeat
-  ;;                       vertico-reverse)
-  ;;            )
-  ;;  )
-
   (use-package vertico-directory
     :after vertico
     ;; :load-path "straight/build/vertico/extensions"
@@ -1382,131 +1298,25 @@ See [[https://github.com/radian-software/straight.el/issues/819#issuecomment-882
                 ("M-DEL" . vertico-directory-delete-word))
     ;; Tidy shadowed file names
     :hook (rfn-eshadow-update-overlay . vertico-directory-tidy))
-#+end_src
 
-*** ~corfu~
-``Corfu is the minimalistic ~completion-in-region~ counterpart of the ~vertico~
-minibuffer UI.'' -- https://github.com/minad/corfu
-
-#+begin_src emacs-lisp
-  (use-package corfu
-    :straight t
-    :custom
-    (corfu-cycle t)                   ;; Enable cycling for `corfu-next/previous'
-    ;; (corfu-auto t)                 ;; Enable auto completion
-    ;; (corfu-commit-predicate nil)   ;; Do not commit selected candidates on
-    ;;                                ;; next input
-    ;; (corfu-quit-at-boundary t)     ;; Automatically quit at word boundary
-    ;; (corfu-quit-no-match t)        ;; Automatically quit if there is no match
-    ;; (corfu-preview-current nil)    ;; Disable current candidate preview
-    ;; (corfu-preselect-first nil)    ;; Disable candidate preselection
-    ;; (corfu-echo-documentation nil) ;; Disable documentation in the echo area
-    ;; (corfu-scroll-margin 5)        ;; Use scroll margin
-
-    ;; You may want to enable Corfu only for certain modes.
-    ;; :hook ((prog-mode . corfu-mode)
-    ;;        (shell-mode . corfu-mode)
-    ;;        (eshell-mode . corfu-mode))
-
-    ;; Recommended: Enable Corfu globally.
-    ;; This is recommended since dabbrev can be used globally (M-/).
-    :init
-    (global-corfu-mode))
-
-  ;; Optionally use the `orderless' completion style. See `+orderless-dispatch'
-  ;; in the Consult wiki for an advanced Orderless style dispatcher.
-  ;; Enable `partial-completion' for files to allow path expansion.
-  ;; You may prefer to use `initials' instead of `partial-completion'.
-  (use-package orderless
+  (use-package savehist
     :straight t
     :init
-    ;; Configure a custom style dispatcher (see the Consult wiki)
-    ;; (setq orderless-style-dispatchers '(+orderless-dispatch)
-    ;;       orderless-component-separator #'orderless-escapable-split-on-space)
-    (setq completion-styles '(orderless)
-          completion-category-defaults nil
-          completion-category-overrides
-          '((file (styles . (partial-completion))))))
+    (savehist-mode))
 
-  ;; Use dabbrev with Corfu!
-  (use-package dabbrev
-    :straight t
-    ;; Swap M-/ and C-M-/
-    :bind (("M-/" . dabbrev-completion)
-           ("C-M-/" . dabbrev-expand)))
-
-  ;; A few more useful configurations...
-  (use-package emacs
-    :init
-    ;; TAB cycle if there are only few candidates
-    (setq completion-cycle-threshold 3)
-
-    ;; Emacs 28: Hide commands in M-x which do not apply to the current mode.
-    ;; Corfu commands are hidden, since they are not supposed to be used via M-x.
-    ;; (setq read-extended-command-predicate
-    ;;       #'command-completion-default-include-p)
-
-    ;; Enable indentation+completion using the TAB key.
-    ;; `completion-at-point' is often bound to M-TAB.
-    (setq tab-always-indent 'complete))
+  ;; (use-package marginalia
+  ;;   :after vertico
+  ;;   :straight t
+  ;;   :custom
+  ;;   (marginalia-annotators '(marginalia-annotators-heavy
+  ;;                            marginalia-annotators-light nil))
+  ;;   :init
+  ;;   (marginalia-mode))
 #+end_src
 
-*** TODO COMMENT ~consult.el~: Consulting =completing-read= + ~recentf-mode~
-[[https://github.com/minad/consult][consult]]
-
-Among the things that it can do is provide a list of recent files using
-[[https://www.emacswiki.org/emacs/RecentFiles][recentf-mode]]. ~recentf~ doesn't quite have the behavior I remember ~ido~ having,
-but I can't find anything in ~legacy-dotemacs.el~ that suggests the behavior I'm
-looking for.
-
-#+begin_src emacs-lisp
-  (recentf-mode 1)
-  (setq recentf-max-menu-items 25)
-  (setq recentf-max-saved-items 25)
-  (define-key global-map (kbd "C-x M-f") 'recentf-open-files)
-
-  ;; (use-package consult
-  ;;   :straight t)
-#+end_src
-
-*** TODO COMMENT ~ivy~ + ~counsel~ + ~swiper~
-[[https://github.com/abo-abo/swiper][ivy, counsel, and swiper]]: tools for minibuffer completion.
-
-#+begin_src emacs-lisp
-  (use-package ivy
-    :straight t
-    :config
-    (ivy-mode)
-    (setq ivy-use-virtual-buffers t)
-    (setq enable-recursive-minibuffers t)
-    ;; enable this if you want `swiper' to use it
-    ;; (setq search-default-mode #'char-fold-to-regexp)
-  )
-
-  (use-package counsel
-    :straight t)
-
-  ;; (global-set-key "\C-s" 'swiper)
-  ;; (global-set-key (kbd "C-c C-r") 'ivy-resume)
-  ;; (global-set-key (kbd "<f6>") 'ivy-resume)
-  ;; (global-set-key (kbd "M-x") 'counsel-M-x)
-  ;; (global-set-key (kbd "C-x C-f") 'counsel-find-file)
-  ;; (global-set-key (kbd "<f1> f") 'counsel-describe-function)
-  ;; (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
-  ;; (global-set-key (kbd "<f1> o") 'counsel-describe-symbol)
-  ;; (global-set-key (kbd "<f1> l") 'counsel-find-library)
-  ;; (global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
-  ;; (global-set-key (kbd "<f2> u") 'counsel-unicode-char)
-  ;; (global-set-key (kbd "C-c g") 'counsel-git)
-  ;; (global-set-key (kbd "C-c j") 'counsel-git-grep)
-  ;; (global-set-key (kbd "C-c k") 'counsel-ag)
-  ;; (global-set-key (kbd "C-x l") 'counsel-locate)
-  ;; (global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
-  ;; (define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history)
-#+end_src
-
-This feels a little familiar, but I don't think I'm getting the behavior that I
-remember in terms of opening recent buffers.
+See [[https://github.com/radian-software/straight.el/issues/819#issuecomment-882039946][Can not find vertico-directory package #819 | GitHub]] for ~vertico-directory~
+info. Also, I don't know if it's even working, but it doesn't feel Ido-like,
+but maybe that's the lack of ~flx-ido~ ¯\_(ツ)_/¯
 
 *** ~ido~ + ~flx~: the =find-file= behavior I've missed
 I saw that I had [[https://github.com/lewang/flx][flx]] and ~flx-ido~ in the commented-out =custom-set-variables=
