@@ -1775,7 +1775,6 @@ ready to make that change yet, but when I do, it'll go here.
                                  (eshell . t)
                                  (awk . t)
                                  (latex . t)
-                                 (yaml . t)
                                  (shell . t)))
     ;; (setq org-babel-clojure-backend 'cider)
     ;; (setq org-latex-pdf-process '("latexmk -shell-escape -pdf -outdir=%o %f"))
@@ -1842,6 +1841,11 @@ Some explanations:
   stackoverflow]] (=org-latex-hyperref-template=) looks promising
 - had an issue where =minted= appeared to break listings export---*look into
   this!*
+
+There's no ~ob-yaml~, +but when I had =(yaml . t)= in
+=org-babel-load-languages=, ~yaml~ was a working option when inserting code
+blocks with ~C-c C-,~+. Unrelated---there's an entry =("yaml" . "src yaml")= in
+=org-structure-template-alist=, but I hadn't noticed it.
 
 ** TODO Beautified Org mode
 [[https://zzamboni.org/post/beautifying-org-mode-in-emacs/][Beautifying Org Mode in Emacs | zzamboni.org]]
