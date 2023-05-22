@@ -2,9 +2,9 @@
 #+subtitle: Core languages
 #+author: Ryan Matlock
 
-This contains configuration for my essential languages: Haskell, Python, Rust and
-TeX/LaTeX. In order to enable these configurations, =core-config-core-langs-switch=
-must be set to =t= in ~core-config.org~.
+This contains configuration for my essential languages: Haskell, Python, Rust,
+and TeX/LaTeX. In order to enable these configurations,
+=core-config-core-langs-switch= must be set to =t= in ~core-config.org~.
 
 * TODO Language Server Protocol: ~lsp-mode~
 See [[https://github.com/emacs-lsp/lsp-mode][lsp-mode]] for project details, and see [[https://emacs-lsp.github.io/lsp-mode/page/installation/#use-package][LSP Mode installation instructions §
