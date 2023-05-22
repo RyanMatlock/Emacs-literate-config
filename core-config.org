@@ -907,8 +907,6 @@ light color scheme I have going on now.
     (face-spec-set 'mood-line-buffer-status-narrowed
                    '((t (:foreground ml-color--green))))
     (mood-line-mode))
-
-  (error "foo")
 #+end_src
 
 =make-new-frame= caused an error in =internal-set-lisp-face-attribute= when
