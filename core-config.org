@@ -873,10 +873,26 @@ light color scheme I have going on now.
     :straight t
     :config
     (setq mood-line-glyph-alist mood-line-glyphs-unicode)
-    (setcdr (assq :buffer-read-only mood-line-glyph-alist)
-            ?✖)
-    (setcdr (assq :buffer-narrowed mood-line-glyph-alist)
-            ?◆)
+    (setq mood-line-custom-glyphs-alist
+          '(;; checker
+            (:checker-info . ?ⓘ)
+            (:checker-checking . ?⧗)
+            ;; version control
+            (:vc-added . ?✱)
+            ;; buffer status
+            (:buffer-read-only . ?✖)
+            ;; (:buffer-narrowed . ?◆)
+            ))
+    ;; update mood-line-glyph-alist
+    (seq-do
+     #'(lambda (symbol-char-cons-cell)
+         (let ((symbol (car symbol-char-cons-cell))
+               (char (cdr symbol-char-cons-cell)))
+           (setcdr (assq symbol mood-line-glyph-alist) char)))
+     mood-line-custom-glyphs-alist)
+    ;; update fonts
+    (face-spec-set 'mood-line-status-success
+                   '((t (:foreground "green3"))))
     (face-spec-set 'mood-line-buffer-status-modified
                    ;; '((t (:inherit link :weight normal :underline nil)))
                    '((t (:foreground "#b58900"))) ;; solarized dark link
