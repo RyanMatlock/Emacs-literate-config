@@ -1985,6 +1985,7 @@ ready to make that change yet, but when I do, it'll go here.
                                  (eshell . t)
                                  (awk . t)
                                  (latex . t)
+                                 (yaml . t)
                                  (shell . t)))
     ;; (setq org-babel-clojure-backend 'cider)
     ;; (setq org-latex-pdf-process '("latexmk -shell-escape -pdf -outdir=%o %f"))
