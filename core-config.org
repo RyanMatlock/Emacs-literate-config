@@ -875,14 +875,12 @@ light color scheme I have going on now.
     (setq mood-line-glyph-alist mood-line-glyphs-unicode)
     (setq mood-line-custom-glyphs-alist
           '(;; checker
-            (:checker-info . ?ⓘ)
+            (:checker-info . ?◆)
             (:checker-checking . ?⧗)
             ;; version control
-            (:vc-added . ?✱)
+            (:vc-added . ?✚)
             ;; buffer status
-            (:buffer-read-only . ?✖)
-            ;; (:buffer-narrowed . ?◆)
-            ))
+            (:buffer-read-only . ?✖)))
     ;; update mood-line-glyph-alist
     (seq-do
      #'(lambda (symbol-char-cons-cell)
@@ -890,18 +888,24 @@ light color scheme I have going on now.
                (char (cdr symbol-char-cons-cell)))
            (setcdr (assq symbol mood-line-glyph-alist) char)))
      mood-line-custom-glyphs-alist)
-    ;; update fonts
+    ;; set custom colors
+    (setq ml-color--orange "#b58900") ;; solarized dark link
+    (setq ml-color--red "#cb4b16") ;; solarized dark error
+    (setq ml-color--green "green3")
+    (setq ml-color--cyan "#2aa198") ;; solarized dark font-lock-string-face
+      ;; update fonts
+    (face-spec-set 'mood-line-status-info
+                   '((t (:foreground ml-color--cyan))))
+    (face-spec-set 'mood-line-status-warning
+                   '((t (:foreground ml-color--orange))))
     (face-spec-set 'mood-line-status-success
-                   '((t (:foreground "green3"))))
+                   '((t (:foreground ml-color--green))))
     (face-spec-set 'mood-line-buffer-status-modified
-                   ;; '((t (:inherit link :weight normal :underline nil)))
-                   '((t (:foreground "#b58900"))) ;; solarized dark link
-                   )
+                   '((t (:foreground ml-color--orange))))
     (face-spec-set 'mood-line-buffer-status-read-only
-                   ;; '((t (:inherit error :weight normal)))
-                   '((t (:foreground "#cb4b16")))) ;; solarized dark error
+                   '((t (:foreground ml-color--red))))
     (face-spec-set 'mood-line-buffer-status-narrowed
-                   '((t (:foreground "green3"))))
+                   '((t (:foreground ml-color--green))))
     (mood-line-mode))
 
   (error "foo")
