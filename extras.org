@@ -149,6 +149,36 @@ org-roam-node~ warning.
 (similar to [[https://github.com/yjwen/org-reveal][org-reveal]] + [[https://revealjs.com][reveal.js]], but lighter weight).
 
 * Major modes
+** YAML
+*** ~yaml-mode~
+[[https://github.com/yoshiki/yaml-mode][yaml-mode | GitHub]] (looking for a new maintainer)
+
+#+begin_src emacs-lisp
+  (use-package yaml-mode
+    :straight (yaml-mode
+               :type git
+               :host github
+               :repo "yoshiki/yaml-mode"
+               :branch "master"))
+#+end_src
+
+*** TODO COMMENT ~yaml.el~
+[[https://github.com/zkry/yaml.el][yaml.el | GitHub]]
+
+#+begin_src emacs-lisp
+  (use-package yaml
+    :straight (yaml
+               :type git
+               :host github
+               :repo "zkry/yaml.el"
+               :branch "master")
+    :config
+    (require 'yaml))
+#+end_src
+
+*** TODO COMMENT ~yaml-pro~
+[[https://github.com/zkry/yaml-pro][yaml-pro | GitHub]]: tools for editing YAML leveraging tree-sitter/parser
+
 ** Markdown +-- configured under ~lsp-bridge~+
 For when you can't use Org mode 🙃; see [[https://jblevins.org/projects/markdown-mode/][markdown-mode]].
 
