@@ -516,25 +516,6 @@ See [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Face-Attributes.
   ;; (add-to-list 'default-frame-alist `(font . ,gui-config-font))
 #+end_src
 
-*** OPTIONAL ~nerd-icons~
-[[https://github.com/rainstormstudio/nerd-icons.el][nerd-icons.el | GitHub]] use [[https://github.com/ryanoasis/nerd-fonts][Nerd Fonts]] icons
-
-#+begin_src emacs-lisp
-  (use-package nerd-icons
-    ;; :custom
-    ;; The Nerd Font you want to use in GUI
-    ;; "Symbols Nerd Font Mono" is the default and is recommended
-    ;; but you can use any other Nerd Font if you want
-    ;; (nerd-icons-font-family "Symbols Nerd Font Mono")
-    :config
-    (let ((jet-brains-nf "JetBrainsMono Nerd Mono")
-          (nerd-symbols-mono "Symbols Nerd Font Mono"))
-      (cond ((font-available-p jet-brains-nf)
-             (setq nerd-icons-font-family jet-brains-nf))
-            ((font-available-p nerd-symbols-mono)
-             (setq nerd-icons-font-family nerd-symbols-mono)))))
-#+end_src
-
 *** ~s-N~ opens ~*scratch*~ buffer
 I think I may start using frames to hold related sets of buffers to make
 context switching easier (i.e. I can switch between frames instead of
