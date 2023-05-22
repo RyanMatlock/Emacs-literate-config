@@ -11,6 +11,144 @@ also contain useful links and debugging information.
 * ~core-config.org~
 ** General interface & minor modes
 *** GUI
+**** Frame sizing
+*****  struggle with keybindings and prefix maps
+This is the wrong way to do it, but it's probably not that far off from the
+right way to do it.
+
+~C-x f~ is bound to =set-fill-column=, which I don't really use. Consider making it
+into a prefix key and using that instead of ~C-x x~ as the prefix for all of your
+personal frame resizing functions.
+
+See [[https://www.masteringemacs.org/article/mastering-key-bindings-emacs][Mastering Key Bindings in Emacs § Creating New Keymaps | Mastering Emacs]]
+and [[https://emacs.stackexchange.com/a/22202][how to add a prefix key to all keybindings of a specific mode? |
+emacs.stackexchange]].
+
+#+begin_src emacs-lisp
+  (define-key global-map (kbd "C-x f") nil) ;; previously set-fill-column
+
+  (when window-system
+    ;; (defvar gui-frame-map
+    ;;   (let ((map (make-sparse-keymap)))
+    ;;     (define-key map (kbd "s") 'std-frame)
+    ;;     (define-key map (kbd "w") 'wide-frame)
+    ;;     (define-key map (kbd "l") 'lrg-frame)
+    ;;     (define-key map (kbd "x") 'xl-frame)
+    ;;     map))
+
+    ;; (let ((map (make-sparse-keymap)))
+    ;;   (define-key map (kbd "s") 'std-frame)
+    ;;   (define-key map (kbd "w") 'wide-frame)
+    ;;   (define-key map (kbd "l") 'lrg-frame)
+    ;;   (define-key map (kbd "x") 'xl-frame)
+    ;;   (setq gui-frame-map map))
+
+    (define-prefix-command 'gui-frame-map)
+    (define-key global-map (kbd "C-x f") 'gui-frame-map)
+
+    (let ((prefix "C-x f")
+          (map (make-sparse-keymap))
+          (key-func-alist '(("s" . 'std-frame)
+                            ("w" . 'wide-frame)
+                            ("l" . 'lrg-frame)
+                            ("x" . 'xl-frame))))
+      (seq-do #'(lambda (ccell)
+                  (let ((key (car ccell))
+                        (func (cdr ccell)))
+                    (define-key map (kbd (format "%s %s" prefix key)) func)))
+              key-func-alist)
+      (setq gui-frame-map map)))
+#+end_src
+
+#+begin_example
+  gui-frame-map’s value is
+  (keymap
+   (24 keymap
+       (102 keymap
+            (120 quote xl-frame)
+            (108 quote lrg-frame)
+            (119 quote wide-frame)
+            (115 quote std-frame))))
+#+end_example
+
+#+begin_example
+  ctl-x-map is a variable defined in ‘subr.el’.
+
+  Its value is shown below.
+
+  Default keymap for C-x commands.
+  The normal global definition of the character C-x indirects to this keymap.
+
+    This variable may be risky if used as a file-local variable.
+
+  Value:
+  (keymap
+   #^[nil nil keymap #1=
+          #^^[3 0 pop-global-mark nil list-buffers save-buffers-kill-terminal list-directory eval-last-sexp find-file nil nil indent-rigidly dired-jump kmacro-keymap downcase-region
+                (keymap
+                 (108 . set-language-environment)
+                 (99 . universal-coding-system-argument)
+                 (28 . set-input-method)
+                 (88 . set-next-selection-coding-system)
+                 (120 . set-selection-coding-system)
+                 (112 . set-buffer-process-coding-system)
+                 (107 . set-keyboard-coding-system)
+                 (116 . set-terminal-coding-system)
+                 (70 . set-file-name-coding-system)
+                 (114 . revert-buffer-with-coding-system)
+                 (102 . set-buffer-file-coding-system))
+                set-goal-column delete-blank-lines mark-page read-only-mode find-file-read-only save-buffer transpose-lines upcase-region find-alternate-file write-file exchange-point-and-mark nil suspend-frame
+  ...
+#+end_example
+
+#+begin_src emacs-lisp
+  (define-key global-map (kbd "C-x f") nil) ;; previously set-fill-column
+
+  (when window-system
+    (define-prefix-command 'gui-frame-map)
+    (define-key ctl-x-map (kbd "f") 'gui-frame-map)
+
+    (let ((prefix "C-x f")
+          (map (make-sparse-keymap))
+          (key-func-alist '(("s" . 'std-frame)
+                            ("w" . 'wide-frame)
+                            ("l" . 'lrg-frame)
+                            ("x" . 'xl-frame))))
+      ;; (seq-do #'(lambda (ccell)
+      ;;             (let ((key (car ccell))
+      ;;                   (func (cdr ccell)))
+      ;;               (define-key map (kbd (format "%s %s" prefix key)) func)))
+      ;;         key-func-alist)
+      (seq-do #'(lambda (ccell)
+                  (let ((key (car ccell))
+                        (func (cdr ccell)))
+                    (define-key map (kbd key) func)))
+              key-func-alist)
+      (setq gui-frame-map map)))
+#+end_src
+
+Ok, =gui-frame-map= appears within the =ctl-x-map=, but I'm still not getting
+defined functions yet.
+
+#+begin_src emacs-lisp
+  (define-key global-map (kbd "C-x f") nil) ;; previously set-fill-column
+
+  (when window-system
+    (let ((prefix "C-x f")
+          (key-func-alist '(("s" . std-frame)
+                            ("w" . wide-frame)
+                            ("l" . lrg-frame)
+                            ("x" . xl-frame))))
+      (seq-do
+       #'(lambda (ccell)
+           (let ((key (car ccell))
+                 (func (cdr ccell)))
+             (define-key global-map (kbd (format "%s %s" prefix key)) func)))
+       key-func-alist)))
+#+end_src
+
+I still haven't figured out the prefix map stuff, but this works. I'm going to
+refactor things a bit.
 **** ~nerd-icons~
 [[https://github.com/rainstormstudio/nerd-icons.el][nerd-icons.el | GitHub]] use [[https://github.com/ryanoasis/nerd-fonts][Nerd Fonts]] icons
 
