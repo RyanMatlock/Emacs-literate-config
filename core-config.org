@@ -860,13 +860,10 @@ See http://www.emacswiki.org/emacs/AutoIndentation
   (add-hook 'c-mode-common-hook 'set-newline-and-indent)
 #+end_src
 
-*** Prettier mode line
+*** ~mode-line~: prettier mode line
 [[https://gitlab.com/jessieh/mood-line][mood-line | GitLab]]
 
 Note that the glyphs must be of type char, /not/ string.
-
-As for the =...-buffer-status-...= colors, I kind of like the explicit traffic
-light color scheme I have going on now.
 
 #+begin_src emacs-lisp
   (use-package mood-line
@@ -888,40 +885,38 @@ light color scheme I have going on now.
                (char (cdr symbol-char-cons-cell)))
            (setcdr (assq symbol mood-line-glyph-alist) char)))
      mood-line-custom-glyphs-alist)
-    ;; set custom colors
-    (setq ml-color--orange "#b58900") ;; solarized dark link
-    (setq ml-color--red "#cb4b16") ;; solarized dark error
-    (setq ml-color--green "green3")
-    (setq ml-color--cyan "#2aa198") ;; solarized dark font-lock-string-face
     ;; update fonts
-    ;; (face-spec-set 'mood-line-status-info
-    ;;                '((t (:foreground "#2aa198")))) ;; workaround -- see below
-    (face-spec-set 'mood-line-status-warning
-                   '((t (:foreground ml-color--orange))))
-    (face-spec-set 'mood-line-status-success
-                   '((t (:foreground ml-color--green))))
-    (face-spec-set 'mood-line-buffer-status-modified
-                   '((t (:foreground ml-color--orange))))
-    (face-spec-set 'mood-line-buffer-status-read-only
-                   '((t (:foreground ml-color--red))))
-    (face-spec-set 'mood-line-buffer-status-narrowed
-                   '((t (:foreground ml-color--green))))
+    (let ((cyan "#2aa198") ;; solarized dark font-lock-string-face
+          (green "green3")
+          (olive "#859900") ;; solarized dark font-lock-keyword-face
+          (orange "#b58900") ;; solarized dark link
+          (red "#cb4b16") ;; solarized dark error
+          )
+      (face-spec-set 'mood-line-status-info
+                     `((t (:foreground ,cyan))))
+      (face-spec-set 'mood-line-status-warning
+                     `((t (:foreground ,orange))))
+      (face-spec-set 'mood-line-status-success
+                     `((t (:foreground ,green))))
+      (face-spec-set 'mood-line-buffer-status-modified
+                     `((t (:foreground ,orange))))
+      (face-spec-set 'mood-line-buffer-status-read-only
+                     `((t (:foreground ,red))))
+      (face-spec-set 'mood-line-buffer-status-narrowed
+                     `((t (:foreground ,olive)))))
     (mood-line-mode))
 #+end_src
 
-=make-new-frame= caused an error in =internal-set-lisp-face-attribute= when
-
-#+begin_example
-  (face-spec-set 'mood-line-status-info '((t (:foreground "#2aa198"))))
-#+end_example
-
-was
-
-#+begin_example
-  (face-spec-set 'mood-line-status-info '((t (:foreground ml-color--cyan))))
-#+end_example
-
-¯\_(ツ)_/¯
+#+name: tab:mood-line-custom-color-names
+#+caption: Color names according to [[https://www.color-name.com/][color-name.com]]
+| hex code | my name | color-name.com | solarized dark/Emacs colors |
+|----------+---------+----------------+-----------------------------|
+| ~2aa198~   | cyan    | zomp           | =font-lock-string-face=       |
+| ~b58900~   | orange  | dark goldenrod | =link=                        |
+| ~cb4b16~   | red     | sinopia        | =error=                       |
+| ~859900~   | olive   | olive          | =font-lock-keyword-face=      |
+| ~1ca350~   | green   | energy green   | -                           |
+| ~00cd00~   | green   | electric green | ~green3~                      |
 
 *** ~treemacs~
 [[https://github.com/Alexander-Miller/treemacs][treemacs | GitHub]]: a tree layout file explorer (like you see in other
