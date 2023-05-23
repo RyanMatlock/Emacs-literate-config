@@ -292,6 +292,10 @@ See [[https://www.gnu.org/software/emacs/manual/html_node/efaq/Turning-on-auto_0
 ****  Bind keys to frame resizing functions
 This works, but it's probably not strictly the right way to do it.
 
+Also note that on MacOS, ~M-x toggle-frame-maximized~ +(~M-<f10>~)+ does what it says
+on the tin, +although+ so I +also+ bound it to ~C-x f f~ because that's more
+memorable.
+
 #+begin_src emacs-lisp
   (define-key global-map (kbd "C-x f") nil) ;; previously set-fill-column
 
@@ -315,10 +319,15 @@ This works, but it's probably not strictly the right way to do it.
                             ("w" . wide-frame)
                             ("l" . lrg-frame)
                             ("x" . xl-frame))))
-      (bind-keys-from-alist global-map key-fn-alist prefix)))
+      (bind-keys-from-alist global-map key-fn-alist prefix)
+
+      (when (member window-system '(mac ns))
+        (define-key global-map (kbd "M-<f10>") nil)
+        (bind-keys-from-alist global-map
+                              '(("f" . toggle-frame-maximized)) prefix))))
 #+end_src
 
-*** TODO Fonts <<fonts>>
+*** TODO Fonts <<sec:fonts>>
 You may want to install fonts with [[https://github.com/Homebrew/homebrew-cask-fonts][homebrew-cask-fonts | GitHub]], so if you
 wanted to be insane, you could set fundamental, text, and Org modes (and
 AUCTeX? maybe not for math mode though) Computer Modern Roman with something
@@ -1869,8 +1878,8 @@ actually pretty nice, but I'm not getting the desired behavior of having fixed
 width font actually displaying a fixed width face.
 
 *** TODO Prettier titles and headlines
-Use variables defined in the [[fonts][Fonts]] section above rather than hard-coding in
-values like "Helvetica." Did you even know about [[https://public-sans.digital.gov][Public Sans]] before?
+Use variables defined in the [[sec:fonts][Fonts]] section above rather than hard-coding in
+values like "Helvetica." Did you even know about [[https://public-sans.digital.gov][Public Sans]] before??
 
 #+begin_src emacs-lisp
   (defun org-prettier-title-and-headlines ()
