@@ -1203,7 +1203,7 @@ and [[https://github.com/minad/cape][cape | GitHub]] (=completion-at-point-fucti
     ;; Optional customizations
     :custom
     (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
-    (corfu-separator ?\s)          ;; Orderless field separator
+    ;; (corfu-separator ?\s)          ;; Orderless field separator
     ;; (corfu-preselect 'prompt)      ;; Preselect the prompt
     ;; (corfu-auto t)                 ;; Enable auto completion
 
@@ -1227,6 +1227,21 @@ and [[https://github.com/minad/cape][cape | GitHub]] (=completion-at-point-fucti
     ;; Enable indentation+completion using the TAB key.
     ;; `completion-at-point' is often bound to M-TAB.
     (setq tab-always-indent 'complete))
+#+end_src
+
+**** ~orderless~ config
+
+#+begin_src emacs-lisp
+  ;; Optionally use the `orderless' completion style.
+  (use-package orderless
+    :init
+    ;; Configure a custom style dispatcher (see the Consult wiki)
+    ;; (setq orderless-style-dispatchers '(+orderless-dispatch)
+    ;;       orderless-component-separator #'orderless-escapable-split-on-space)
+    (setq completion-styles '(orderless basic)
+          completion-category-defaults nil
+          completion-category-overrides
+          '((file (styles . (partial-completion))))))
 #+end_src
 
 **** ~dabbrev~ config
