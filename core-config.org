@@ -318,7 +318,7 @@ This works, but it's probably not strictly the right way to do it.
       (bind-keys-from-alist global-map key-fn-alist prefix)))
 #+end_src
 
-*** TODO Fonts
+*** TODO Fonts <<fonts>>
 You may want to install fonts with [[https://github.com/Homebrew/homebrew-cask-fonts][homebrew-cask-fonts | GitHub]], so if you
 wanted to be insane, you could set fundamental, text, and Org modes (and
 AUCTeX? maybe not for math mode though) Computer Modern Roman with something
@@ -351,6 +351,11 @@ See [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Face-Attributes.
       ("Fira Code" . 14)
       ("Consolas" . 15)
       ("Courier New" . 15)))
+  (setq gui-sans-serif-fonts
+        '("Public Sans" ;; created by the US government
+          "Helvetica"
+          "Calibri"
+          "Arial"))
   (defun font-available-p (font-name)
     "Check if FONT-NAME is available on device."
     (member font-name (font-family-list)))
@@ -1715,6 +1720,7 @@ blocks with ~C-c C-,~+. Unrelated---there's an entry =("yaml" . "src yaml")= in
 ** TODO Beautified Org mode
 [[https://zzamboni.org/post/beautifying-org-mode-in-emacs/][Beautifying Org Mode in Emacs | zzamboni.org]]
 
+*** ~org-bullets~
 [[https://github.com/sabof/org-bullets][org-bullets | GitHub]]
 
 #+begin_src emacs-lisp
@@ -1732,7 +1738,11 @@ blocks with ~C-c C-,~+. Unrelated---there's an entry =("yaml" . "src yaml")= in
             ("Heavy Circle" . "⭘")))
     (setq org-bullets-bullet-list (mapcar #'cdr org-bullets-bullet-alist))
     (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
+#+end_src
 
+*** OPTIONAL COMMENT variable width text
+
+#+begin_src emacs-lisp
   ;; (add-hook 'org-mode-hook #'variable-pitch-mode)
   ;; (remove-hook 'org-mode-hook #'variable-pitch-mode)
 
@@ -1742,13 +1752,16 @@ blocks with ~C-c C-,~+. Unrelated---there's an entry =("yaml" . "src yaml")= in
   ;;  '(variable-pitch ((t (:family "Helvetica" :height 160 :weight regular))))
   ;;  '(fixed-pitch ((t (:family "JetBrainsMono Nerd Mono" :height 140))))
   ;;  '(org-table ((t (:inherit fixed-pitch)))))
+
 #+end_src
 
 I'm not sure that this is actually easier/less fatiguing to read. Helvetica is
 actually pretty nice, but I'm not getting the desired behavior of having fixed
 width font actually displaying a fixed width face.
 
-Larger headlines:
+*** TODO Prettier titles and headlines
+Use variables defined in the [[fonts][Fonts]] section above rather than hard-coding in
+values like "Helvetica." Did you even know about [[https://public-sans.digital.gov][Public Sans]] before?
 
 #+begin_src emacs-lisp
   (defun org-prettier-title-and-headlines ()
@@ -1795,12 +1808,17 @@ Larger headlines:
     (org-prettier-title-and-headlines))
 #+end_src
 
-[[https://stackoverflow.com/a/2736153][eval-after-load vs. mode hook | stackoverflow]]; tl,dr: use =eval-after-load= for
+[[https://stackoverflow.com/a/2736153][eval-after-load vs. mode hook | stackoverflow]]; tldr: use =eval-after-load= for
 code that should be run only once (e.g. set global values); use mode hooks for
 code that should be run each time a buffer is open.
 
 Weird: when I first open an Org file, the title/subtitle/author are the default
 font, but the headlines are ok ¯\_(ツ)_/¯
+
+*** TODO fix ~verbatim~ behavior
+~verbatim~ font is rendered in the headline font---but only on my MacBook for
+some reason. Its =:inherit= value is =shadow=, whereas on my Mac Mini, the
+=:inherit= value is =fixed-width-shadow=.
 
 ** Keybindings
 *** Still relevant?
