@@ -1,0 +1,682 @@
+#+title: Literate Emacs configuration with Org mode
+#+subtitle: GUI configuration
+#+author: Ryan Matlock
+
+The GUI configuration was getting too long in ~core-config.org~, and it's not
+really a /core/ set of features anyway, so it's getting moved here.
+
+* TODO GUI
+** TODO General config
+- no menu bar; see [[http://emacswiki.org/emacs/MenuBar][Menu Bar | Emacs Wiki]]
+- no tool bar
+- no scroll bar
+- 96% opacity (matches OS X Terminal); see see
+  [[http://stackoverflow.com/questions/21946382/how-to-get-transparent-window-in-gnu-emacs-on-osx-mavericks][how to get transparent window in GNU Emacs on OSX? | stackoverflow]]
+- +enable =global-display-fill-column-indicator-mode=, which draws a line at the
+  fill column; see [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Displaying-Boundaries.html][Displaying Boundaries | GNU Emacs Manual]] (replaces
+  [[https://www.emacswiki.org/emacs/FillColumnIndicator][fill-column-indicator.el | Emacs Wiki]])+
+- disable =C-z=, which minimizes Emacs in GUI mode
+- disable ~visible-bell~; see [[http://stackoverflow.com/questions/36805713/emacs-blank-square-on-mac-os-x/36813418#36813418][Emacs blank square on Mac OS X | stackoverflow]]
+
+Update: I think you've been doing this (sort of) incorrectly because you
+haven't been taking full advantage of =default-frame-alist=.
+
+#+begin_src emacs-lisp
+  (when window-system
+    (menu-bar-mode -1)  ;; not working?
+    (tool-bar-mode -1)
+    (scroll-bar-mode -1)
+    (add-to-list 'default-frame-alist '(vertical-scroll-bars . nil))
+
+    (setq gui-config-frame-transparency 96)
+    (set-frame-parameter
+     (selected-frame) 'alpha `(,gui-config-frame-transparency
+                               ,gui-config-frame-transparency))
+    (add-to-list 'default-frame-alist `(alpha ,gui-config-frame-transparency
+                                              ,gui-config-frame-transparency))
+
+    (setq visible-bell nil))
+#+end_src
+
+** Solarized Dark theme
+[[https://github.com/bbatsov/solarized-emacs][solarized-emacs | GitHub]]
+
+Note: you need to =setq= various properties /before/ you load the theme,
+otherwise you'll get unexpected behaviors.
+
+#+begin_src emacs-lisp
+  (use-package solarized-theme
+    :straight t
+    :config
+    (setq solarized-distinct-fringe-background t)
+    (setq solarized-high-contrast-mode-line nil)
+    (setq solarized-scale-org-headlines nil)
+    (setq solarized-use-more-italic t)
+    (setq solarized-use-variable-pitch nil)
+    (load-theme 'solarized-dark t))
+#+end_src
+
+** Set columns to wrap at 80 characters
+See [[https://www.gnu.org/software/emacs/manual/html_node/efaq/Turning-on-auto_002dfill-by-default.html][How do I turn on ~auto-fill-mode~ by default? | GNU Emacs Manual]]
+
+#+begin_src emacs-lisp
+  ;; (add-hook 'text-mode-hook 'turn-on-auto-fill)
+  (setq-default fill-column 79)
+  (setq-default auto-fill-function 'do-auto-fill)
+#+end_src
+
+** TODO Frame sizing
+*** Frame variables and functions
+#+begin_src emacs-lisp
+  (when window-system
+    (setq gui-std-frame-height 45)
+    (setq gui-frame-width-padding 4)
+    (setq gui-frame-separation 2)
+    (setq gui-std-frame-width (1+ (+ fill-column
+                                     gui-frame-width-padding)))
+    (setq gui-treemacs-frame-width 35)
+
+    (let ((scale-factor 1.3))
+      (setq gui-wide-frame-width
+            (ceiling (* scale-factor gui-std-frame-width)))
+      (setq gui-tall-frame-height
+            (ceiling (* scale-factor gui-std-frame-height))))
+
+    (add-to-list 'default-frame-alist `(width . ,gui-std-frame-width))
+    (add-to-list 'default-frame-alist `(height . ,gui-std-frame-height))
+
+    (defun gui--calculate-frame-width (num-windows base-width)
+      "Calculate width of frame given NUM-WINDOWS and BASE-WIDTH."
+      (+ (* base-width num-windows)
+         (* gui-frame-separation (1- num-windows))))
+
+    (defun gui--resize-frame
+        (num-windows width height &optional treemacs-frame-p)
+      "Resize current frame based on NUM-WINDOWS, WIDTH, HEIGHT, and
+  TREEMACS-FRAME-P, which add additional width for 'treemacs-mode' if T."
+      (let* ((frame-width (gui--calculate-frame-width num-windows width))
+             (total-width (if treemacs-frame-p
+                              (+ frame-width
+                                 gui-treemacs-frame-width
+                                 gui-frame-separation)
+                            frame-width)))
+        (set-frame-size (selected-frame)
+                        total-width
+                        height)
+        (message (format "Set frame size to %dw × %d."
+                         total-width
+                         height))))
+
+    (defun std-frame (&optional treemacs-frame-p)
+      "Resize current frome to 'gui-std-frame-width' x 'gui-std-frame-height' (+
+  a treemacs frame if TREEMACS-FRAME-P is non-nil)."
+      (interactive "P")
+      (gui--resize-frame 1
+                         gui-std-frame-width
+                         gui-std-frame-height
+                         treemacs-frame-p))
+
+    (defun wide-frame (&optional treemacs-frame-p)
+      "Resize current frame to 'gui-wide-frame-width' x 'gui-std-frame-height' (+
+  a treemacs frame if TREEMACS-FRAME-P is non-nil)."
+      (interactive "P")
+      (gui--resize-frame 1
+                         gui-wide-frame-width
+                         gui-std-frame-height
+                         treemacs-frame-p))
+
+    (defun lrg-frame (&optional treemacs-frame-p)
+      "Resize current frame to accommodate side-by-side windows (+ a treemacs
+  frame if TREEMACS-FRAME-P is non-nil)."
+      (interactive "P")
+      (gui--resize-frame 2
+                         gui-std-frame-width
+                         gui-std-frame-height
+                         treemacs-frame-p))
+
+    (defun xl-frame ()
+      "Resize current frame for 3 adjacent windows + extra height."
+      (interactive)
+      (gui--resize-frame 3
+                         gui-std-frame-width
+                         gui-tall-frame-height))
+
+    (std-frame))
+#+end_src
+
+***  Bind keys to frame resizing functions
+This works, but it's probably not strictly the right way to do it.
+
+Also note that on MacOS, ~M-x toggle-frame-maximized~ +(~M-<f10>~)+ does what it says
+on the tin, +although+ so I +also+ bound it to ~C-x f f~ because that's more
+memorable.
+
+#+begin_src emacs-lisp
+  (define-key global-map (kbd "C-x f") nil) ;; previously set-fill-column
+
+  (defun bind-keys-from-alist (map key-fn-alist &optional prefix)
+    "Bind each function FN to key KEY (prefixed by PREFIX if non-nil) in
+  KEY-FN-ALIST to keymap MAP."
+    (unless (string-or-null-p prefix)
+      (error "PREFIX must be nil or a string representing a key sequence."))
+    (seq-do #'(lambda (key-fn-cons-cell)
+                (let* ((tmpkey (car key-fn-cons-cell))
+                       (fn (cdr key-fn-cons-cell))
+                       (key (if prefix
+                                (format "%s %s" prefix tmpkey)
+                              tmpkey)))
+                  (define-key map (kbd key) fn)))
+            key-fn-alist))
+
+  (when window-system
+    (let ((prefix "C-x f")
+          (key-fn-alist '(("s" . std-frame)
+                            ("w" . wide-frame)
+                            ("l" . lrg-frame)
+                            ("x" . xl-frame))))
+      (bind-keys-from-alist global-map key-fn-alist prefix)
+
+      (when (member window-system '(mac ns))
+        (define-key global-map (kbd "M-<f10>") nil)
+        (bind-keys-from-alist global-map
+                              '(("f" . toggle-frame-maximized)) prefix))))
+#+end_src
+
+** TODO Fonts <<sec:fonts>>
+You may want to install fonts with [[https://github.com/Homebrew/homebrew-cask-fonts][homebrew-cask-fonts | GitHub]], so if you
+wanted to be insane, you could set fundamental, text, and Org modes (and
+AUCTeX? maybe not for math mode though) Computer Modern Roman with something
+like
+
+#+begin_example
+  (set-face-attribute
+   'default nil :family "CMU Serif" :weight 'normal :slant 'normal)
+#+end_example
+
+with a hook or something and then a monospace font for =prog-mode=. [[https://zzamboni.org/post/beautifying-org-mode-in-emacs/][Beautifying
+Org Mode in Emacs | zzamboni.org]] looks like a good resource for this. [[https://lucidmanager.org/productivity/ricing-org-mode/][Ricing
+Org Mode: A Beautiful Writing Environment | lucidmanager.org]] also has some good
+tips, e.g. [[https://gitlab.com/jabranham/mixed-pitch][mixed-pitch | GitLab]].
+
+See [[https://emacsredux.com/blog/2021/12/22/check-if-a-font-is-available-with-emacs-lisp/][Check if a Font is Available with Emacs Lisp | Emacs Redux]] for font
+switching goodness
+
+Set unicode font to Unifont (for emojis?); see [[https://github.com/rolandwalker/unicode-fonts][unicode-fonts | GitHub]] (?) ---
+this is very old
+
+See [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Face-Attributes.html][Face Attributes | GNU Emacs Manual]] and [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Attribute-Functions.html#index-set_002dface_002dattribute][Face Attribute Functions §
+=set-face-attribute= | GNU Emacs Manual]]
+
+#+begin_src emacs-lisp
+  (defun font-available-p (font-name)
+    "Check if FONT-NAME is available on device.
+
+  Stolen from Emacs Redux (Bozhidar Batsov)"
+    (member font-name (font-family-list)))
+
+  ;; (defmacro deffontfam (name font-list)
+  ;;   (let `(font-family (car-safe (seq-filter #'font-available-p ,font-list)))
+  ;;     `(setq ,name ,font-family)))
+
+  (defun preferred-font (font-list)
+    (car-safe (seq-filter #'font-available-p font-list)))
+
+  (setq gui-default-font-family-alist
+        '(("JetBrainsMono Nerd Font Mono" . 14)
+          ("JetBrains Mono" . 14)
+          ("Inconsolata" . 15)
+          ("Fira Code" . 14)
+          ("Consolas" . 15)
+          ("Courier New" . 15)))
+  (setq gui-sans-serif-family-list
+        '("Public Sans" ;; created by the US government
+          "Inter" ;; open source neo-grotesque but optimized for screens
+          "TeX Gyre Heros" ;; derived from Helvetica
+          "IBM Plex Sans"
+          "Source Sans 3"
+          "Open Sans"
+          "Helvetica"
+          "Calibri"
+          "Arial"))
+  (setq gui-serif-family-list
+        '("IBM Plex Serif"
+          "Libertinus Serif"
+          "Libre Baskerville"
+          "Source Serif 4"))
+  (setq gui-verbatim-family-list
+        '("Libertinus Mono"))
+
+  ;; (setq gui-fixed-width-family
+  ;;       (car-safe (seq-filter #'font-available-p
+  ;;                             (mapcar #'car gui-default-font-family-alist))))
+  ;; (setq gui-sans-serif-family
+  ;;       (car-safe (seq-filter #'font-available-p gui-sans-serif-family-list)))
+
+  (setq gui-fixed-width-family
+        (preferred-font (mapcar #'car gui-default-font-family-alist)))
+  (setq gui-sans-serif-family
+        (preferred-font gui-sans-serif-family-list))
+  (setq gui-serif-family
+        (preferred-font gui-serif-family-list))
+  (setq gui-verbatim-family
+        (preferred-font gui-verbatim-family-list))
+
+  ;; ;; move to beautify Org
+  ;; (when gui-verbatim-family
+  ;;   (set-face-attribute 'org-verbatim t
+  ;;                       :family gui-verbatim-family)
+  ;;   (message (format "Set org-verbatim family to %s." gui-verbatim-family)))
+
+  (let* ((font-names (mapcar #'car gui-default-font-family-alist))
+         (available-fonts (seq-filter #'font-available-p font-names))
+         (name (car available-fonts))
+         (size (cdr (assoc name gui-default-font-family-alist)))
+         (height (* 10 size)))
+    (set-face-attribute
+     'default nil :family name :height height :slant 'normal)
+    (set-face-attribute
+     'font-lock-comment-face nil :slant 'italic)
+    (message (format "Set font to %s-%d." name size)))
+
+  ;; (setq gui-config-font (format "%s-%d" name size))
+  ;; (set-frame-font gui-config-font)
+  ;; (set-face-attribute 'default t :slant 'unspecified)
+  ;; (set-face-attribute 'default nil :slant 'normal)
+  ;; (set-face-attribute
+  ;;  'default nil :family "Inconsolata" :slant 'normal)
+  ;; (set-face-attribute
+  ;;  'default nil :family "JetBrains Mono" :slant 'normal)
+  ;; (set-face-attribute
+  ;;  'default nil :family "CMU Serif" :weight 'normal :slant 'normal)
+
+  (set-fontset-font t 'unicode "Unifont" nil 'prepend)
+  ;; (add-to-list 'default-frame-alist `(font . ,gui-config-font))
+#+end_src
+
+** ~s-N~ opens ~*scratch*~ buffer
+I think I may start using frames to hold related sets of buffers to make
+context switching easier (i.e. I can switch between frames instead of
+constantly loading related sets of buffers into my usual two window setup).
+
+#+begin_src emacs-lisp
+  (setq make-new-frame-default-buffer "*scratch*")
+  (setq make-new-frame-alternate-buffer "*Buffer List*")
+
+  (defun make-new-frame (&optional alt-buffer)
+    "Open a new frame using 'make-frame', and switch to buffer specified by
+  'make-new-frame-default-buffer' unless a prefix argument is passed, in which
+  case the buffer specified by 'make-new-frame-alternate-buffer' is selected."
+    (interactive "P")
+    (let ((target-buffer
+           (if alt-buffer make-new-frame-alternate-buffer
+             make-new-frame-default-buffer)))
+      (make-frame)
+      (switch-to-buffer target-buffer)))
+
+  (define-key global-map (kbd "s-N") 'make-new-frame)
+  ;; s-n previously bound to make-frame
+  (define-key global-map (kbd "s-n") nil)
+#+end_src
+
+There's a slight bug with this in that if =buffer-menu= hasn't been called yet,
+switching to ~*Buffer List*~ will be empty.
+
+This is a good place to remind myself that =delete-frame= is bound to ~C-x 5 0~.
+
+** TODO read ~.bashrc~ & use bash as default ANSI term
+Bear in mind that on your MacBook Pro, ~bash~ (the Homebrew version you use) is
+located at ~/usr/local/bin/bash~, but your M1 Mac Mini, it's located at
+~/opt/homebrew/bin/bash~, so maybe that's an issue? Probably helpful to know
+which sort of device you're on.
+
+[[https://osxdaily.com/2011/07/15/get-cpu-info-via-command-line-in-mac-os-x/][Get CPU Info via Command Line in Mac OS X | OSXDaily]]
+
+#+begin_src bash :eval no
+  $ sysctl -n machdep.cpu.brand_string
+  Intel(R) Core(TM) i7-9750H CPU @ 2.60GHz
+#+end_src
+
+[[https://emacs.stackexchange.com/questions/14858/how-to-check-in-elisp-if-a-string-is-a-substring-of-another-string][How to check in elisp if a string is a substring of another string? |
+emacs.stackexchange]]
+
+#+begin_src emacs-lisp :eval no
+  (string-match-p (regexp-quote "Intel")
+                  "Intel(R) Core(TM) i7-9750H CPU @ 2.60GHz")
+#+end_src
+
+Alternately, you may simply want to check for the existence of one or the other
+binaries, and then settle on ~/bin/bash~ if neither exists ¯\_(ツ)_/¯
+
+[[https://stackoverflow.com/a/37523213][How to define a default shell for emacs | stackoverflow]]
+
+Looking through [[http://blog.binchen.org/posts/what-s-the-best-spell-check-set-up-in-emacs/][What's the best spell check setup in emacs]], I came across the
+function =executable-find=, so that might be better than =file-exists-p=; on
+the other hand, maybe explicitly calling out the path is what I want. On the
+third hand (or back to the first hand), basically any machine I'm on is going
+to have ~bash~, so maybe it's better to go with whatever the =PATH= variable
+thinks I ought to use.
+
+#+begin_example
+  ELISP> (executable-find "bash")
+  "/usr/local/bin/bash"
+  ELISP> (executable-find "fake-foobar")
+  nil
+#+end_example
+
+It works how you'd want it to for the latter case.
+
+#+begin_src emacs-lisp
+  (defvar preferred-shells
+    '("bash"
+      "sh")
+    "List of shells from most to least preferred.")
+
+  (let* ((found-shells (mapcar #'executable-find preferred-shells))
+         (preferred-shell (car-safe found-shells)))
+    (cond (preferred-shell
+           (progn
+             (setq-default shell-file-name preferred-shell)
+             (message (format "Using shell %s" preferred-shell))))
+          (t (error
+              (format "No valid shell found among %s." preferred-shells)))))
+#+end_src
+
+When I finally decide to join the modern era and use zsh or fish, it will be
+easy to =cons= onto =shell-paths-alist=.
+
+** ~exec-path-from-shell~ to fix ~exec-path~​/​~PATH~ behavior in MacOS GUI
+[[https://github.com/purcell/exec-path-from-shell][exec-path-from-shell]] fixes behavior of how environment variables are loaded in
+MacOS GUI Emacs.
+
++[Note that you need to use [[https://www.gnu.org/software/emacs/manual/html_node/eintr/progn.html][progn]] in order to evaluate the series of
+s-expressions in =:config=.]+  False!
+
+#+begin_src emacs-lisp
+  (use-package exec-path-from-shell
+    :straight t
+    :config
+    (when (or (daemonp)
+              (memq window-system '(mac ns x)))
+      (exec-path-from-shell-initialize))
+    (exec-path-from-shell-copy-env "PYTHONPATH"))
+#+end_src
+
+I'm having an issue with ~lsp-haskell~ not finding
+~haskell-language-server-wrapper~, which is on my =PATH= in ~bash~ at
+~~/.ghcup/bin/haskell-language-server-wrapper~.
+
+From ~iTerm2~:
+
+#+begin_src shell
+  Last login: Wed May 17 02:35:31 on ttys004
+  [<user>@<hostname>:~] $ which haskell-language-server-wrapper
+  /<User>s/matlock/.ghcup/bin/haskell-language-server-wrapper
+  [<user>@<hostname>:~] $ echo $SHELL
+  /usr/local/bin/bash
+#+end_src
+
+...but in ~eshell~...
+
+#+begin_src shell
+  Welcome to the Emacs shell
+
+  ~ $ echo $SHELL
+  /bin/zsh
+  ~ $ echo $PATH
+  /usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Library/TeX/texbin:/Applications/Emacs.app/Contents/MacOS/bin-x86_64-10_14:/Applications/Emacs.app/Contents/MacOS/libexec-x86_64-10_14
+#+end_src
+
+I bet I need to set my default =shell-file-name= /before/ calling
+=exec-path-from-shell-initialize=.
+
+Wait a minute, this is from ~C-h k shell-file-name <RET>~:
+
+#+begin_example
+  shell-file-name is a variable defined in ‘C source code’.
+
+  Its value is "/usr/local/bin/bash"
+  Original value was "/bin/bash"
+
+  File name to load inferior shells from.
+  Initialized from the SHELL environment variable, or to a system-dependent
+  default if SHELL is unset.  See Info node ‘(elisp)Security Considerations’.
+#+end_example
+
+See [[https://www.gnu.org/software/emacs/manual/html_node/emacs/General-Variables.html#index-SHELL_002c-environment-variable][General Variables § =SHELL= | GNU Emacs Manual]] and [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Environment.html][Environment Variables |
+GNU Emacs Manual]] for info on =initial-environment=, whose value is currently
+
+#+begin_example
+  initial-environment is a variable defined in ‘C source code’.
+
+  Its value is
+  ("LANG=en_US.UTF-8" ... "SHELL=/bin/zsh" "PWD=/"
+  "PATH=/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Library/TeX/texbin:/Applications/Emacs.app/Contents/MacOS/bin-x86_64-10_14:/Applications/Emacs.app/Contents/MacOS/libexec-x86_64-10_14"
+  ... "COMMAND_MODE=unix2003")
+
+  List of environment variables inherited from the parent process.
+  Each element should be a string of the form ENVVARNAME=VALUE.
+  The elements must normally be decoded (using ‘locale-coding-system’) for use.
+#+end_example
+
+[Note: the ellipses are because you don't need to see /everything/.]
+
+Let's see what happens if I set my shell to =bash= first.
+
+It worked! Well, at least my =PATH= is right, but my =SHELL= is still
+~/bin/zsh~. ~haskell-language-server-wrapper~ is working as it should too (after
+some fiddling with ~ghcup~ because that Haskell tooling is not the most
+user-friendly).
+
+** ~whitespace~
+[[https://www.emacswiki.org/emacs/WhiteSpace][whitespace]] package: highlight lines >80 characters wide, [[https://www.emacswiki.org/emacs/WhiteSpace#h5o-9][highlight ~TAB~
+characters]] (~untabify~ on saving should take care of this, but IIRC makefiles
+require tabs, and maybe I'll run into some situations where I want to be able
+to see them).
+
+#+begin_src emacs-lisp
+  (use-package whitespace
+    :straight t
+    :hook
+    ((prog-mode . whitespace-mode)
+     ;; (org-mode . whitespace-mode)
+     (tex-mode . whitespace-mode)
+     (latex-mode . whitespace-mode)
+     (LaTeX-mode . whitespace-mode))
+    :config
+    (setq whitespace-display-characters
+          ;; display <tab> as »
+          '((tab-mark ?\t [?\xBB ?\t] [?\\ ?\t])))
+    (setq whitespace-line-column
+          ;; 80 characters
+          (+ fill-column 1))
+    (setq whitespace-style '(face
+                             trailing
+                             lines-tail
+                             tabs
+                             tab-mark)))
+#+end_src
+
+=whitespace-mode= is a little weird in Org mode; as an example, shortened links
+can make text appear that it's over 80 characters per line when it isn't
+visually exceeding that limit.
+
+** ~emojify~
+[[https://github.com/iqbalansari/emacs-emojify][emojify]] enables emojis (e.g. 🙂), GitHub-style emojis (e.g. ~:smile:~), and ASCII
+emojis (e.g. ~:)~)
+
+#+begin_src emacs-lisp
+  (use-package emojify
+    :straight t
+    :hook (after-init . global-emojify-mode)
+    :config (setq emojify-display-style 'image))
+#+end_src
+
+Note that the =gitmoji= =:​memo:= symbol is the same as ~emojify~'s =:​pencil:=, and
+=gitmoji='s =:​pencil:= symbol is the same as ~emojify~'s =:​pencil2:=.
+
+#+begin_src emacs-lisp
+  (setq emojify-user-emojis
+        '((":memo:" .
+           (("name" . "Memo")
+            ("image" .
+             "~/.emacs.d/emojis/emojione-v2.2.6-22/1f4dd.png")
+            ("style" . "github")))
+          (":adhesive_bandage:" .
+           (("name" . "Adhesive Bandage")
+            ("image" .
+             "~/.emacs.d/emojis/user-added/adhesive_bandage.png")
+            ("style" . "github")))))
+  (when (featurep 'emojify)
+    (emojify-set-emoji-data))
+#+end_src
+
+** ~highlight-indent-guides~
+[[https://github.com/DarthFennec/highlight-indent-guides][highlight-indent-guides]] shows indentation level. I used to do this with a pipe
+character, but I think the ='fill= and ='column= options look better now.
+
+#+begin_src emacs-lisp
+  (use-package highlight-indent-guides
+    :straight t
+    :hook (prog-mode . highlight-indent-guides-mode)
+    :config (progn
+              ;; old way of doing it
+              ;; (setq highlight-indent-guides-method 'character)
+              ;; (setq highlight-indent-guides-character ?\|)
+              ;; an alternative
+              ;; (setq highlight-indent-guides-method 'column)
+              ;; this one looks pretty cool
+              (setq highlight-indent-guides-method 'fill)))
+#+end_src
+
+** Global ~font-lock-mode~
+This basically enables syntax highlighting by allowing for different faces for
+keywords, comments, etc.; see [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Font-Lock.html][Font Lock mode | GNU Emacs Manual]]
+
+#+begin_src emacs-lisp
+  (global-font-lock-mode 1)
+#+end_src
+
+
+* TODO Beautified Org mode
+[[https://zzamboni.org/post/beautifying-org-mode-in-emacs/][Beautifying Org Mode in Emacs | zzamboni.org]]
+
+** ~org-bullets~
+[[https://github.com/sabof/org-bullets][org-bullets | GitHub]]
+
+#+begin_src emacs-lisp
+  (use-package org-bullets
+    :straight t
+    :config
+    (setq org-bullets-bullet-alist
+          '(("White Square Containing Small Black Square" . "▣")
+            ("Fisheye" . "◉")
+            ("White Diamond Containing Small Black Diamond" . "◈")
+            ("Bullseye" . "◎")
+            ;; ("White Diamond" . "◇")
+            ;; ("White Circle" . "○")
+            ("Black Diamond" . "◆")
+            ("Heavy Circle" . "⭘")))
+    (setq org-bullets-bullet-list (mapcar #'cdr org-bullets-bullet-alist))
+    (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
+#+end_src
+
+** OPTIONAL COMMENT variable width text
+
+#+begin_src emacs-lisp
+  ;; (add-hook 'org-mode-hook #'variable-pitch-mode)
+  ;; (remove-hook 'org-mode-hook #'variable-pitch-mode)
+
+  ;; (custom-theme-set-faces
+  ;;  'user
+  ;;  ;; '(variable-pitch ((t (:family "ETBembo" :height 200 :weight regular))))
+  ;;  '(variable-pitch ((t (:family "Helvetica" :height 160 :weight regular))))
+  ;;  '(fixed-pitch ((t (:family "JetBrainsMono Nerd Mono" :height 140))))
+  ;;  '(org-table ((t (:inherit fixed-pitch)))))
+
+#+end_src
+
+I'm not sure that this is actually easier/less fatiguing to read. Helvetica is
+actually pretty nice, but I'm not getting the desired behavior of having fixed
+width font actually displaying a fixed width face.
+
+** TODO Prettier titles and headlines
+Use variables defined in the [[sec:fonts][Fonts]] section above rather than hard-coding in
+values like "Helvetica." Did you even know about [[https://public-sans.digital.gov][Public Sans]] before??
+
+#+begin_src emacs-lisp
+  (defun org-prettier-title-and-headlines ()
+    "Set attributes like font family and size for Org mode titles and section
+  headings."
+    (let* ((org-headline-levels (reverse (take 4 org-level-faces)))
+           (headline-family "Helvetica")
+           (scaling 1.05)
+           (height 1.1))
+
+      ;; set family and weight for all org-level-faces
+      (seq-do
+       #'(lambda (org-level)
+           (set-face-attribute org-level
+                               nil
+                               :family headline-family
+                               :weight 'semi-bold))
+       org-level-faces)
+
+      (set-face-attribute 'org-document-info
+                          nil
+                          :family headline-family
+                          :weight 'semi-bold
+                          :height height)
+
+      ;; set height for some org-level-faces
+      (seq-do
+       #'(lambda (org-level)
+           (setq height (* height scaling)) ;; note successive increases
+           (set-face-attribute org-level
+                               nil
+                               :height height))
+       org-headline-levels)
+
+      (set-face-attribute 'org-document-title
+                          nil
+                          :family headline-family
+                          :height (* height scaling))
+
+      (set-face-attribute 'org-level-1 nil :weight 'extra-bold)
+      (set-face-attribute 'org-level-2 nil :weight 'bold))
+    (font-lock-ensure))
+
+  (with-eval-after-load 'org
+    (org-prettier-title-and-headlines))
+#+end_src
+
+[[https://stackoverflow.com/a/2736153][eval-after-load vs. mode hook | stackoverflow]]; tldr: use =eval-after-load= for
+code that should be run only once (e.g. set global values); use mode hooks for
+code that should be run each time a buffer is open.
+
+*** TODO fix startup bug
+Weird: when I first open an Org file, the title/subtitle/author are the default
+font, but the headlines are ok ¯\_(ツ)_/¯
+
+Maybe you need to call =font-lock-ensure=. Here's the ~*Help*~ for
+=font-lock-fontify-buffer=:
+
+#+begin_example
+  font-lock-fontify-buffer is an interactive byte-compiled Lisp function in
+  ‘font-lock.el’.
+
+  (font-lock-fontify-buffer &optional INTERACTIVELY)
+
+  Fontify the current buffer the way the function ‘font-lock-mode’ would.
+
+    This function is for interactive use only;
+    in Lisp code use `font-lock-ensure' or `font-lock-flush' instead.
+    Probably introduced at or before Emacs version 19.29.
+#+end_example
+
+Interactively calling =font-lock-fontify-buffer= works, but it's slow (at least
+on a large file like this one), so maybe there's a better way?
+
+** TODO fix ~verbatim~ behavior
+~verbatim~ font is rendered in the headline font---but only on my MacBook for
+some reason. Its =:inherit= value is =shadow=, whereas on my Mac Mini, the
+=:inherit= value is =fixed-width-shadow=.
