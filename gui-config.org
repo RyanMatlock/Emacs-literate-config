@@ -323,150 +323,6 @@ switching to ~*Buffer List*~ will be empty.
 
 This is a good place to remind myself that =delete-frame= is bound to ~C-x 5 0~.
 
-** TODO read ~.bashrc~ & use bash as default ANSI term
-Bear in mind that on your MacBook Pro, ~bash~ (the Homebrew version you use) is
-located at ~/usr/local/bin/bash~, but your M1 Mac Mini, it's located at
-~/opt/homebrew/bin/bash~, so maybe that's an issue? Probably helpful to know
-which sort of device you're on.
-
-[[https://osxdaily.com/2011/07/15/get-cpu-info-via-command-line-in-mac-os-x/][Get CPU Info via Command Line in Mac OS X | OSXDaily]]
-
-#+begin_src bash :eval no
-  $ sysctl -n machdep.cpu.brand_string
-  Intel(R) Core(TM) i7-9750H CPU @ 2.60GHz
-#+end_src
-
-[[https://emacs.stackexchange.com/questions/14858/how-to-check-in-elisp-if-a-string-is-a-substring-of-another-string][How to check in elisp if a string is a substring of another string? |
-emacs.stackexchange]]
-
-#+begin_src emacs-lisp :eval no
-  (string-match-p (regexp-quote "Intel")
-                  "Intel(R) Core(TM) i7-9750H CPU @ 2.60GHz")
-#+end_src
-
-Alternately, you may simply want to check for the existence of one or the other
-binaries, and then settle on ~/bin/bash~ if neither exists ¯\_(ツ)_/¯
-
-[[https://stackoverflow.com/a/37523213][How to define a default shell for emacs | stackoverflow]]
-
-Looking through [[http://blog.binchen.org/posts/what-s-the-best-spell-check-set-up-in-emacs/][What's the best spell check setup in emacs]], I came across the
-function =executable-find=, so that might be better than =file-exists-p=; on
-the other hand, maybe explicitly calling out the path is what I want. On the
-third hand (or back to the first hand), basically any machine I'm on is going
-to have ~bash~, so maybe it's better to go with whatever the =PATH= variable
-thinks I ought to use.
-
-#+begin_example
-  ELISP> (executable-find "bash")
-  "/usr/local/bin/bash"
-  ELISP> (executable-find "fake-foobar")
-  nil
-#+end_example
-
-It works how you'd want it to for the latter case.
-
-#+begin_src emacs-lisp
-  (defvar preferred-shells
-    '("bash"
-      "sh")
-    "List of shells from most to least preferred.")
-
-  (let* ((found-shells (mapcar #'executable-find preferred-shells))
-         (preferred-shell (car-safe found-shells)))
-    (cond (preferred-shell
-           (progn
-             (setq-default shell-file-name preferred-shell)
-             (message (format "Using shell %s" preferred-shell))))
-          (t (error
-              (format "No valid shell found among %s." preferred-shells)))))
-#+end_src
-
-When I finally decide to join the modern era and use zsh or fish, it will be
-easy to =cons= onto =shell-paths-alist=.
-
-** ~exec-path-from-shell~ to fix ~exec-path~​/​~PATH~ behavior in MacOS GUI
-[[https://github.com/purcell/exec-path-from-shell][exec-path-from-shell]] fixes behavior of how environment variables are loaded in
-MacOS GUI Emacs.
-
-+[Note that you need to use [[https://www.gnu.org/software/emacs/manual/html_node/eintr/progn.html][progn]] in order to evaluate the series of
-s-expressions in =:config=.]+  False!
-
-#+begin_src emacs-lisp
-  (use-package exec-path-from-shell
-    :straight t
-    :config
-    (when (or (daemonp)
-              (memq window-system '(mac ns x)))
-      (exec-path-from-shell-initialize))
-    (exec-path-from-shell-copy-env "PYTHONPATH"))
-#+end_src
-
-I'm having an issue with ~lsp-haskell~ not finding
-~haskell-language-server-wrapper~, which is on my =PATH= in ~bash~ at
-~~/.ghcup/bin/haskell-language-server-wrapper~.
-
-From ~iTerm2~:
-
-#+begin_src shell
-  Last login: Wed May 17 02:35:31 on ttys004
-  [<user>@<hostname>:~] $ which haskell-language-server-wrapper
-  /<User>s/matlock/.ghcup/bin/haskell-language-server-wrapper
-  [<user>@<hostname>:~] $ echo $SHELL
-  /usr/local/bin/bash
-#+end_src
-
-...but in ~eshell~...
-
-#+begin_src shell
-  Welcome to the Emacs shell
-
-  ~ $ echo $SHELL
-  /bin/zsh
-  ~ $ echo $PATH
-  /usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Library/TeX/texbin:/Applications/Emacs.app/Contents/MacOS/bin-x86_64-10_14:/Applications/Emacs.app/Contents/MacOS/libexec-x86_64-10_14
-#+end_src
-
-I bet I need to set my default =shell-file-name= /before/ calling
-=exec-path-from-shell-initialize=.
-
-Wait a minute, this is from ~C-h k shell-file-name <RET>~:
-
-#+begin_example
-  shell-file-name is a variable defined in ‘C source code’.
-
-  Its value is "/usr/local/bin/bash"
-  Original value was "/bin/bash"
-
-  File name to load inferior shells from.
-  Initialized from the SHELL environment variable, or to a system-dependent
-  default if SHELL is unset.  See Info node ‘(elisp)Security Considerations’.
-#+end_example
-
-See [[https://www.gnu.org/software/emacs/manual/html_node/emacs/General-Variables.html#index-SHELL_002c-environment-variable][General Variables § =SHELL= | GNU Emacs Manual]] and [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Environment.html][Environment Variables |
-GNU Emacs Manual]] for info on =initial-environment=, whose value is currently
-
-#+begin_example
-  initial-environment is a variable defined in ‘C source code’.
-
-  Its value is
-  ("LANG=en_US.UTF-8" ... "SHELL=/bin/zsh" "PWD=/"
-  "PATH=/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Library/TeX/texbin:/Applications/Emacs.app/Contents/MacOS/bin-x86_64-10_14:/Applications/Emacs.app/Contents/MacOS/libexec-x86_64-10_14"
-  ... "COMMAND_MODE=unix2003")
-
-  List of environment variables inherited from the parent process.
-  Each element should be a string of the form ENVVARNAME=VALUE.
-  The elements must normally be decoded (using ‘locale-coding-system’) for use.
-#+end_example
-
-[Note: the ellipses are because you don't need to see /everything/.]
-
-Let's see what happens if I set my shell to =bash= first.
-
-It worked! Well, at least my =PATH= is right, but my =SHELL= is still
-~/bin/zsh~. ~haskell-language-server-wrapper~ is working as it should too (after
-some fiddling with ~ghcup~ because that Haskell tooling is not the most
-user-friendly).
-
 ** ~whitespace~
 [[https://www.emacswiki.org/emacs/WhiteSpace][whitespace]] package: highlight lines >80 characters wide, [[https://www.emacswiki.org/emacs/WhiteSpace#h5o-9][highlight ~TAB~
 characters]] (~untabify~ on saving should take care of this, but IIRC makefiles
@@ -557,10 +413,96 @@ keywords, comments, etc.; see [[https://www.gnu.org/software/emacs/manual/html_n
 #+end_src
 
 
-* TODO Beautified Org mode
+* Mac stuff
+** ~exec-path-from-shell~ to fix ~exec-path~​/​~PATH~ behavior in MacOS GUI
+[[https://github.com/purcell/exec-path-from-shell][exec-path-from-shell]] fixes behavior of how environment variables are loaded in
+MacOS GUI Emacs.
+
++[Note that you need to use [[https://www.gnu.org/software/emacs/manual/html_node/eintr/progn.html][progn]] in order to evaluate the series of
+s-expressions in =:config=.]+  False!
+
+#+begin_src emacs-lisp
+  (use-package exec-path-from-shell
+    :straight t
+    :config
+    (when (or (daemonp)
+              (memq window-system '(mac ns x)))
+      (exec-path-from-shell-initialize))
+    (exec-path-from-shell-copy-env "PYTHONPATH"))
+#+end_src
+
+I'm having an issue with ~lsp-haskell~ not finding
+~haskell-language-server-wrapper~, which is on my =PATH= in ~bash~ at
+~~/.ghcup/bin/haskell-language-server-wrapper~.
+
+From ~iTerm2~:
+
+#+begin_src shell
+  Last login: Wed May 17 02:35:31 on ttys004
+  [<user>@<hostname>:~] $ which haskell-language-server-wrapper
+  /<User>s/matlock/.ghcup/bin/haskell-language-server-wrapper
+  [<user>@<hostname>:~] $ echo $SHELL
+  /usr/local/bin/bash
+#+end_src
+
+...but in ~eshell~...
+
+#+begin_src shell
+  Welcome to the Emacs shell
+
+  ~ $ echo $SHELL
+  /bin/zsh
+  ~ $ echo $PATH
+  /usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Library/TeX/texbin:/Applications/Emacs.app/Contents/MacOS/bin-x86_64-10_14:/Applications/Emacs.app/Contents/MacOS/libexec-x86_64-10_14
+#+end_src
+
+I bet I need to set my default =shell-file-name= /before/ calling
+=exec-path-from-shell-initialize=.
+
+Wait a minute, this is from ~C-h k shell-file-name <RET>~:
+
+#+begin_example
+  shell-file-name is a variable defined in ‘C source code’.
+
+  Its value is "/usr/local/bin/bash"
+  Original value was "/bin/bash"
+
+  File name to load inferior shells from.
+  Initialized from the SHELL environment variable, or to a system-dependent
+  default if SHELL is unset.  See Info node ‘(elisp)Security Considerations’.
+#+end_example
+
+See [[https://www.gnu.org/software/emacs/manual/html_node/emacs/General-Variables.html#index-SHELL_002c-environment-variable][General Variables § =SHELL= | GNU Emacs Manual]] and [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Environment.html][Environment Variables |
+GNU Emacs Manual]] for info on =initial-environment=, whose value is currently
+
+#+begin_example
+  initial-environment is a variable defined in ‘C source code’.
+
+  Its value is
+  ("LANG=en_US.UTF-8" ... "SHELL=/bin/zsh" "PWD=/"
+  "PATH=/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Library/TeX/texbin:/Applications/Emacs.app/Contents/MacOS/bin-x86_64-10_14:/Applications/Emacs.app/Contents/MacOS/libexec-x86_64-10_14"
+  ... "COMMAND_MODE=unix2003")
+
+  List of environment variables inherited from the parent process.
+  Each element should be a string of the form ENVVARNAME=VALUE.
+  The elements must normally be decoded (using ‘locale-coding-system’) for use.
+#+end_example
+
+[Note: the ellipses are because you don't need to see /everything/.]
+
+Let's see what happens if I set my shell to =bash= first.
+
+It worked! Well, at least my =PATH= is right, but my =SHELL= is still
+~/bin/zsh~. ~haskell-language-server-wrapper~ is working as it should too (after
+some fiddling with ~ghcup~ because that Haskell tooling is not the most
+user-friendly).
+
+
+* Mode-specific GUI configuration
+** TODO Beautified Org mode
 [[https://zzamboni.org/post/beautifying-org-mode-in-emacs/][Beautifying Org Mode in Emacs | zzamboni.org]]
 
-** ~org-bullets~
+*** ~org-bullets~
 [[https://github.com/sabof/org-bullets][org-bullets | GitHub]]
 
 #+begin_src emacs-lisp
@@ -580,7 +522,7 @@ keywords, comments, etc.; see [[https://www.gnu.org/software/emacs/manual/html_n
     (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
 #+end_src
 
-** OPTIONAL COMMENT variable width text
+*** OPTIONAL COMMENT variable width text
 
 #+begin_src emacs-lisp
   ;; (add-hook 'org-mode-hook #'variable-pitch-mode)
@@ -599,7 +541,7 @@ I'm not sure that this is actually easier/less fatiguing to read. Helvetica is
 actually pretty nice, but I'm not getting the desired behavior of having fixed
 width font actually displaying a fixed width face.
 
-** TODO Prettier titles and headlines
+*** TODO Prettier titles and headlines
 Use variables defined in the [[sec:fonts][Fonts]] section above rather than hard-coding in
 values like "Helvetica." Did you even know about [[https://public-sans.digital.gov][Public Sans]] before??
 
@@ -653,7 +595,7 @@ values like "Helvetica." Did you even know about [[https://public-sans.digital.g
 code that should be run only once (e.g. set global values); use mode hooks for
 code that should be run each time a buffer is open.
 
-*** TODO fix startup bug
+**** TODO fix startup bug
 Weird: when I first open an Org file, the title/subtitle/author are the default
 font, but the headlines are ok ¯\_(ツ)_/¯
 
@@ -676,7 +618,9 @@ Maybe you need to call =font-lock-ensure=. Here's the ~*Help*~ for
 Interactively calling =font-lock-fontify-buffer= works, but it's slow (at least
 on a large file like this one), so maybe there's a better way?
 
-** TODO fix ~verbatim~ behavior
+*** TODO fix ~verbatim~ behavior
 ~verbatim~ font is rendered in the headline font---but only on my MacBook for
 some reason. Its =:inherit= value is =shadow=, whereas on my Mac Mini, the
 =:inherit= value is =fixed-width-shadow=.
+
+** TODO ~mood-line~

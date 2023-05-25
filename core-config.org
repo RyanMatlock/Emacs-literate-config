@@ -402,6 +402,67 @@ See [[https://www.gnu.org/software/emacs/manual/html_node/efaq/Displaying-the-cu
   (setq column-number-mode t)
 #+end_src
 
+** TODO read ~.bashrc~ & use bash as default ANSI term
+Bear in mind that on your MacBook Pro, ~bash~ (the Homebrew version you use) is
+located at ~/usr/local/bin/bash~, but your M1 Mac Mini, it's located at
+~/opt/homebrew/bin/bash~, so maybe that's an issue? Probably helpful to know
+which sort of device you're on.
+
+[[https://osxdaily.com/2011/07/15/get-cpu-info-via-command-line-in-mac-os-x/][Get CPU Info via Command Line in Mac OS X | OSXDaily]]
+
+#+begin_src bash :eval no
+  $ sysctl -n machdep.cpu.brand_string
+  Intel(R) Core(TM) i7-9750H CPU @ 2.60GHz
+#+end_src
+
+[[https://emacs.stackexchange.com/questions/14858/how-to-check-in-elisp-if-a-string-is-a-substring-of-another-string][How to check in elisp if a string is a substring of another string? |
+emacs.stackexchange]]
+
+#+begin_src emacs-lisp :eval no
+  (string-match-p (regexp-quote "Intel")
+                  "Intel(R) Core(TM) i7-9750H CPU @ 2.60GHz")
+#+end_src
+
+Alternately, you may simply want to check for the existence of one or the other
+binaries, and then settle on ~/bin/bash~ if neither exists ¯\_(ツ)_/¯
+
+[[https://stackoverflow.com/a/37523213][How to define a default shell for emacs | stackoverflow]]
+
+Looking through [[http://blog.binchen.org/posts/what-s-the-best-spell-check-set-up-in-emacs/][What's the best spell check setup in emacs]], I came across the
+function =executable-find=, so that might be better than =file-exists-p=; on
+the other hand, maybe explicitly calling out the path is what I want. On the
+third hand (or back to the first hand), basically any machine I'm on is going
+to have ~bash~, so maybe it's better to go with whatever the =PATH= variable
+thinks I ought to use.
+
+#+begin_example
+  ELISP> (executable-find "bash")
+  "/usr/local/bin/bash"
+  ELISP> (executable-find "fake-foobar")
+  nil
+#+end_example
+
+It works how you'd want it to for the latter case.
+
+#+begin_src emacs-lisp
+  (defvar preferred-shells
+    '("bash"
+      "sh")
+    "List of shells from most to least preferred.")
+
+  (let* ((found-shells (mapcar #'executable-find preferred-shells))
+         (preferred-shell (car-safe found-shells)))
+    (cond (preferred-shell
+           (progn
+             (setq-default shell-file-name preferred-shell)
+             (message (format "Using shell %s" preferred-shell))))
+          (t (error
+              (format "No valid shell found among %s." preferred-shells)))))
+#+end_src
+
+When I finally decide to join the modern era and use zsh or fish, it will be
+easy to =cons= onto =shell-paths-alist=.
+
 ** Preferred =global-map= keybindings
 *** Unbind keys
 - ~C-z~ previously bound to =suspend-frame=; still bound to ~C-x C-z~.
