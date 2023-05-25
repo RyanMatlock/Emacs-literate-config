@@ -2,6 +2,7 @@
 README.el
 core-config.el
 core-langs.el
+gui-config.el
 extras.el
 
 # derived from Org files
