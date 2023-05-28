@@ -674,23 +674,7 @@ some reason. Its ~:inherit~ value is ~shadow~, whereas on my Mac Mini, the
 
   (set-font-family 'org-verbatim gui-verbatim-family)
   (set-font-family 'org-code gui-fixed-width-family)
-#+end_src
 
-#+begin_quote
-Aside: I think I've been mixing up ==verbatim== and =~code~= this whole time
-:facepalm:; see [[https://orgmode.org/manual/Emphasis-and-Monospace.html][Emphasis and Monospace | Org Mode Manual]].
-#+end_quote
 
-Fix it with
-
-#+begin_example
-M-x query-replace-regexp ~\([^~]+\)~ → =\1=
-#+end_example
-
-and
-
-#+begin_example
-M-x query-replace-regexp =\([^=]+\)= → ~\1~ 
-#+end_example
 
 ** TODO =mood-line=

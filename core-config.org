@@ -12,6 +12,33 @@ the way I want it at some point---and keep it that way!
 ** ~*Messages*~
 
 ** Other
+*** TODO fix =verbatim= and ~code~ [1/4]
+- [ ] =core.config.org=
+- [ ] =core-langs.org=
+- [X] =gui-config.org=
+- [ ] =extras.org=
+
+I've been mixing up ==verbatim== and =~code~= this whole time (or at least for
+quite awhile) :facepalm:; see
+[[https://orgmode.org/manual/Emphasis-and-Monospace.html][Emphasis and Monospace | Org Mode Manual]].
+
+
+Fix it with
+
+#+begin_example
+M-x query-replace-regexp ~\([^~]+\)~ → =\1=
+#+end_example
+
+and
+
+#+begin_example
+M-x query-replace-regexp =\([^=]+\)= → ~\1~ 
+#+end_example
+
+*** TODO Org roam + agenda
+See [[https://d12frosted.io/posts/2021-01-16-task-management-with-roam-vol5.html][Task management with org-roam Vol. 5: Dynamic and fast agenda | Boris
+Buliga]] for only adding notes with TODOs to Org agenda
+
 *** OPTIONAL get =smartparens= to behave like =paredit=
 Still having trouble with =turn-on-smartparens-strict-mode= for Lisp modes, and
 I haven't figured out where to stuff =sp-use-paredit-bindings= (although maybe
