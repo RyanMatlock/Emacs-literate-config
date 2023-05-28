@@ -2,7 +2,7 @@
 #+subtitle: GUI configuration
 #+author: Ryan Matlock
 
-The GUI configuration was getting too long in ~core-config.org~, and it's not
+The GUI configuration was getting too long in =core-config.org=, and it's not
 really a /core/ set of features anyway, so it's getting moved here.
 
 * TODO GUI
@@ -41,7 +41,7 @@ haven't been taking full advantage of =default-frame-alist=.
 ** Solarized Dark theme
 [[https://github.com/bbatsov/solarized-emacs][solarized-emacs | GitHub]]
 
-Note: you need to =setq= various properties /before/ you load the theme,
+Note: you need to ~setq~ various properties /before/ you load the theme,
 otherwise you'll get unexpected behaviors.
 
 #+begin_src emacs-lisp
@@ -57,7 +57,7 @@ otherwise you'll get unexpected behaviors.
 #+end_src
 
 ** Set columns to wrap at 80 characters
-See [[https://www.gnu.org/software/emacs/manual/html_node/efaq/Turning-on-auto_002dfill-by-default.html][How do I turn on ~auto-fill-mode~ by default? | GNU Emacs Manual]]
+See [[https://www.gnu.org/software/emacs/manual/html_node/efaq/Turning-on-auto_002dfill-by-default.html][How do I turn on =auto-fill-mode= by default? | GNU Emacs Manual]]
 
 #+begin_src emacs-lisp
   ;; (add-hook 'text-mode-hook 'turn-on-auto-fill)
@@ -147,8 +147,8 @@ See [[https://www.gnu.org/software/emacs/manual/html_node/efaq/Turning-on-auto_0
 ***  Bind keys to frame resizing functions
 This works, but it's probably not strictly the right way to do it.
 
-Also note that on MacOS, ~M-x toggle-frame-maximized~ +(~M-<f10>~)+ does what it says
-on the tin, +although+ so I +also+ bound it to ~C-x f f~ because that's more
+Also note that on MacOS, =M-x toggle-frame-maximized= +(=M-<f10>=)+ does what it says
+on the tin, +although+ so I +also+ bound it to =C-x f f= because that's more
 memorable.
 
 #+begin_src emacs-lisp
@@ -205,7 +205,7 @@ Set unicode font to Unifont (for emojis?); see [[https://github.com/rolandwalker
 this is very old
 
 See [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Face-Attributes.html][Face Attributes | GNU Emacs Manual]] and [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Attribute-Functions.html#index-set_002dface_002dattribute][Face Attribute Functions §
-=set-face-attribute= | GNU Emacs Manual]]
+~set-face-attribute~ | GNU Emacs Manual]]
 
 #+begin_src emacs-lisp
   (defun font-available-p (font-name)
@@ -287,7 +287,7 @@ See [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Face-Attributes.
   ;; (add-to-list 'default-frame-alist `(font . ,gui-config-font))
 #+end_src
 
-** ~s-N~ opens ~*scratch*~ buffer
+** =s-N= opens =*scratch*= buffer
 I think I may start using frames to hold related sets of buffers to make
 context switching easier (i.e. I can switch between frames instead of
 constantly loading related sets of buffers into my usual two window setup).
@@ -313,12 +313,12 @@ constantly loading related sets of buffers into my usual two window setup).
 #+end_src
 
 There's a slight bug with this in that if =buffer-menu= hasn't been called yet,
-switching to ~*Buffer List*~ will be empty.
+switching to =*Buffer List*= will be empty.
 
-This is a good place to remind myself that =delete-frame= is bound to ~C-x 5 0~.
+This is a good place to remind myself that ~delete-frame~ is bound to =C-x 5 0=.
 
-** ~whitespace~
-[[https://www.emacswiki.org/emacs/WhiteSpace][whitespace]] package: highlight lines >80 characters wide, [[https://www.emacswiki.org/emacs/WhiteSpace#h5o-9][highlight ~TAB~
+** =whitespace=
+[[https://www.emacswiki.org/emacs/WhiteSpace][whitespace]] package: highlight lines >80 characters wide, [[https://www.emacswiki.org/emacs/WhiteSpace#h5o-9][highlight =TAB=
 characters]] (~untabify~ on saving should take care of this, but IIRC makefiles
 require tabs, and maybe I'll run into some situations where I want to be able
 to see them).
@@ -350,9 +350,9 @@ to see them).
 can make text appear that it's over 80 characters per line when it isn't
 visually exceeding that limit.
 
-** ~emojify~
-[[https://github.com/iqbalansari/emacs-emojify][emojify]] enables emojis (e.g. 🙂), GitHub-style emojis (e.g. ~:smile:~), and ASCII
-emojis (e.g. ~:)~)
+** =emojify=
+[[https://github.com/iqbalansari/emacs-emojify][emojify]] enables emojis (e.g. 🙂), GitHub-style emojis (e.g. =:smile:=), and ASCII
+emojis (e.g. =:)=)
 
 #+begin_src emacs-lisp
   (use-package emojify
@@ -361,8 +361,8 @@ emojis (e.g. ~:)~)
     :config (setq emojify-display-style 'image))
 #+end_src
 
-Note that the =gitmoji= =:​memo:= symbol is the same as ~emojify~'s =:​pencil:=, and
-=gitmoji='s =:​pencil:= symbol is the same as ~emojify~'s =:​pencil2:=.
+Note that the =gitmoji= =:​memo:= symbol is the same as =emojify='s =:​pencil:=, and
+=gitmoji='s =:​pencil:= symbol is the same as =emojify='s =:​pencil2:=.
 
 #+begin_src emacs-lisp
   (setq emojify-user-emojis
@@ -380,9 +380,9 @@ Note that the =gitmoji= =:​memo:= symbol is the same as ~emojify~'s =:​penci
     (emojify-set-emoji-data))
 #+end_src
 
-** ~highlight-indent-guides~
+** =highlight-indent-guides=
 [[https://github.com/DarthFennec/highlight-indent-guides][highlight-indent-guides]] shows indentation level. I used to do this with a pipe
-character, but I think the ='fill= and ='column= options look better now.
+character, but I think the ~'fill~ and ~'column~ options look better now.
 
 #+begin_src emacs-lisp
   (use-package highlight-indent-guides
@@ -398,7 +398,7 @@ character, but I think the ='fill= and ='column= options look better now.
               (setq highlight-indent-guides-method 'fill)))
 #+end_src
 
-** Global ~font-lock-mode~
+** Global =font-lock-mode=
 This basically enables syntax highlighting by allowing for different faces for
 keywords, comments, etc.; see [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Font-Lock.html][Font Lock mode | GNU Emacs Manual]]
 
@@ -408,7 +408,7 @@ keywords, comments, etc.; see [[https://www.gnu.org/software/emacs/manual/html_n
 
 
 * Mac stuff
-** ~exec-path-from-shell~ to fix ~exec-path~​/​~PATH~ behavior in MacOS GUI
+** =exec-path-from-shell= to fix =exec-path=​/​~PATH~ behavior in MacOS
 [[https://github.com/purcell/exec-path-from-shell][exec-path-from-shell]] fixes behavior of how environment variables are loaded in
 MacOS GUI Emacs.
 
@@ -425,11 +425,11 @@ s-expressions in =:config=.]+  False!
     (exec-path-from-shell-copy-env "PYTHONPATH"))
 #+end_src
 
-I'm having an issue with ~lsp-haskell~ not finding
-~haskell-language-server-wrapper~, which is on my =PATH= in ~bash~ at
-~~/.ghcup/bin/haskell-language-server-wrapper~.
+I'm having an issue with =lsp-haskell= not finding
+=haskell-language-server-wrapper=, which is on my ~PATH~ in =bash= at
+=~/.ghcup/bin/haskell-language-server-wrapper=.
 
-From ~iTerm2~:
+From =iTerm2=:
 
 #+begin_src shell
   Last login: Wed May 17 02:35:31 on ttys004
@@ -439,7 +439,7 @@ From ~iTerm2~:
   /usr/local/bin/bash
 #+end_src
 
-...but in ~eshell~...
+...but in =eshell=...
 
 #+begin_src shell
   Welcome to the Emacs shell
@@ -450,10 +450,10 @@ From ~iTerm2~:
   /usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Library/TeX/texbin:/Applications/Emacs.app/Contents/MacOS/bin-x86_64-10_14:/Applications/Emacs.app/Contents/MacOS/libexec-x86_64-10_14
 #+end_src
 
-I bet I need to set my default =shell-file-name= /before/ calling
+I bet I need to set my default ~shell-file-name~ /before/ calling
 =exec-path-from-shell-initialize=.
 
-Wait a minute, this is from ~C-h k shell-file-name <RET>~:
+Wait a minute, this is from =C-h k shell-file-name <RET>=:
 
 #+begin_example
   shell-file-name is a variable defined in ‘C source code’.
@@ -466,7 +466,7 @@ Wait a minute, this is from ~C-h k shell-file-name <RET>~:
   default if SHELL is unset.  See Info node ‘(elisp)Security Considerations’.
 #+end_example
 
-See [[https://www.gnu.org/software/emacs/manual/html_node/emacs/General-Variables.html#index-SHELL_002c-environment-variable][General Variables § =SHELL= | GNU Emacs Manual]] and [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Environment.html][Environment Variables |
+See [[https://www.gnu.org/software/emacs/manual/html_node/emacs/General-Variables.html#index-SHELL_002c-environment-variable][General Variables § ~SHELL~ | GNU Emacs Manual]] and [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Environment.html][Environment Variables |
 GNU Emacs Manual]] for info on =initial-environment=, whose value is currently
 
 #+begin_example
@@ -486,9 +486,9 @@ GNU Emacs Manual]] for info on =initial-environment=, whose value is currently
 
 Let's see what happens if I set my shell to =bash= first.
 
-It worked! Well, at least my =PATH= is right, but my =SHELL= is still
-~/bin/zsh~. ~haskell-language-server-wrapper~ is working as it should too (after
-some fiddling with ~ghcup~ because that Haskell tooling is not the most
+It worked! Well, at least my ~PATH~ is right, but my ~SHELL~ is still
+=/bin/zsh=. =haskell-language-server-wrapper= is working as it should too (after
+some fiddling with =ghcup= because that Haskell tooling is not the most
 user-friendly).
 
 
@@ -496,7 +496,7 @@ user-friendly).
 ** TODO Beautified Org mode
 [[https://zzamboni.org/post/beautifying-org-mode-in-emacs/][Beautifying Org Mode in Emacs | zzamboni.org]]
 
-*** ~org-bullets~
+*** =org-bullets=
 [[https://github.com/sabof/org-bullets][org-bullets | GitHub]]
 
 #+begin_src emacs-lisp
@@ -585,7 +585,7 @@ values like "Helvetica." Did you even know about [[https://public-sans.digital.g
     (org-prettier-title-and-headlines))
 #+end_src
 
-[[https://stackoverflow.com/a/2736153][eval-after-load vs. mode hook | stackoverflow]]; tldr: use =eval-after-load= for
+[[https://stackoverflow.com/a/2736153][eval-after-load vs. mode hook | stackoverflow]]; tldr: use ~eval-after-load~ for
 code that should be run only once (e.g. set global values); use mode hooks for
 code that should be run each time a buffer is open.
 
@@ -593,7 +593,7 @@ code that should be run each time a buffer is open.
 Weird: when I first open an Org file, the title/subtitle/author are the default
 font, but the headlines are ok ¯\_(ツ)_/¯
 
-Maybe you need to call =font-lock-ensure=. Here's the ~*Help*~ for
+Maybe you need to call =font-lock-ensure=. Here's the =*Help*= for
 =font-lock-fontify-buffer=:
 
 #+begin_example
@@ -609,13 +609,13 @@ Maybe you need to call =font-lock-ensure=. Here's the ~*Help*~ for
     Probably introduced at or before Emacs version 19.29.
 #+end_example
 
-Interactively calling =font-lock-fontify-buffer= works, but it's slow (at least
+Interactively calling ~font-lock-fontify-buffer~ works, but it's slow (at least
 on a large file like this one), so maybe there's a better way?
 
-*** TODO fix ~verbatim~ behavior
+*** TODO fix =verbatim= behavior
 ~verbatim~ font is rendered in the headline font---but only on my MacBook for
-some reason. Its =:inherit= value is =shadow=, whereas on my Mac Mini, the
-=:inherit= value is =fixed-width-shadow=.
+some reason. Its ~:inherit~ value is ~shadow~, whereas on my Mac Mini, the
+~:inherit~ value is =fixed-width-shadow=.
 
 *** TODO other Org font behavior
 
@@ -641,4 +641,21 @@ some reason. Its =:inherit= value is =shadow=, whereas on my Mac Mini, the
   (set-font-family 'org-code gui-fixed-width-family)
 #+end_src
 
-** TODO ~mood-line~
+#+begin_quote
+Aside: I think I've been mixing up ==verbatim== and =~code~= this whole time
+:facepalm:; see [[https://orgmode.org/manual/Emphasis-and-Monospace.html][Emphasis and Monospace | Org Mode Manual]].
+#+end_quote
+
+Fix it with
+
+#+begin_example
+M-x query-replace-regexp ~\([^~]+\)~ → =\1=
+#+end_example
+
+and
+
+#+begin_example
+M-x query-replace-regexp =\([^=]+\)= → ~\1~ 
+#+end_example
+
+** TODO =mood-line=
