@@ -12,7 +12,8 @@ the way I want it at some point---and keep it that way!
 ** ~*Messages*~
 
 ** Other
-*** TODO fix =verbatim= and ~code~ [1/4]
+*** TODO fix formatting issues
+**** TODO fix =verbatim= and ~code~ [1/4]
 - [ ] =core.config.org=
 - [ ] =core-langs.org=
 - [X] =gui-config.org=
@@ -34,6 +35,9 @@ and
 #+begin_example
 M-x query-replace-regexp =\([^=]+\)= → ~\1~ 
 #+end_example
+
+**** TODO fix docstrings to follow conventions
+See [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Documentation-Tips.html][Documentation Tips | GNU Emacs Lisp Manual]] and [[https://www.emacswiki.org/emacs/DocString][Doc String | Emacs Wiki]].
 
 *** TODO Org roam + agenda
 See [[https://d12frosted.io/posts/2021-01-16-task-management-with-roam-vol5.html][Task management with org-roam Vol. 5: Dynamic and fast agenda | Boris
@@ -609,6 +613,15 @@ Documented in old =.emacs= as "~count-words-region~ \to ~count-words~" :shrug:
 #+end_src
 
 ** TODO Preferred multi-mode keybindings
+*** TODO COMMENT ~<TAB>~ completion in ~prog-mode~ (=completion-at-point=?)
+Bind =completion-at-point= to ~M-<tab>~ in ~prog-mode~.
+
+#+begin_src emacs-lisp
+  (define-key prog-mode-map (kbd "C-<tab>") completion-at-point)
+#+end_src
+
+=completion-at-point= is void??
+
 *** TODO Fix auto-identation for multiple modes
 This is probably no longer the best way to achieve this.
 
@@ -1375,27 +1388,6 @@ blocks with ~C-c C-,~+. Unrelated---there's an entry =("yaml" . "src yaml")= in
 =org-structure-template-alist=, but I hadn't noticed it.
 
 ** Keybindings
-*** Still relevant?
-By default
-
-| key   | binding            | desired behavior    |
-|-------+--------------------+---------------------|
-| ~TAB~   | =org-cycle=          | =completion-at-point= |
-| ~C-c ;~ | =org-toggle-comment= | +=iedit-...=+ nothing |
-
-| variable              | value |
-|-----------------------+-------|
-| =org-cycle-emulate-tab= | =t=     |
-
-But I want to bind ~TAB~ to =org-cycle= for headlines and =completion-at-point= for
-everything else.
-
-I'm constantly accidentally typing ~C-c ;~ when I mean to type ~C-c '~, so I want
-=org-toggle-comment= to feel more intentional. I never use
-=org-table-create-or-convert-from-region=, and even if I needed to use it from
-time to time, I can always call it with ~M-x ...~ rather than keep it bound to a
-key.
-
 *** =iedit-mode= only available in ~src~ blocks
 
 #+begin_src emacs-lisp
@@ -1435,7 +1427,7 @@ in =define-key= or =local-set-key=, but now everything works as it should.
 #+begin_src emacs-lisp
   (defun other-window-back ()
     "Go to previous window -- easier than explicitly passing an argument to
-  'other-window'."
+  `other-window'."
     (interactive)
     (other-window -1))
 
