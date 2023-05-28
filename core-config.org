@@ -169,6 +169,21 @@ Lisp---very cool!
 As referenced at the bottom of the show notes, [[https://github.com/emacscollective/no-littering][no-littering]] looks like a good
 option to keep Emacs cleaner.
 
+** ~concat-path~
+Don't concatenate paths using ~concat~---instead use ~concat-path~; stolen from
+[[https://www.reddit.com/r/emacs/comments/umb24/comment/c4wolk8/?utm_source=share&utm_medium=web2x&context=3][​~expand-file-name~ is good for path concat too | /r/emacs]].
+
+#+begin_src emacs-lisp
+  (defun concat-path (&rest path-components)
+    "Use `expand-file-name' to concatenate PATH-COMPONENTS into a properly
+  formatted path string, e.g. `(concat-path \"/path\" \"to\" file.ext\")' returns
+  \"/path/to/file.ext\".
+
+  Stolen from user skeeto on Reddit; see
+  https://www.reddit.com/r/emacs/comments/umb24/comment/c4wolk8/"
+    (reduce #'(lambda (a b) (expand-file-name b a)) path-components))
+#+end_src
+
 ** TODO General look & feel
 *** TODO Tab/space handling -- improve this
 Tip: ~M-x~ [[http://pragmaticemacs.com/emacs/convert-tabs-to-spaces/][untabify]] works on a region, ~C-u M-x untabify~ works on a whole
