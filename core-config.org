@@ -255,64 +255,6 @@ See http://www.emacswiki.org/emacs/AutoIndentation
   (add-hook 'c-mode-common-hook 'set-newline-and-indent)
 #+end_src
 
-*** ~mode-line~: prettier mode line
-[[https://gitlab.com/jessieh/mood-line][mood-line | GitLab]]
-
-Note that the glyphs must be of type char, /not/ string.
-
-#+begin_src emacs-lisp
-  (use-package mood-line
-    :straight t
-    :config
-    (setq mood-line-glyph-alist mood-line-glyphs-unicode)
-    (setq mood-line-custom-glyphs-alist
-          '(;; checker
-            (:checker-info . ?◆)
-            (:checker-checking . ?⧗)
-            ;; version control
-            (:vc-added . ?✚)
-            ;; buffer status
-            (:buffer-read-only . ?✖)))
-    ;; update mood-line-glyph-alist
-    (seq-do
-     #'(lambda (symbol-char-cons-cell)
-         (let ((symbol (car symbol-char-cons-cell))
-               (char (cdr symbol-char-cons-cell)))
-           (setcdr (assq symbol mood-line-glyph-alist) char)))
-     mood-line-custom-glyphs-alist)
-    ;; update fonts
-    (let ((cyan "#2aa198") ;; solarized dark font-lock-string-face
-          (green "green3")
-          (olive "#859900") ;; solarized dark font-lock-keyword-face
-          (orange "#b58900") ;; solarized dark link
-          (red "#cb4b16") ;; solarized dark error
-          )
-      (face-spec-set 'mood-line-status-info
-                     `((t (:foreground ,cyan))))
-      (face-spec-set 'mood-line-status-warning
-                     `((t (:foreground ,orange))))
-      (face-spec-set 'mood-line-status-success
-                     `((t (:foreground ,green))))
-      (face-spec-set 'mood-line-buffer-status-modified
-                     `((t (:foreground ,orange))))
-      (face-spec-set 'mood-line-buffer-status-read-only
-                     `((t (:foreground ,red))))
-      (face-spec-set 'mood-line-buffer-status-narrowed
-                     `((t (:foreground ,olive)))))
-    (mood-line-mode))
-#+end_src
-
-#+name: tab:mood-line-custom-color-names
-#+caption: Color names according to [[https://www.color-name.com/][color-name.com]]
-| hex code | my name | color-name.com | solarized dark/Emacs colors |
-|----------+---------+----------------+-----------------------------|
-| ~2aa198~   | cyan    | zomp           | =font-lock-string-face=       |
-| ~b58900~   | orange  | dark goldenrod | =link=                        |
-| ~cb4b16~   | red     | sinopia        | =error=                       |
-| ~859900~   | olive   | olive          | =font-lock-keyword-face=      |
-| ~1ca350~   | green   | energy green   | -                           |
-| ~00cd00~   | green   | electric green | ~green3~                      |
-
 *** ~treemacs~
 [[https://github.com/Alexander-Miller/treemacs][treemacs | GitHub]]: a tree layout file explorer (like you see in other
 editors/IDEs)
