@@ -237,11 +237,12 @@ See [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Face-Attributes.
 
 #+begin_src emacs-lisp
   (setq gui-default-font-family-alist
-        '(("JetBrainsMono Nerd Font Mono" . 14)
+        '(;; ("JetBrainsMono Nerd Font Mono" . 14)
           ("JetBrains Mono" . 14)
+          ("DejaVu Sans Mono" . 14) ;; default Emacs font familyx
           ("Inconsolata" . 15)
           ("Fira Code" . 14)
-          ("Hack Nerd Font" . 14)
+          ;; ("Hack Nerd Font" . 14)
           ("Hack" . 14)
           ("Consolas" . 15)
           ("Menlo" . 15)
