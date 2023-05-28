@@ -364,21 +364,56 @@ emojis (e.g. =:)=)
 Note that the =gitmoji= =:​memo:= symbol is the same as =emojify='s =:​pencil:=, and
 =gitmoji='s =:​pencil:= symbol is the same as =emojify='s =:​pencil2:=.
 
+So far [[https://onlinepngtools.com/create-emoji-png][Create Emoji PNG | OnlinePNGTools]] seems like the easiest source for
+getting a small number of PNG emojis. You can use [[https://emojipedia.org/][Emojipedia]] to find and copy
+the emojis you're looking for.
+
+#+name: tab:create-emoji-png-options
+#+caption: Create Emoji PNG recommended emoji to PNG converter options
+| field                | value      |
+|----------------------+------------|
+| PNG background color | =#ffffff00= |
+| PNG width/height     | 72         |
+| Font size            | 64px       |
+| Horizontal alignment | center     |
+| Vertical alignment   | bottom     |
+
+
 #+begin_src emacs-lisp
-  (setq emojify-user-emojis
-        '((":memo:" .
-           (("name" . "Memo")
-            ("image" .
-             "~/.emacs.d/emojis/emojione-v2.2.6-22/1f4dd.png")
-            ("style" . "github")))
-          (":adhesive_bandage:" .
-           (("name" . "Adhesive Bandage")
-            ("image" .
-             "~/.emacs.d/emojis/user-added/adhesive_bandage.png")
-            ("style" . "github")))))
+  (let* ((emojis-root "~/.emacs.d/emojis")
+         (user-added (concat-path emojis-root "user-added"))
+         (emojione (concat-path emojis-root "emojione-v2.2.6-22")))
+    (cond
+     ((file-directory-p (expand-file-name emojis-root))
+      (setq emojify-user-emojis
+            `((":memo:" .
+               (("name" . "Memo")
+                ("image" . ,(concat-path emojione "1f4dd.png"))
+                ("style" . "github")))
+              ;; https://openmoji.org/library/emoji-1F9EA/
+              ;; (":test_tube:" .
+              ;;  (("name" . "Test Tube")
+              ;;   ("image" . "~/.emacs.d/emojis/openmoji/1F9EA_test_tube.png")
+              ;;   ("style" . "github")))
+              ;; https://onlinepngtools.com/create-emoji-png
+              (":adhesive_bandage:" .
+               (("name" . "Adhesive Bandage")
+                ("image" . ,(concat-path user-added "adhesive_bandage.png"))
+                ("style" . "github")))
+              (":test_tube:" .
+               (("name" . "Test Tube")
+                ("image" . ,(concat-path user-added "test_tube.png"))
+                ("style" . "github"))))))
+          (t (message (format (concat "Emojis root directory not found at %s."
+                                      "Additional emojis not set.")
+                              emojis-root)))))
+
   (when (featurep 'emojify)
     (emojify-set-emoji-data))
 #+end_src
+
+Note: make sure to symlink =~/Dropbox/config-etc/Emacs/emacs.d/emojis= to
+=~/.emacs.d/emojis=.
 
 ** =highlight-indent-guides=
 [[https://github.com/DarthFennec/highlight-indent-guides][highlight-indent-guides]] shows indentation level. I used to do this with a pipe
