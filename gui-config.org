@@ -666,6 +666,7 @@ some reason. Its ~:inherit~ value is ~shadow~, whereas on my Mac Mini, the
 *** TODO other Org font behavior
 
 #+begin_src emacs-lisp
+<<<<<<< HEAD
   (defmacro set-font-family (font-face family)
     `(cond (,family
            (set-face-attribute ,font-face t
@@ -685,6 +686,8 @@ some reason. Its ~:inherit~ value is ~shadow~, whereas on my Mac Mini, the
   ;;                       :family gui-verbatim-family)
   ;;   (message (format "Set org-code family to %s." gui-fixed-width-family)))
 
+=======
+>>>>>>> matlockmbp-2019
   (set-font-family 'org-verbatim gui-verbatim-family)
   (set-font-family 'org-code gui-fixed-width-family)
   ;; (set-font-family 'org-code gui-verbatim-family)
