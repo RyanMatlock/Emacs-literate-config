@@ -198,14 +198,9 @@ Org Mode in Emacs | zzamboni.org]] looks like a good resource for this. [[https:
 Org Mode: A Beautiful Writing Environment | lucidmanager.org]] also has some good
 tips, e.g. [[https://gitlab.com/jabranham/mixed-pitch][mixed-pitch | GitLab]].
 
+*** TODO Helper functions/macros
 See [[https://emacsredux.com/blog/2021/12/22/check-if-a-font-is-available-with-emacs-lisp/][Check if a Font is Available with Emacs Lisp | Emacs Redux]] for font
 switching goodness
-
-Set unicode font to Unifont (for emojis?); see [[https://github.com/rolandwalker/unicode-fonts][unicode-fonts | GitHub]] (?) ---
-this is very old
-
-See [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Face-Attributes.html][Face Attributes | GNU Emacs Manual]] and [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Attribute-Functions.html#index-set_002dface_002dattribute][Face Attribute Functions §
-~set-face-attribute~ | GNU Emacs Manual]]
 
 #+begin_src emacs-lisp
   (defun font-available-p (font-name)
@@ -219,14 +214,39 @@ See [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Face-Attributes.
   ;;     `(setq ,name ,font-family)))
 
   (defun preferred-font (font-list)
+    "Return first available font from FONT-LIST."
     (car-safe (seq-filter #'font-available-p font-list)))
 
+  (defmacro set-font-family (font-face family)
+    "Use `set-face-attribute' to set `:family' of FONT-FACE to FAMILY."
+    `(cond (,family
+            (set-face-attribute ,font-face t
+                                :family ,family)
+            (message (format "Set %s family to %s." ,font-face ,family)))
+           (t (message (format "%s is nil; %s unchanged."
+                               ',family
+                               ,font-face)))))
+#+end_src
+
+*** TODO Set variables
+Set unicode font to Unifont (for emojis?); see [[https://github.com/rolandwalker/unicode-fonts][unicode-fonts | GitHub]] (?) ---
+this is very old
+
+See [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Face-Attributes.html][Face Attributes | GNU Emacs Manual]] and [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Attribute-Functions.html#index-set_002dface_002dattribute][Face Attribute Functions §
+~set-face-attribute~ | GNU Emacs Manual]]
+
+#+begin_src emacs-lisp
   (setq gui-default-font-family-alist
         '(("JetBrainsMono Nerd Font Mono" . 14)
           ("JetBrains Mono" . 14)
           ("Inconsolata" . 15)
           ("Fira Code" . 14)
+          ("Hack Nerd Font" . 14)
+          ("Hack" . 14)
           ("Consolas" . 15)
+          ("Menlo" . 15)
+          ("Monaco" . 15)
+          ("Spot Mono" . 15)
           ("Courier New" . 15)))
   (setq gui-sans-serif-family-list
         '("Public Sans" ;; created by the US government
@@ -244,13 +264,10 @@ See [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Face-Attributes.
           "Libre Baskerville"
           "Source Serif 4"))
   (setq gui-verbatim-family-list
-        '("Libertinus Mono"))
-
-  ;; (setq gui-fixed-width-family
-  ;;       (car-safe (seq-filter #'font-available-p
-  ;;                             (mapcar #'car gui-default-font-family-alist))))
-  ;; (setq gui-sans-serif-family
-  ;;       (car-safe (seq-filter #'font-available-p gui-sans-serif-family-list)))
+        '("Libertinus Mono"
+          "IBM Plex Mono"
+          "CMU Typewriter Text"
+          "Courier New"))
 
   (setq gui-fixed-width-family
         (preferred-font (mapcar #'car gui-default-font-family-alist)))
@@ -260,31 +277,27 @@ See [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Face-Attributes.
         (preferred-font gui-serif-family-list))
   (setq gui-verbatim-family
         (preferred-font gui-verbatim-family-list))
+#+end_src
 
+*** =font-lock= faces
+
+#+begin_src emacs-lisp
   (let* ((font-names (mapcar #'car gui-default-font-family-alist))
-         (available-fonts (seq-filter #'font-available-p font-names))
-         (name (car available-fonts))
-         (size (cdr (assoc name gui-default-font-family-alist)))
+         ;; (available-fonts (seq-filter #'font-available-p font-names))
+         ;; (font-family (car available-fonts))
+         (font-family (preferred-font font-names))
+         (size (cdr (assoc font-family gui-default-font-family-alist)))
          (height (* 10 size)))
     (set-face-attribute
-     'default nil :family name :height height :slant 'normal)
+     'default nil :family font-family :height height :slant 'normal)
     (set-face-attribute
      'font-lock-comment-face nil :slant 'italic)
-    (message (format "Set font to %s-%d." name size)))
+    (message (format "Set font to %s-%d." font-family size)))
 
-  ;; (setq gui-config-font (format "%s-%d" name size))
-  ;; (set-frame-font gui-config-font)
-  ;; (set-face-attribute 'default t :slant 'unspecified)
-  ;; (set-face-attribute 'default nil :slant 'normal)
-  ;; (set-face-attribute
-  ;;  'default nil :family "Inconsolata" :slant 'normal)
-  ;; (set-face-attribute
-  ;;  'default nil :family "JetBrains Mono" :slant 'normal)
-  ;; (set-face-attribute
-  ;;  'default nil :family "CMU Serif" :weight 'normal :slant 'normal)
+  (set-face-attribute 'font-lock-doc-face nil
+                      :slant 'normal)
 
   (set-fontset-font t 'unicode "Unifont" nil 'prepend)
-  ;; (add-to-list 'default-frame-alist `(font . ,gui-config-font))
 #+end_src
 
 ** =s-N= opens =*scratch*= buffer
@@ -441,7 +454,6 @@ keywords, comments, etc.; see [[https://www.gnu.org/software/emacs/manual/html_n
   (global-font-lock-mode 1)
 #+end_src
 
-
 * Mac stuff
 ** =exec-path-from-shell= to fix =exec-path=​/​~PATH~ behavior in MacOS
 [[https://github.com/purcell/exec-path-from-shell][exec-path-from-shell]] fixes behavior of how environment variables are loaded in
@@ -526,7 +538,6 @@ It worked! Well, at least my ~PATH~ is right, but my ~SHELL~ is still
 some fiddling with =ghcup= because that Haskell tooling is not the most
 user-friendly).
 
-
 * Mode-specific GUI configuration
 ** TODO Beautified Org mode
 [[https://zzamboni.org/post/beautifying-org-mode-in-emacs/][Beautifying Org Mode in Emacs | zzamboni.org]]
@@ -579,7 +590,7 @@ values like "Helvetica." Did you even know about [[https://public-sans.digital.g
     "Set attributes like font family and size for Org mode titles and section
   headings."
     (let* ((org-headline-levels (reverse (take 4 org-level-faces)))
-           (headline-family "Helvetica")
+           (headline-family gui-sans-serif-family)
            (scaling 1.05)
            (height 1.1))
 
@@ -660,7 +671,9 @@ some reason. Its ~:inherit~ value is ~shadow~, whereas on my Mac Mini, the
            (set-face-attribute ,font-face t
                                :family ,family)
            (message (format "Set %s family to %s." ,font-face ,family)))
-           (t (message (format "%s is nil." ',family)))))
+           (t (message (format "%s is nil; %s unchanged."
+                               ',family
+                               ,font-face)))))
 
   ;; (when gui-verbatim-family
   ;;   (set-face-attribute 'org-verbatim t
@@ -674,7 +687,13 @@ some reason. Its ~:inherit~ value is ~shadow~, whereas on my Mac Mini, the
 
   (set-font-family 'org-verbatim gui-verbatim-family)
   (set-font-family 'org-code gui-fixed-width-family)
+  ;; (set-font-family 'org-code gui-verbatim-family)
 
+  ;; (let ((fake-font-family nil))
+  ;;   (set-font-family 'org-level-8 fake-font-family)) ;; works as expected
+
+  (font-lock-flush)
+#+end_src
 
 ** ~mode-line~: prettier mode line
 [[https://gitlab.com/jessieh/mood-line][mood-line | GitLab]]
