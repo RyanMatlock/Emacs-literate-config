@@ -44,6 +44,8 @@ haven't been taking full advantage of =default-frame-alist=.
 Note: you need to ~setq~ various properties /before/ you load the theme,
 otherwise you'll get unexpected behaviors.
 
+*** Basic config
+
 #+begin_src emacs-lisp
   (use-package solarized-theme
     :straight t
@@ -55,6 +57,62 @@ otherwise you'll get unexpected behaviors.
     (setq solarized-use-variable-pitch nil)
     (load-theme 'solarized-dark t))
 #+end_src
+
+*** Expose accent colors as global variables + set additional colors
+
+#+begin_src emacs-lisp
+  (require 'solarized-palettes)
+  (cond ((boundp 'solarized-dark-color-palette-alist)
+         (let ((colors '("yellow"
+                         "orange"
+                         "red"
+                         "magenta"
+                         "violet"
+                         "blue"
+                         "cyan"
+                         "green")))
+           (seq-do
+            #'(lambda (color)
+                (let* ((palette solarized-dark-color-palette-alist)
+                       (base-color-name (intern (format "solar-%s" color)))
+                       (base-key (intern color))
+                       (base-value (alist-get base-key palette))
+                       (dark-color-name
+                        (intern (format "solar-dark-%s" color)))
+                       (dark-key (intern (format "%s-d" color)))
+                       (dark-value (alist-get dark-key palette))
+                       (light-color-name
+                        (intern (format "solar-light-%s" color)))
+                       (light-key (intern (format "%s-l" color)))
+                       (light-value (alist-get light-key palette)))
+                  ;; (message (format "Set %s to %s." base-color-name base-value))
+                  (set base-color-name base-value)
+                  (set dark-color-name dark-value)
+                  (set light-color-name light-value)))
+            colors)))
+        (t (message "Houston, we have a problem with the solarized colors.")))
+
+  (defvar macos-green "#60c054"
+    "Hex value of the MacOS menu bar \"traffic lights\" green.")
+  (setq bright-green "green3")
+#+end_src
+
+#+begin_example
+  ELISP> (alist-get (make-symbol "base03") solarized-dark-color-palette-alist)
+  nil
+  ELISP> (alist-get 'base03 solarized-dark-color-palette-alist)
+  "#002b36"
+  ELISP> (make-symbol "base03")
+  base03
+  ELISP> (equal 'base03 (make-symbol "base03"))
+  nil
+#+end_example
+
+I had a similar issue when trying to programmatically disable mouse key
+presses, and it appears I never actually sorted out the symbol equality issue.
+
+Solution: use ~intern~ (or ~intern-soft~) + ~set~ rather than ~make-symbol~ + ~setq~ for
+these situations.
 
 ** Set columns to wrap at 80 characters
 See [[https://www.gnu.org/software/emacs/manual/html_node/efaq/Turning-on-auto_002dfill-by-default.html][How do I turn on =auto-fill-mode= by default? | GNU Emacs Manual]]
@@ -727,34 +785,18 @@ Note that the glyphs must be of type char, /not/ string.
            (setcdr (assq symbol mood-line-glyph-alist) char)))
      mood-line-custom-glyphs-alist)
     ;; update fonts
-    (let ((cyan "#2aa198")   ;; solarized dark font-lock-string-face
-          (green "green3")   ;; ert-test-result-expected background
-          (olive "#859900")  ;; solarized dark font-lock-keyword-face
-          (orange "#b58900") ;; solarized dark link
-          (red "#cb4b16")    ;; solarized dark error
-          )
-      (face-spec-set 'mood-line-status-info
-                     `((t (:foreground ,cyan))))
-      (face-spec-set 'mood-line-status-warning
-                     `((t (:foreground ,orange))))
-      (face-spec-set 'mood-line-status-success
-                     `((t (:foreground ,green))))
-      (face-spec-set 'mood-line-buffer-status-modified
-                     `((t (:foreground ,orange))))
-      (face-spec-set 'mood-line-buffer-status-read-only
-                     `((t (:foreground ,red))))
-      (face-spec-set 'mood-line-buffer-status-narrowed
-                     `((t (:foreground ,olive)))))
+    (face-spec-set 'mood-line-status-info
+                   `((t (:foreground ,solar-cyan))))
+    (face-spec-set 'mood-line-status-warning
+                   `((t (:foreground ,solar-orange))))
+    (face-spec-set 'mood-line-status-success
+                   `((t (:foreground ,solar-dark-green))))
+    (face-spec-set 'mood-line-buffer-status-modified
+                   `((t (:foreground ,solar-dark-green))))
+    (face-spec-set 'mood-line-buffer-status-read-only
+                   `((t (:foreground ,solar-red))))
+    (face-spec-set 'mood-line-buffer-status-narrowed
+                   `((t (:foreground ,solar-light-yellow))))
+
     (mood-line-mode))
 #+end_src
-
-#+name: tab:mood-line-custom-color-names
-#+caption: Color names according to [[https://www.color-name.com/][color-name.com]]
-| hex code | my name | color-name.com | solarized dark/Emacs colors |
-|----------+---------+----------------+-----------------------------|
-| =2aa198=   | cyan    | zomp           | ~font-lock-string-face~       |
-| =b58900=   | orange  | dark goldenrod | ~link~                        |
-| =cb4b16=   | red     | sinopia        | ~error~                       |
-| =859900=   | olive   | olive          | ~font-lock-keyword-face~      |
-| =1ca350=   | green   | energy green   | -                           |
-| =00cd00=   | green   | electric green | ~green3~                      |
