@@ -144,6 +144,27 @@ See [[https://www.gnu.org/software/emacs/manual/html_node/efaq/Turning-on-auto_0
     (std-frame))
 #+end_src
 
+*** Center frame on screen
+See [[https://emacs.stackexchange.com/a/74260][How to configure emacs to start in the middle of the screen, and not in the
+top left corner? | emacs.stackexchange]].
+
+#+begin_src emacs-lisp
+  (defun frame-center ()
+    "Center the current frame."
+    (interactive)
+    (let* ((dw (display-pixel-width))
+           (dh (display-pixel-height))
+           (f  (selected-frame))
+           (fw (frame-pixel-width f))
+           (fh (frame-pixel-height f))
+           (x  (- (/ dw 2) (/ fw 2)))
+           (y  (- (/ dh 2) (/ fh 2))))
+      ;; (message (format "dw %d dh %d fw %d fh %d x %d y %d" dw dh fw fh x y))
+      (set-frame-position f x y)))
+
+  (define-key global-map (kbd "C-x f c") 'frame-center)
+#+end_src
+
 ***  Bind keys to frame resizing functions
 This works, but it's probably not strictly the right way to do it.
 
@@ -311,15 +332,16 @@ constantly loading related sets of buffers into my usual two window setup).
   (setq make-new-frame-alternate-buffer "*Buffer List*")
 
   (defun make-new-frame (&optional alt-buffer)
-    "Open a new frame using 'make-frame', and switch to buffer specified by
-  'make-new-frame-default-buffer' unless a prefix argument is passed, in which
-  case the buffer specified by 'make-new-frame-alternate-buffer' is selected."
+    "Open a new frame using `make-frame', and switch to buffer specified by
+  `make-new-frame-default-buffer' unless a prefix argument is passed, in which
+  case the buffer specified by `make-new-frame-alternate-buffer' is selected."
     (interactive "P")
     (let ((target-buffer
            (if alt-buffer make-new-frame-alternate-buffer
              make-new-frame-default-buffer)))
       (make-frame)
-      (switch-to-buffer target-buffer)))
+      (switch-to-buffer target-buffer)
+      (frame-center)))
 
   (define-key global-map (kbd "s-N") 'make-new-frame)
   ;; s-n previously bound to make-frame
