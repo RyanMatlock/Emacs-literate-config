@@ -220,7 +220,7 @@ top left corner? | emacs.stackexchange]].
       ;; (message (format "dw %d dh %d fw %d fh %d x %d y %d" dw dh fw fh x y))
       (set-frame-position f x y)))
 
-  (define-key global-map (kbd "C-x f c") 'frame-center)
+  (frame-center)
 #+end_src
 
 ***  Bind keys to frame resizing functions
@@ -250,9 +250,10 @@ memorable.
   (when window-system
     (let ((prefix "C-x f")
           (key-fn-alist '(("s" . std-frame)
-                            ("w" . wide-frame)
-                            ("l" . lrg-frame)
-                            ("x" . xl-frame))))
+                          ("w" . wide-frame)
+                          ("l" . lrg-frame)
+                          ("x" . xl-frame)
+                          ("c" . frame-center))))
       (bind-keys-from-alist global-map key-fn-alist prefix)
 
       (when (member window-system '(mac ns))
