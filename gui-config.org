@@ -740,14 +740,12 @@ Maybe you need to call =font-lock-ensure=. Here's the =*Help*= for
 Interactively calling ~font-lock-fontify-buffer~ works, but it's slow (at least
 on a large file like this one), so maybe there's a better way?
 
-*** TODO fix =verbatim= behavior
-~verbatim~ font is rendered in the headline font---but only on my MacBook for
-some reason. Its ~:inherit~ value is ~shadow~, whereas on my Mac Mini, the
-~:inherit~ value is =fixed-width-shadow=.
-
 *** TODO other Org font behavior
 
 #+begin_src emacs-lisp
+  (set-face-attribute 'org-verbatim t
+                      :inherit 'shadow)
+
   (set-font-family 'org-verbatim gui-verbatim-family)
   (set-font-family 'org-code gui-fixed-width-family)
   ;; (set-font-family 'org-code gui-verbatim-family)
@@ -757,6 +755,13 @@ some reason. Its ~:inherit~ value is ~shadow~, whereas on my Mac Mini, the
 
   (font-lock-flush)
 #+end_src
+
+**** TODO fix =verbatim= behavior
+~verbatim~ font is rendered in the headline font---but only on my MacBook for
+some reason. Its ~:inherit~ value is ~shadow~, whereas on my Mac Mini, the
+~:inherit~ value is +=fixed-width-shadow=+ =(fixed-pitch shadow)=.
+
+Somehow ~set-face-attribute~ doesn't appear to be working ¯\_(ツ)_/¯
 
 ** ~mode-line~: prettier mode line
 [[https://gitlab.com/jessieh/mood-line][mood-line | GitLab]]
