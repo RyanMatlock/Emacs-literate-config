@@ -451,6 +451,49 @@ checked and =displayline= is still there).
 Having an issue with =xelatex= breaking the =View= option; see [[https://github.com/tom-tan/auctex-latexmk/issues/28][Support for xelatex
 breaks PDF viewing (#28) | GitHub]] for more info.
 
+Maybe check that Skim is available, and if it isn't, fall back to Preview?
+
+#+begin_example
+  ELISP> (file-directory-p "/Applications/Skim.app/")
+  t
+  ELISP> (file-directory-p "/Applications/Preview.app/")
+  nil
+  ELISP> (file-directory-p "/Applications/Preview/")
+  nil
+  ELISP> (file-directory-p "/System/Applications/Preview.app/")
+  t
+  ELISP> (executable-find "evince")
+  "/usr/local/bin/evince"
+  ELISP> (executable-find "/System/Applications/Preview.app/")
+  nil
+#+end_example
+
+So I could do something like
+
+#+begin_example
+  (let ((pdf-viewer-apps '("/Applications/Skim.app"
+                           "/System/Applications/Preview.app/"
+                           "evince")))
+    (setq default-pdf-viewing-app
+          (car-safe (seq-filter  #'(lambda ((pdf-viewer))
+                                     (or (executable-find pdf-viewer)
+                                         (file-directory-p pdf-viewer)))
+                                 pdf-viewer-apps))))
+#+end_example
+
+in order to set the default PDF viewer (although mixing MacOS and CLI apps like
+that could be a problem).
+
+#+begin_src shell
+  [~] $ open -a /Applications/Skim.app/ \
+      ~/Dropbox/documents-etc/misc/xelatex-test/xelatex-test.pdf
+  [~] $ open -a /System/Applications/Preview.app/ \
+      ~/Dropbox/documents-etc/misc/xelatex-test/xelatex-test.pdf
+#+end_src
+
+I also tried using [[https://help.gnome.org/users/evince/stable/][​=evince= | gnome.org]] PDF viewer, but it looks really ugly on
+MacOS, so maybe I should stick with Skim and Preview.
+
 ** Default view?
 Comments in ~legacy-dotemacs.el~ pointed me to [[http://alexkrispin.wordpress.com/2010/10/25/writing-with-emacs-and-auctex-part-1/][Writing with Emacs and AucTeX part
 1]], an article from 2010, so this might be way out of date. On the other hand,
