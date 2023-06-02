@@ -248,7 +248,7 @@ Let's try [[https://github.com/daviwil/emacs-from-scratch/wiki/LaTeX-config-(Auc
 
 Well, I didn't get any warnings with this.
 
-** TODO Fonts
+** TODO COMMENT Fonts \to =gui-config.org=?
 Info from the =\section{}= macro font:
 
 #+begin_example
@@ -370,6 +370,10 @@ but I liked how everything worked before.
 ** ~C-c C-c~ compilation with ~latexmk~
 Note: SyncTeX is setup via ~/.latexmkrc (see below)
 
+There's probably a better way of doing this (~add-to-list~?), plus you can use a
+backquote/comma setup to programmatically customize some of this.
+
+*** COMMENT Old way
 #+begin_src emacs-lisp
   (add-hook 'LaTeX-mode-hook
             (lambda ()
@@ -474,10 +478,35 @@ The second element is the string handed to the shell after being expanded.  The
 expansion is done using the information found in ‘TeX-expand-list’.
 #+end_quote
 
-** Set Skim as default PDF viewer on MacOS
-Skim's displayline is used for forward search (from .tex to .pdf); option -b
-highlights the current line; option -g opens Skim in the background (just
-checked and displayliine is still there).
+*** Improved way
+See [[https://www.ctan.org/pkg/latexmk][latexmk | CTAN]] for more detailed info on options.
+
+#+begin_src emacs-lisp
+  (let ((shell-cmd
+         (mapconcat #'identity
+                    '("latexmk"
+                      "-f"          ;; force processing past errors
+                      "-interaction=nonstopmode"
+                      "-g"          ;; force latexmk to process document
+                      "-xelatex"    ;; generate PDF with xelatex
+                      "%s")
+                    " ")))
+    ;; (message (format "shell-cmd: %s" shell-cmd))
+    (add-to-list 'TeX-command-list
+                 `("xelatexmk (force)"
+                   ,shell-cmd
+                   TeX-run-TeX
+                   nil
+                   t
+                   :help "Run \"latexmk -f -g -xelatemk\" on file.")))
+#+end_src
+
+This works as expected, but =View= doesn't seem to play nicely with =xelatex=.
+
+** TODO Set Skim as default PDF viewer on MacOS
+Skim's =displayline= is used for forward search (from =.tex= to =.pdf=); option =-b=
+highlights the current line; option =-g= opens Skim in the background (just
+checked and =displayline= is still there).
 
 #+begin_src emacs-lisp
   (when (memq window-system '(mac ns x))
@@ -487,7 +516,12 @@ checked and displayliine is still there).
      '(("PDF Viewer"
         (concat "/Applications/Skim.app/Contents/SharedSupport/displayline"
                 " -b -g %n %o %b")))))
+
+  ;; (setq TeX-view-program-selection '((output-pdf "Skim")))
 #+end_src
+
+Having an issue with =xelatex= breaking the =View= option; see [[https://github.com/tom-tan/auctex-latexmk/issues/28][Support for xelatex
+breaks PDF viewing (#28) | GitHub]] for more info.
 
 ** Default view?
 Comments in ~legacy-dotemacs.el~ pointed me to [[http://alexkrispin.wordpress.com/2010/10/25/writing-with-emacs-and-auctex-part-1/][Writing with Emacs and AucTeX part
