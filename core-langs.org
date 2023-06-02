@@ -437,13 +437,13 @@ highlights the current line; option =-g= opens Skim in the background (just
 checked and =displayline= is still there).
 
 #+begin_src emacs-lisp
-  (when (memq window-system '(mac ns x))
-    (setq TeX-view-program-selection '((output-pdf "PDF Viewer")))
-    (setq
-     TeX-view-program-list
-     '(("PDF Viewer"
-        (concat "/Applications/Skim.app/Contents/SharedSupport/displayline"
-                " -b -g %n %o %b")))))
+  ;; (when (memq window-system '(mac ns x))
+  ;;   (setq TeX-view-program-selection '((output-pdf "PDF Viewer")))
+  ;;   (setq
+  ;;    TeX-view-program-list
+  ;;    '(("PDF Viewer"
+  ;;       (concat "/Applications/Skim.app/Contents/SharedSupport/displayline"
+  ;;               " -b -g %n %o %b")))))
 
   ;; (setq TeX-view-program-selection '((output-pdf "Skim")))
 #+end_src
@@ -493,6 +493,176 @@ that could be a problem).
 
 I also tried using [[https://help.gnome.org/users/evince/stable/][​=evince= | gnome.org]] PDF viewer, but it looks really ugly on
 MacOS, so maybe I should stick with Skim and Preview.
+
+Maybe I don't need to define anything special. Check this out:
+
+#+begin_example
+  TeX-view-program-list-builtin is a variable defined in ‘tex.el’.
+
+  Its value is
+  (("Preview.app" "open -a Preview.app %o" "open")
+   ("Skim" "open -a Skim.app %o" "open")
+   ("PDF Tools" TeX-pdf-tools-sync-view)
+   ("displayline" "displayline %n %o %b" "displayline")
+   ("open" "open %o" "open"))
+
+  Alist of built-in viewer specifications.
+  This variable should not be changed by the user who can use
+  ‘TeX-view-program-list’ to add new viewers or overwrite the
+  definition of built-in ones.  The latter variable also contains a
+  description of the data format.
+#+end_example
+
+Ok, I restarted Emacs after nuking my ~TeX-view-program-selection~ and
+~TeX-view-program-list~ customizations, and I'm still seeing this behavior (taken
+from =*Messages*=):
+
+#+begin_example
+  xelatexmk (force): successfully formatted {1} page
+  TeX-view-command-raw: No matching viewer found
+#+end_example
+
+Let's take a look at ~TeX-view-command-raw~:
+
+#+begin_src lisp :eval no
+  (defun TeX-view-command-raw ()
+    "Choose a viewer and return its unexpanded command string."
+    (let ((selection TeX-view-program-selection)
+          entry viewer item executable spec command)
+      ;; Find the appropriate viewer.
+      (while (and (setq entry (pop selection)) (not viewer))
+        (when (TeX-view-match-predicate (car entry))
+          (setq viewer (cadr entry))))
+      (unless viewer
+        (error "No matching viewer found"))
+      ;; -- rest of function omitted --
+      ))
+#+end_src
+
+#+begin_example
+  ELISP> (let (x)
+           (setq x :foo)
+           (print (format "x is %s" x)))
+
+  "x is :foo"
+
+  "x is :foo"
+  ELISP> x
+  ,*** Eval error ***  Symbol’s value as variable is void: x
+#+end_example
+
+That's good to know about variable scope with ~let~ and ~setq~ and using
+uninitialized variables in a ~let~ expression.
+
+#+begin_example
+  TeX-view-match-predicate is a byte-compiled Lisp function in ‘tex.el’.
+
+  (TeX-view-match-predicate PREDICATE)
+
+  Check if PREDICATE is true.
+  PREDICATE can be a symbol or a list of symbols defined in
+  ‘TeX-view-predicate-list-builtin’ or ‘TeX-view-predicate-list’.
+  In case of a single symbol, return t if the predicate is true,
+  nil otherwise.  In case of a list of symbols, return t if all
+  predicates are true, nil otherwise.
+#+end_example
+
+So it looks like the issue may be with ~TeX-view-predicate-list~.
+
+#+begin_example
+  TeX-view-predicate-list is a variable defined in ‘tex.el’.
+
+  Its value is nil
+
+  Alist of predicates for viewer selection and invocation.
+  The key of each list item is a symbol and the value a Lisp form
+  to be evaluated.  The form should return nil if the predicate is
+  not fulfilled.
+
+  Built-in predicates provided in ‘TeX-view-predicate-list-builtin’
+  can be overwritten by defining predicates with the same symbol.
+
+  The following built-in predicates are available:
+    ‘output-dvi’: The output is a DVI file.
+    ‘output-pdf’: The output is a PDF file.
+    ‘output-html’: The output is an HTML file.
+    ‘style-pstricks’: The document loads a PSTricks package.
+    ‘engine-omega’: The Omega engine is used for typesetting.
+    ‘engine-xetex’: The XeTeX engine is used for typesetting.
+    ‘mode-io-correlate’: TeX Source Correlate mode is active.
+    ‘paper-landscape’: The document is typeset in landscape orientation.
+    ‘paper-portrait’: The document is not typeset in landscape orientation.
+    ‘paper-a4’: The paper format is A4.
+    ‘paper-a5’: The paper format is A5.
+    ‘paper-b5’: The paper format is B5.
+    ‘paper-letter’: The paper format is letter.
+    ‘paper-legal’: The paper format is legal.
+    ‘paper-executive’: The paper format is executive.
+
+    You can customize this variable.
+#+end_example
+
+Maybe I should see what ~TeX-output-extension~ is after running the =xelatexmk=
+command.
+
+#+begin_example
+  TeX-output-extension is a variable defined in ‘tex.el’.
+
+  Its value is "pdf"
+  Local in buffer xelatex-test.tex; global value is nil
+
+  Extension of TeX output file.
+  This is either a string or a list with
+  a string as element.  Its value is obtained from ‘TeX-command-output-list’.
+  Access to the value should be through the function ‘TeX-output-extension’.
+
+    Automatically becomes buffer-local when set.
+#+end_example
+
+So it should match ~output-pdf~ 🤔 (I don't think the presence of the =.xdv= file
+is what's messing this up, but I could be mistaken.)
+
+#+begin_example
+  TeX-output-extension is a variable defined in ‘tex.el’.
+
+  Its value is "pdf"
+  Local in buffer pdflatex-test.tex; global value is nil
+
+  Extension of TeX output file.
+  This is either a string or a list with
+  a string as element.  Its value is obtained from ‘TeX-command-output-list’.
+  Access to the value should be through the function ‘TeX-output-extension’.
+
+    Automatically becomes buffer-local when set.
+#+end_example
+
+I still get a ~pdf~ output when using my =pdflatex= command on a simpler,
+=pdflatex=-compliant =.tex= file, but I have no issues finding the matching viewer.
+
+#+begin_example
+  TeX-engine is a variable defined in ‘tex.el’.
+
+  Its value is ‘default’
+
+  Type of TeX engine to use.
+  It should be one of the following symbols:
+
+  ,* ‘default’
+  ,* ‘luatex’
+  ,* ‘omega’
+  ,* ‘xetex’
+
+    Automatically becomes buffer-local when set.
+    This variable is safe as a file local variable if its value
+    satisfies the predicate which is a byte-compiled expression.
+    You can customize this variable.
+#+end_example
+
+As [[https://github.com/tom-tan/auctex-latexmk/issues/28#issuecomment-846378820][myandeg]] says in the GitHub thread referenced earlier, compiling with
+=latexmk -xelatex= and then recompiling with =LaTeX= allows =View= to work as
+expected, but that is a little clunky. I guess you could just compile with
+=LaTeX= alone and deal with that because AUCTeX will include =%%% TeX-engine:
+xetex= in the file local variables.
 
 ** Default view?
 Comments in ~legacy-dotemacs.el~ pointed me to [[http://alexkrispin.wordpress.com/2010/10/25/writing-with-emacs-and-auctex-part-1/][Writing with Emacs and AucTeX part
