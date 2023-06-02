@@ -248,7 +248,7 @@ Let's try [[https://github.com/daviwil/emacs-from-scratch/wiki/LaTeX-config-(Auc
 
 Well, I didn't get any warnings with this.
 
-** TODO Fonts
+** TODO COMMENT Fonts \to =gui-config.org=?
 Info from the =\section{}= macro font:
 
 #+begin_example
@@ -368,8 +368,13 @@ but I liked how everything worked before.
 #+end_src
 
 ** ~C-c C-c~ compilation with ~latexmk~
-Note: SyncTeX is setup via ~/.latexmkrc (see below)
+Note: SyncTeX is setup via =~/.latexmkrc= (see below) --- this seems out of date
+as I haven't configured =.latexmkrc= on my devices.
 
+There's probably a better way of doing this (~add-to-list~?), plus you can use a
+backquote/comma setup to programmatically customize some of this.
+
+*** Old way
 #+begin_src emacs-lisp
   (add-hook 'LaTeX-mode-hook
             (lambda ()
@@ -382,102 +387,54 @@ Note: SyncTeX is setup via ~/.latexmkrc (see below)
                  :help "Run latexmk on file")
                TeX-command-list)))
 
-  (add-hook 'LaTeX-mode-hook
-            (lambda ()
-              (push
-               '("xelatexmk" "latexmk -xelatex -pdf %s" TeX-run-TeX nil t
-                 :help "Run latexmk -xelatex on file")
-               TeX-command-list)))
-
-  ;; (add-hook 'LaTeX-mode-hook
-  ;;           (lambda ()
-  ;;             (let* ((shell-cmd (concat "pdflatex "
-  ;;                                       ;; "-synctex=1 "
-  ;;                                       "-interaction=nonstopmode "
-  ;;                                       "-output-format=pdf "
-  ;;                                       "-shell-escape "
-  ;;                                       "%s"))
-  ;;                    (pdflatex-cmd
-  ;;                     (list "pdflatex" shell-cmd TeX-run-TeX nil t)))
-  ;;               (push pdflatex-cmd TeX-command-list))))
-  ;; TeX-command-expand: Wrong type argument: stringp, (concat "pdflatex "
-  ;;           "-synctex=1 " "-interaction=nonstopmode " "--shell-escape " "%s")
-  ;; ¯\_(ツ)_/¯
-
-  (add-hook 'LaTeX-mode-hook
-            (lambda ()
-              (let ((shell-cmd  "pdflatex -interaction=nonstopmode -output-format=pd -shell-escape %s")))
-              (push (list "new-pdflatex" shell-cmd TeX-run-TeX nil t)
-                    TeX-command-list)))
-
-  ;; (add-hook 'LaTeX-mode-hook
-  ;;           (lambda ()
-  ;;             (push
-  ;;              '("pdflatex"
-  ;;                (concat "pdflatex "
-  ;;                        "-interaction=nonstopmode "
-  ;;                        "-output-format=pdf "
-  ;;                        "%s")
-  ;;                TeX-run-TeX
-  ;;                nil
-  ;;                t
-  ;;                :help "Run pdflatex on file")
-  ;;              TeX-command-list)))
-  ;; not working ¯\_(ツ)_/¯
   (add-hook 'TeX-mode-hook
             #'(lambda () (setq TeX-command-default "latexmk")))
 #+end_src
 
-#+begin_example
-  ELISP> (stringp (concat "pdflatex "
-                          "-synctex=1 "
-                          "-interaction=nonstopmode "
-                          "--shell-escape "
-                          "%s"))
-  t
-#+end_example
+*** Improved way
+See [[https://www.ctan.org/pkg/latexmk][latexmk | CTAN]] for more detailed info on options.
 
-This is still so confusing.
-
-*** COMMENT possible solution
-
-#+begin_src emacs-lisp :eval no
-  (add-hook 'LaTeX-mode-hook
-            (lambda ()
-              (let* ((shell-cmd (concat "pdflatex "
-                                        ;; "-synctex=1 "
-                                        "-interaction=nonstopmode "
-                                        "-output-format=pdf "
-                                        "-shell-escape "
-                                        "%s"))
-                     (pdflatex-cmd
-                      (list "pdflatex" shell-cmd 'TeX-run-TeX nil t)))
-                (push pdflatex-cmd TeX-command-list))))
-
+**** =latexmk -xelatex=
+#+begin_src emacs-lisp
+  (let ((shell-cmd
+         (mapconcat #'identity
+                    '("latexmk"
+                      "-f"          ;; force processing past errors
+                      "-interaction=nonstopmode"
+                      "-g"          ;; force latexmk to process document
+                      "-xelatex"    ;; generate PDF with xelatex
+                      "%s")
+                    " ")))
+    (add-to-list 'TeX-command-list
+                 `("xelatexmk (force)" ,shell-cmd TeX-run-TeX nil t
+                   :help "Run \"latexmk -f -g -xelatemk\" on file.")))
 #+end_src
 
-For reference, here's one of the entries from =TeX-command-list=:
+This works as expected, but =View= doesn't seem to play nicely with =xelatex=.
+
+**** =pdflatex=
+[[https://tex.stackexchange.com/a/118491][What exactly is SyncTeX? | TeX.stackexchange]]: a utility that enables
+synchronization between source TeX file and PDF.
 
 #+begin_src emacs-lisp
-  ("LatexMk" "latexmk %(-PDF)%S%(mode) %(file-line-error) %(extraopts) %t"
-   TeX-run-latexmk nil
-    (plain-tex-mode latex-mode doctex-mode)
-    :help "Run LatexMk")
+  (let ((shell-cmd
+         (mapconcat #'identity
+                    '("pdflatex"
+                      "-synctex=1"
+                      "-interaction=nonstopmode"
+                      "-output-format=pdf "
+                      "-shell-escape"
+                      "%s")
+                    " ")))
+    (add-to-list 'TeX-command-list
+                 `("pdflatex" ,shell-cmd TeX-run-TeX nil t
+                   :help "Run \"latexmk -f -g -xelatemk\" on file.")))
 #+end_src
 
-So it doesn't appear to be a plist because there are 7 elements.
-
-Info on =TeX-command-list=:
-
-#+begin_quote
-The second element is the string handed to the shell after being expanded.  The
-expansion is done using the information found in ‘TeX-expand-list’.
-#+end_quote
-
-** Set Skim as default PDF viewer on MacOS
-Skim's displayline is used for forward search (from .tex to .pdf); option -b
-highlights the current line; option -g opens Skim in the background (just
-checked and displayliine is still there).
+** TODO Set Skim as default PDF viewer on MacOS
+Skim's =displayline= is used for forward search (from =.tex= to =.pdf=); option =-b=
+highlights the current line; option =-g= opens Skim in the background (just
+checked and =displayline= is still there).
 
 #+begin_src emacs-lisp
   (when (memq window-system '(mac ns x))
@@ -487,7 +444,12 @@ checked and displayliine is still there).
      '(("PDF Viewer"
         (concat "/Applications/Skim.app/Contents/SharedSupport/displayline"
                 " -b -g %n %o %b")))))
+
+  ;; (setq TeX-view-program-selection '((output-pdf "Skim")))
 #+end_src
+
+Having an issue with =xelatex= breaking the =View= option; see [[https://github.com/tom-tan/auctex-latexmk/issues/28][Support for xelatex
+breaks PDF viewing (#28) | GitHub]] for more info.
 
 ** Default view?
 Comments in ~legacy-dotemacs.el~ pointed me to [[http://alexkrispin.wordpress.com/2010/10/25/writing-with-emacs-and-auctex-part-1/][Writing with Emacs and AucTeX part
