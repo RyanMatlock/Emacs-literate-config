@@ -335,8 +335,10 @@ editors/IDEs)
       (treemacs-follow-mode t)
       (treemacs-filewatch-mode t)
       (treemacs-fringe-indicator-mode 'always)
-      (when treemacs-python-executable
-        (treemacs-git-commit-diff-mode t))
+      ;; I was getting the following error:
+      ;; Symbol’s function definition is void: treemacs-git-commit-diff-mode
+      ;; (when treemacs-python-executable
+      ;;   (treemacs-git-commit-diff-mode t))
 
       (pcase (cons (not (null (executable-find "git")))
                    (not (null treemacs-python-executable)))
