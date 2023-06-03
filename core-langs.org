@@ -15,10 +15,13 @@ Other resources:
 - [[https://github.com/emacs-lsp/lsp-haskell][lsp-haskell | GitHub]]
 - [[https://haskell-language-server.readthedocs.io/en/latest/installation.html][Haskell Language Server | Installation | Read the Docs]]
 - [[https://abailly.github.io/posts/a-modern-haskell-env.html][Modern Emacs for Haskell | igitur.io]]
+- [[https://github.com/minad/corfu/wiki#basic-example-configuration-with-orderless][Basic example configuration with orderless | Configuring Corfu for LSP
+  clients | Corfu wiki]]
+- [[- https://kristofferbalintona.me/posts/202202270056/][Corfu, Kind-icon, and Corfu-doc | Kristoffer Balintona]]
 
 Bind +~completion-at-point~+ ~complete-symbol~ (in ~global-map~) to something like
 =<TAB>= or =M-<TAB>=. Is there some sort of "do what I mean" tab-or-completion
-function?
+function? --- I think the orderless/corfu stuff addresses this
 
 #+begin_src emacs-lisp
   (use-package lsp-mode
@@ -26,18 +29,26 @@ function?
     :init
     ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
     (setq lsp-keymap-prefix "C-l")
+    ;; https://github.com/minad/corfu/wiki -- basic example config w/orderless
+    (defun orderless--lsp-mode-setup-completion ()
+      (setf (alist-get 'styles
+                       (alist-get 'lsp-capf completion-category-defaults))
+            '(orderless)))
     :config
-      (progn (lsp-register-custom-settings
-              '(("pyls.plugins.pyls_mypy.enabled" t t)
-                ("pyls.plugins.pyls_mypy.live_mode" nil t)
-                ("pyls.plugins.pyls_black.enabled" t t)
-                ("pyls.plugins.pyls_isort.enabled" t t)
-                ("pyls.plugins.flake8.enabled" t t))))
-    :hook ((haskell-mode . lsp)
-           (haskell-literate-mode . lsp)
-           (python-mode . lsp)
-           ;; if you want which-key integration
-           (lsp-mode . lsp-enable-which-key-integration))
+    (setq lsp-completion-provider :none) ;; we're using corfu
+    (progn (lsp-register-custom-settings
+            '(("pyls.plugins.pyls_mypy.enabled" t t)
+              ("pyls.plugins.pyls_mypy.live_mode" nil t)
+              ("pyls.plugins.pyls_black.enabled" t t)
+              ("pyls.plugins.pyls_isort.enabled" t t)
+              ("pyls.plugins.flake8.enabled" t t))))
+    :hook
+    ((lsp-completion-mode . orderless--lsp-mode-setup-completion)
+     (haskell-mode . lsp)
+     (haskell-literate-mode . lsp)
+     (python-mode . lsp)
+     ;; if you want which-key integration
+     (lsp-mode . lsp-enable-which-key-integration))
     :commands lsp)
 
   ;; optionally
