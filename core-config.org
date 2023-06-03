@@ -13,9 +13,9 @@ the way I want it at some point---and keep it that way!
 
 ** Other
 *** TODO fix formatting issues
-**** TODO fix =verbatim= and ~code~ [1/4]
+**** TODO fix =verbatim= and ~code~ [2/4]
 - [ ] =core.config.org=
-- [ ] =core-langs.org=
+- [X] =core-langs.org=
 - [X] =gui-config.org=
 - [ ] =extras.org=
 

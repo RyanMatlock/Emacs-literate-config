@@ -4,20 +4,20 @@
 
 This contains configuration for my essential languages: Haskell, Python, Rust,
 and TeX/LaTeX. In order to enable these configurations,
-=core-config-core-langs-switch= must be set to =t= in ~core-config.org~.
+~core-config-core-langs-switch~ must be set to ~t~ in =core-config.org=.
 
-* TODO Language Server Protocol: ~lsp-mode~
+* TODO Language Server Protocol: =lsp-mode=
 See [[https://github.com/emacs-lsp/lsp-mode][lsp-mode]] for project details, and see [[https://emacs-lsp.github.io/lsp-mode/page/installation/#use-package][LSP Mode installation instructions §
 use-package]] for config source.
 
 Other resources:
-- [[https://www.mattduck.com/lsp-python-getting-started.html][Getting started with ~lsp-mode~ for Python | matt duck]]
+- [[https://www.mattduck.com/lsp-python-getting-started.html][Getting started with =lsp-mode= for Python | matt duck]]
 - [[https://github.com/emacs-lsp/lsp-haskell][lsp-haskell | GitHub]]
 - [[https://haskell-language-server.readthedocs.io/en/latest/installation.html][Haskell Language Server | Installation | Read the Docs]]
 - [[https://abailly.github.io/posts/a-modern-haskell-env.html][Modern Emacs for Haskell | igitur.io]]
 
-Bind +=completion-at-point=+ =complete-symbol= (in =global-map=) to something like
-~<TAB>~ or ~M-<TAB>~. Is there some sort of "do what I mean" tab-or-completion
+Bind +~completion-at-point~+ ~complete-symbol~ (in ~global-map~) to something like
+=<TAB>= or =M-<TAB>=. Is there some sort of "do what I mean" tab-or-completion
 function?
 
 #+begin_src emacs-lisp
@@ -90,21 +90,21 @@ function?
 #+end_src
 
 *** TODO COMMENT figure out this weirdness
-In ~IELM~, I get
+In =IELM=, I get
 
 #+begin_src emacs-lisp :eval no
   ELISP> (executable-find "haskell-language-server-wrapper")
   nil
 #+end_src
 
-but in ~ansi-term~, I get
+but in =ansi-term=, I get
 
 #+begin_src shell
   $ which haskell-language-server-wrapper
   <$HOME>/.ghcup/bin/haskell-language-server-wrapper
 #+end_src
 
-** ~hindent~
+** =hindent=
 [[https://github.com/mihaimaruseac/hindent][hindent]] is a Haskell pretty printer.
 
 #+begin_src emacs-lisp
@@ -113,7 +113,7 @@ but in ~ansi-term~, I get
     :hook (haskell-mode . hindent-mode))
 #+end_src
 
-** ~dante~: an "Emacs mode for Interactive Haskell" + ~attrap~
+** =dante=: an "Emacs mode for Interactive Haskell" + =attrap=
 [[https://github.com/jyp/dante][dante]] provides a frontend to GHCi features.
 
 [[http://h2.jaguarpaw.co.uk/posts/how-i-use-dante/][How [someone] uses[s] dante]]
@@ -136,7 +136,7 @@ but in ~ansi-term~, I get
 #+end_src
 
 * Python
-** ~lsp-pyright~
+** =lsp-pyright=
 [[https://github.com/emacs-lsp/lsp-pyright][lsp-pyright | GitHub]]
 
 #+begin_src emacs-lisp
@@ -151,7 +151,7 @@ but in ~ansi-term~, I get
 This seems to work nicely!
 
 * COMMENT Hy: Lisp in Python
-** TODO COMMENT ~hy-mode~
+** TODO COMMENT =hy-mode=
 [[https://docs.hylang.org/en/stable/][Oh, Hy!]] You can run Lisp in Python. [[https://github.com/hylang/hy-mode][hy-mode | GitHub]] gives you all the nice
 features for that.
 
@@ -170,10 +170,10 @@ features for that.
   ;;              '("\\.hy$" . "python"))
 #+end_src
 
-~hy-mode~ is getting activated for ~.py~ files, which is very bad because ~lsp-mode~
+=hy-mode= is getting activated for =.py= files, which is very bad because =lsp-mode=
 is freaking out about it.
 
-** TODO COMMENT Completion with ~company-mode~, etc...
+** TODO COMMENT Completion with =company-mode=, etc...
 See [[https://company-mode.github.io][company-mode | GitHub.io]]
 
 #+begin_src emacs-lisp
@@ -189,9 +189,9 @@ See [[https://company-mode.github.io][company-mode | GitHub.io]]
     (add-hook 'after-init-hook 'global-company-mode))
 #+end_src
 
-Not working as expected (maybe a clash with ~vertico~?).
+Not working as expected (maybe a clash with =vertico=?).
 
-** COMMENT ~ob-hy~: Org-Babel support
+** COMMENT =ob-hy=: Org-Babel support
 [[https://github.com/allison-casey/ob-hy][ob-hy | GitHub (fork)]] seems to be more up-to-date than the [[https://github.com/brantou/ob-hy][original branch of
 ob-hy]].
 
@@ -207,7 +207,7 @@ ob-hy]].
 * Rust
 * TeX/LaTeX
 +Basically all+ Most of this (with the exception of the AUCTeX stuff towards the
-top) is pulled from ~legacy-dotemacs.el~ because I liked the way my old
+top) is pulled from =legacy-dotemacs.el= because I liked the way my old
 configuration worked with LaTeX. That said, I think a lot of this stuff goes
 back to around 2015 when I was relatively new to Emacs, so some of these
 options may be deprecated or implemented in a weird way.
@@ -249,7 +249,7 @@ Let's try [[https://github.com/daviwil/emacs-from-scratch/wiki/LaTeX-config-(Auc
 Well, I didn't get any warnings with this.
 
 ** TODO COMMENT Fonts \to =gui-config.org=?
-Info from the =\section{}= macro font:
+Info from the ~\section{}~ macro font:
 
 #+begin_example
   Face: font-latex-sectioning-2-face (sample) (customize this face)
@@ -285,7 +285,7 @@ Info from the =\section{}= macro font:
             Inherit: font-latex-sectioning-3-face
 #+end_example
 
-=font-latex-fontify-sectioning=:
+~font-latex-fontify-sectioning~:
 
 #+begin_example
   font-latex-fontify-sectioning is a variable defined in ‘font-latex.el’.
@@ -311,7 +311,7 @@ Info from the =\section{}= macro font:
     You can customize this variable.
 #+end_example
 
-See [[https://emacs.stackexchange.com/a/47577][How do I set latex face attributes in ~init.el?~ | emacs.stackexchange]]
+See [[https://emacs.stackexchange.com/a/47577][How do I set latex face attributes in =init.el?= | emacs.stackexchange]]
 
 #+begin_src emacs-lisp
   (with-eval-after-load 'font-latex
@@ -322,8 +322,8 @@ See [[https://emacs.stackexchange.com/a/47577][How do I set latex face attribute
     )
 #+end_src
 
-Note that this doesn't affect the =\title{}= and =\author{}= (and presumably
-=\subtitle{}=) macros.
+Note that this doesn't affect the ~\title{}~ and ~\author{}~ (and presumably
+~\subtitle{}~) macros.
 
 ** Indentation
 
@@ -334,7 +334,7 @@ Note that this doesn't affect the =\title{}= and =\author{}= (and presumably
 
 ** Word count
 The MacTeX (and presumably most LaTeX distributions) comes with a CLI utility
-called ~texcount~; see [[http://superuser.com/questions/125027/word-count-for-latex-within-emacs][Word count for LaTeX within emacs | stackexchange]].
+called =texcount=; see [[http://superuser.com/questions/125027/word-count-for-latex-within-emacs][Word count for LaTeX within emacs | stackexchange]].
 
 #+begin_src emacs-lisp
   (defun latex-word-count ()
@@ -352,7 +352,7 @@ called ~texcount~; see [[http://superuser.com/questions/125027/word-count-for-la
 #+end_src
 
 ** Misc hooks and settings
-Didn't find any comments associated with these settings in ~legacy-dotemacs.el~,
+Didn't find any comments associated with these settings in =legacy-dotemacs.el=,
 but I liked how everything worked before.
 
 #+begin_src emacs-lisp
@@ -367,7 +367,7 @@ but I liked how everything worked before.
   (setq TeX-PDF-mode t)
 #+end_src
 
-** ~C-c C-c~ compilation with ~latexmk~
+** =C-c C-c= compilation with =latexmk=
 Note: SyncTeX is setup via =~/.latexmkrc= (see below) --- this seems out of date
 as I haven't configured =.latexmkrc= on my devices.
 
@@ -679,7 +679,7 @@ updated on [2022-02-20 Sun].
   (setq tex-alt-dvi-print-command "dvips")
 #+end_src
 
-** ~outshine~ ~TAB~ folding à la Org mode
+** =outshine=: =TAB= folding à la Org mode
 See [[https://github.com/daviwil/emacs-from-scratch/wiki/LaTeX-config-(AucteX)-in-Emacs-from-scratch#latex][LaTeX config (AucteX) in Emacs from scratch]] [Note: contains some minor
 modifications.]
 
@@ -741,7 +741,7 @@ on setting key bindings.
 #+end_example
 
 +Ok, well, that's kinda weird. Anyway, =outshine= stuff will have to wait.+
-Never mind, =outshine-cycle= is working already.
+Never mind, ~outshine-cycle~ is working already.
 
 * Sanity check
 Check that bottom of this file was reached and evaluated successfully.
