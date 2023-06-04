@@ -1277,6 +1277,57 @@ section under which to put this.
 EmacsWiki has some ideas for how to change thee [[https://www.emacswiki.org/emacs/EshellPrompt][eshell prompt]] to make it more
 like your bash prompt, or even do some cool things like fish.
 
+#+begin_src emacs-lisp
+  (require 'cl-lib)
+
+  (defun fish-path (path max-len)
+    "Return a potentially trimmed-down version of the directory PATH, replacing
+  parent directories with their initial characters to try to get the character
+  length of PATH (sans directory slashes) down to MAX-LEN.
+
+  Stolen from https://www.emacswiki.org/emacs/EshellPrompt"
+    (let* ((components (split-string (abbreviate-file-name path) "/"))
+           (len (+ (1- (length components))
+                   (cl-reduce '+ components :key 'length)))
+           (str ""))
+      (while (and (> len max-len)
+                  (cdr components))
+        (setq str (concat str
+                          (cond ((= 0 (length (car components))) "/")
+                                ((= 1 (length (car components)))
+                                 (concat (car components) "/"))
+                                (t
+                                 (if (string= "."
+                                              (string (elt (car components) 0)))
+                                     (concat (substring (car components) 0 2)
+                                             "/")
+                                   (string (elt (car components) 0) ?/)))))
+              len (- len (1- (length (car components))))
+              components (cdr components)))
+      ;; TODO replace chars > max-len with …
+      (concat str (cl-reduce (lambda (a b) (concat a "/" b)) components))))
+
+  (defun custom-eshell-prompt-function ()
+    "..."
+    (let ((prompt-symbol
+           (if (zerop (user-uid))
+               (propertize  " #" 'face
+                            '(:foreground "red" :weight bold))
+             (propertize  " $" 'face
+                          '(:foreground "green" :weight bold)))))
+       (concat (propertize
+                (concat "["
+                        (if (string= (eshell/pwd) (getenv "HOME"))
+                            "~"
+                          (fish-path (eshell/basename (eshell/pwd)) 25))
+                        "]")
+                          'face
+                          '(:foreground "grey"))
+              prompt-symbol " ")))
+
+  (setq eshell-prompt-function 'custom-eshell-prompt-function)
+#+end_src
+
 * TODO Org mode
 ** Main config
 Per [[https://panadestein.github.io/emacsd/#org55146ca][Panadestein's Emacs's config | Org mode]], it seems like I can put this all
