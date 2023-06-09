@@ -8,6 +8,14 @@ configuration. Hopefully I'll empty this section and have everything working
 the way I want it at some point---and keep it that way!
 
 ** ~*Warnings*~
+*** Warning on starting Inferior Python mode
+
+#+begin_example
+  Warning (python): Your ‘python-shell-interpreter’ doesn’t seem to support
+  readline, yet ‘python-shell-completion-native-enable’ was t and "python3" is
+  not part of the ‘python-shell-completion-native-disabled-interpreters’ list.
+  Native completions have been disabled locally.  Disable showing Disable logging
+#+end_example
 
 ** ~*Messages*~
 
