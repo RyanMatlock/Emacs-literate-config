@@ -147,6 +147,12 @@ but in =ansi-term=, I get
 #+end_src
 
 * Python
+** Getting ~match~​/​~case~ to work properly
+For now, follow the instructions at [[https://emacs.stackexchange.com/a/71402/9013][How can I make python-mode correctly indent
+python's match statement? | emacs.stackexchange]] (basically, you need to
+manually add ~match~ and ~case~ to the right parts of =python.el= and delete
+=python.elc=).
+
 ** =lsp-pyright=
 [[https://github.com/emacs-lsp/lsp-pyright][lsp-pyright | GitHub]]
 
