@@ -239,22 +239,6 @@ And verify that it's been installed:
   $HOME/.cargo/bin/rust-analyzer
 #+end_src
 
-=*rust-analyzer::stderr*=:
-
-#+begin_example
-  unexpected argument: "run"
-
-  Process rust-analyzer stderr finished
-  unexpected argument: "run"
-
-  Process rust-analyzer stderr finished
-  unexpected argument: "run"
-
-  Process rust-analyzer stderr finished
-#+end_example
-
-Ok, =rust-analyzer= still doesn't seem to be working properly.
-
 #+begin_src emacs-lisp
   (use-package rustic
     :straight t
