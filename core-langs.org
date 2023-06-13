@@ -222,6 +222,48 @@ ob-hy]].
 #+end_src
 
 * Rust
+** =rustic=
+[[https://github.com/brotzeit/rustic][rustic | GitHub]]
+
+Need to [[https://rust-analyzer.github.io/manual.html#installation][install =rust-analyzer=​]] manually:
+
+#+begin_src shell
+  $ rustup component add rust-src
+  $ rustup component add rust-analyzer
+#+end_src
+
+And verify that it's been installed:
+
+#+begin_src shell
+  $ which rust-analyzer
+  $HOME/.cargo/bin/rust-analyzer
+#+end_src
+
+=*rust-analyzer::stderr*=:
+
+#+begin_example
+  unexpected argument: "run"
+
+  Process rust-analyzer stderr finished
+  unexpected argument: "run"
+
+  Process rust-analyzer stderr finished
+  unexpected argument: "run"
+
+  Process rust-analyzer stderr finished
+#+end_example
+
+Ok, =rust-analyzer= still doesn't seem to be working properly.
+
+#+begin_src emacs-lisp
+  (use-package rustic
+    :straight t
+    ;; :custom
+    ;; (rustic-analyzer-command '("rustup" "run" "stable" "rust-analyzer"))
+    :hook
+    (rust-mode . lsp-deferred))
+#+end_src
+
 * TeX/LaTeX
 +Basically all+ Most of this (with the exception of the AUCTeX stuff towards the
 top) is pulled from =legacy-dotemacs.el= because I liked the way my old
