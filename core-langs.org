@@ -248,6 +248,26 @@ And verify that it's been installed:
     (rust-mode . lsp-deferred))
 #+end_src
 
+** COMMENT =yasnippet=
+Per [[https://robert.kra.hn/posts/rust-emacs-setup/#code-completion-and-snippets][Configuring Emacs for Rust development § Code completion and snippets |
+Robert Krahn]], you need =yasnippet= (but maybe that's only if you're using =company=
+instead of =corfu=?).
+
+#+begin_src emacs-lisp
+  (use-package yasnippet
+    :straight t
+    :hook
+    ((rust-mode . yas-minor-mode)
+     (rustic-mode .yas-minor-mode))
+    :config
+    (yas-reload-all)
+    ;; (add-hook 'prog-mode-hook 'yas-minor-mode)
+    ;; (add-hook 'text-mode-hook 'yas-minor-mode)
+    )
+#+end_src
+
+This doesn't actually seem to work.
+
 * TeX/LaTeX
 +Basically all+ Most of this (with the exception of the AUCTeX stuff towards the
 top) is pulled from =legacy-dotemacs.el= because I liked the way my old

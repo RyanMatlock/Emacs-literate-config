@@ -179,6 +179,14 @@ org-roam-node~ warning.
 *** TODO COMMENT ~yaml-pro~
 [[https://github.com/zkry/yaml-pro][yaml-pro | GitHub]]: tools for editing YAML leveraging tree-sitter/parser
 
+** ~csv-mode~
+[[https://elpa.gnu.org/packages/csv-mode.html][csv-mode | GNU ELPA]]
+
+#+begin_src emacs-lisp
+  (use-package csv-mode
+    :straight t)
+#+end_src
+
 ** Markdown +-- configured under ~lsp-bridge~+
 For when you can't use Org mode 🙃; see [[https://jblevins.org/projects/markdown-mode/][markdown-mode]].
 
