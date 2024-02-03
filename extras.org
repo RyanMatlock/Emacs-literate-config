@@ -213,7 +213,6 @@ built in).
     :hook ((markdown-mode . pandoc-mode)))
 #+end_src
 
-
 ** JSON
 #+begin_src emacs-lisp
   (use-package json-mode
@@ -339,6 +338,15 @@ current user’s login shell.
 
 -- [[https://www.gnu.org/software/bash/manual/html_node/Bash-Variables.html#index-SHELL][Bash Variables § =SHELL= | GNU Bash Manual]]
 #+end_quote
+
+** PARTIAL =dockerfile-mode=
+[[https://github.com/spotify/dockerfile-mode][dockerfile-mode | github]] (maintained by Spotify! Is this my first time using
+something from a corporate account in my Emacs config?)
+
+#+begin_src emacs-lisp
+  (use-package dockerfile-mode
+    :straight t)
+#+end_src
 
 * Minor modes
 ** TempEL
