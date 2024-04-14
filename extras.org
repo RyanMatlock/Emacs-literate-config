@@ -99,6 +99,7 @@ where
 #+end_src
 
 **** +wrong+ +slightly+ programmatic/DRY way to do it
+
 #+begin_src emacs-lisp
   (defun org-roam--create-basic-capture-template (name &optional key)
     "Create a basic capture template with NAME and shortcut KEY (default: first
@@ -107,8 +108,7 @@ where
           (default-title "#+title: ${title}\n")
           (slug "${slug}.org"))
       (list
-       key name
-       'plain "%?"
+       key name 'plain "%?"
        :if-new (list 'file+head (concat (file-name-as-directory name)
                                         slug)
                      default-title)
@@ -116,8 +116,113 @@ where
        :unnarrowed t)))
 
   (setq org-roam-capture-templates
-        (mapcar #'org-roam--create-basic-capture-template
-                '("main" "references" "synthesis")))
+        (let ((categories '("main" "references" "synthesis")))
+          (mapcar #'org-roam--create-basic-capture-template
+                           categories)))
+#+end_src
+
+**** BROKEN COMMENT updated version
+fix this
+
+#+begin_src emacs-lisp  :eval no
+  (defun org-roam--create-basic-capture-template-v2 (name &optional key links)
+    "Create a basic capture template with NAME and shortcut KEY (default: first
+  letter of NAME). If LINKS is non-nil, append a top-level section for Org-roam
+  links."
+    (let ((key (or key (string (elt name 0))))
+          (default-title "#+title: ${title}\n")
+          (slug "${slug}.org"))
+      (list
+       (if links
+           (progn
+             (upcase key)
+             (concat (capitalize name) " (w/links section)")
+             'plain
+             "\n%?\n* Org-roam links                           :noexport:\n- ")
+         (progn key (capitalize name) 'plain "\n%?"))
+       :if-new (list 'file+head (concat (file-name-as-directory name)
+                                        slug)
+                     default-title)
+       :immediate-finish t
+       :unnarrowed t)))
+
+  ;; ELISP> (mapcar #'(lambda (cat) (list cat nil t)) '("foo" "bar" "baz"))
+  ;; (("foo" nil t)
+  ;;  ("bar" nil t)
+  ;;  ("baz" nil t))
+
+
+  ;; ELISP> (append '(("foo")) org-roam-capture-templates)
+  ;; (("foo")
+  ;;  ("m" "main" plain "%?" :if-new
+  ;;   (file+head "main/${slug}.org" "#+title: ${title}
+  ;; ")
+  ;;   :immediate-finish t :unnarrowed t)
+  ;;  ("r" "references" plain "%?" :if-new
+  ;;   (file+head "references/${slug}.org" "#+title: ${title}
+  ;; ")
+  ;;   :immediate-finish t :unnarrowed t)
+  ;;  ("s" "synthesis" plain "%?" :if-new
+  ;;   (file+head "synthesis/${slug}.org" "#+title: ${title}
+  ;; ")
+  ;;   :immediate-finish t :unnarrowed t))
+
+
+  ;; ELISP> (org-roam--create-basic-capture-template-v2 "main")
+  ;; ("
+  ;; %?" :if-new
+  ;; (file+head "main/${slug}.org" "#+title: ${title}
+  ;; ")
+  ;; :immediate-finish t :unnarrowed t)
+  ;; ELISP> (org-roam--create-basic-capture-template-v2 '("main" nil t))
+  ;; *** Eval error ***  Wrong type argument: characterp, "main"
+
+  ;; ELISP> (org-roam--create-basic-capture-template-v2 '("main" nil nil))
+  ;; *** Eval error ***  Wrong type argument: characterp, "main"
+  ;; ELISP> (org-roam--create-basic-capture-template-v2 "main" nil nil)
+  ;; ("
+  ;; %?" :if-new
+  ;; (file+head "main/${slug}.org" "#+title: ${title}
+  ;; ")
+  ;; :immediate-finish t :unnarrowed t)
+
+  ;; (let ((extended-categories '(("foo" nil t)
+  ;;                              ("bar" nil t)
+  ;;                              ("baz" "B" t))))
+  ;;   (mapcar #'(lambda (ext-cat)
+  ;;               (apply #'org-roam--create-basic-capture-template-v2
+  ;;                      ext-cat))
+  ;;           extended-categories))
+
+  ;; (let* ((categories '("main" "references" "synthesis"))
+  ;;        (extended-categories
+  ;;         (append (mapcar #'list categories)
+  ;;                 (mapcar #'(lambda (cat) (list cat nil t)) categories))))
+  ;;   (mapcar #'(lambda (ext-cat)
+  ;;               (apply #'org-roam--create-basic-capture-template-v2
+  ;;                      ext-cat))
+  ;;           extended-categories))
+
+  ;; (setq org-roam-capture-templates-v2
+  ;;       (let ((categories '("main" "references" "synthesis")))
+  ;;         ;; (append (mapcar #'org-roam--create-basic-capture-template-v2
+  ;;         ;;                 categories)
+  ;;                 (mapcar #'org-roam--create-basic-capture-template-v2
+  ;;                         (mapcar #'(lambda (cat)
+  ;;                                     (list cat nil t))
+  ;;                                 categories))
+  ;;                 ;; )
+  ;;         ))
+
+  (setq org-roam-capture-templates
+        (let* ((categories '("main" "references" "synthesis"))
+               (extended-categories
+                (append (mapcar #'list categories)
+                        (mapcar #'(lambda (cat) (list cat nil t)) categories))))
+          (mapcar #'(lambda (ext-cat)
+                      (apply #'org-roam--create-basic-capture-template-v2
+                             ext-cat))
+                  extended-categories)))
 #+end_src
 
 **** Display property types
