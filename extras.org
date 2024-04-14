@@ -134,13 +134,15 @@ fix this
     "Create a basic capture template with NAME and shortcut KEY (default: first
   letter of NAME). If LINKS is non-nil, append a top-level section for Org-roam
   links."
-    (let ((key (or key (string (elt name 0))))
+    (let ((key (or key
+                   (let ((k (string (elt name 0))))
+                     (if links (upcase k) k))))
           (default-title "#+title: ${title}\n")
           (slug "${slug}.org"))
       (list
        (if links
            (progn
-             (upcase key)
+             key
              (concat (capitalize name) " (w/links section)")
              'plain
              "\n%?\n* Org-roam links                           :noexport:\n- ")
@@ -156,6 +158,72 @@ fix this
   ;;  ("bar" nil t)
   ;;  ("baz" nil t))
 
+  ;; ELISP> (list
+  ;;         (progn "q" "foo")
+  ;;         :if-new (list 'bar 'baz))
+  ;; ("foo" :if-new
+  ;;  (bar baz))
+  ;; so progn isn't going to work like you thought
+
+  ;; ELISP> (let ((boolean nil))
+  ;;          (append
+  ;;           (if boolean
+  ;;               (list "q" 'foo)
+  ;;             (list "z" 'bar))
+  ;;           (list :if-new (list 'baz boolean 'quux))))
+  ;; ("z" bar :if-new
+  ;;  (baz nil quux))
+
+  ;; ELISP> (let ((boolean t))
+  ;;          (append
+  ;;           (if boolean
+  ;;               (list "q" 'foo)
+  ;;             (list "z" 'bar))
+  ;;           (list :if-new (list 'baz boolean 'quux))))
+  ;; ("q" foo :if-new
+  ;;  (baz t quux))
+  ;; that'll do, pig
+
+  (defun org-roam--create-basic-capture-template-v2 (name &optional key links)
+    "Create a basic capture template with NAME and shortcut KEY (default: first
+  letter of NAME). If LINKS is non-nil, append a top-level section for Org-roam
+  links."
+    (let ((key (or key
+                   (let ((k (string (elt name 0))))
+                     (if links (upcase k) k))))
+          (default-title "#+title: ${title}\n")
+          (slug "${slug}.org"))
+      (append
+       (if links
+           (list
+            key
+            (concat (capitalize name) " (w/links section)")
+            'plain
+            "\n%?\n* Org-roam links                           :noexport:\n- ")
+         (list key (capitalize name) 'plain "\n%?"))
+       (list
+        :if-new (list 'file+head (concat (file-name-as-directory name)
+                                         slug)
+                      default-title)
+        :immediate-finish t
+        :unnarrowed t))))
+
+  ;; ELISP> (org-roam--create-basic-capture-template-v2 "main" nil nil)
+  ;; ("m" "Main" plain "
+  ;; %?" :if-new
+  ;; (file+head "main/${slug}.org" "#+title: ${title}
+  ;; ")
+  ;; :immediate-finish t :unnarrowed t)
+
+  ;; ELISP> (org-roam--create-basic-capture-template-v2 "main" nil t)
+  ;; ("M" "Main (w/links section)" plain "
+  ;; %?
+  ;; * Org-roam links                           :noexport:
+  ;; - " :if-new
+  ;; (file+head "main/${slug}.org" "#+title: ${title}
+  ;; ")
+  ;; :immediate-finish t :unnarrowed t)
+  ;; that'll definitely do, pig
 
   ;; ELISP> (append '(("foo")) org-roam-capture-templates)
   ;; (("foo")
