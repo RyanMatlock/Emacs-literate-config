@@ -116,9 +116,14 @@ where
        :unnarrowed t)))
 
   (setq org-roam-capture-templates
-        (let ((categories '("main" "references" "synthesis")))
-          (mapcar #'org-roam--create-basic-capture-template
-                           categories)))
+        (let (;; home row keys
+              ;; (categories '(("main" "a") ("references" "f") ("synthesis")))
+              ;; natural keys
+              (categories '(("main") ("references") ("synthesis"))))
+          (mapcar #'(lambda (cat)
+                      (apply #'org-roam--create-basic-capture-template
+                             cat))
+                  categories)))
 #+end_src
 
 **** BROKEN COMMENT updated version
