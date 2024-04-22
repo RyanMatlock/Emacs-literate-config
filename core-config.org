@@ -690,13 +690,31 @@ files. See https://github.com/magit/git-modes.
                (cons "/gitconfig" 'gitconfig-mode))
 #+end_src
 
-*** Magit
+*** DONE Magit
 [[https://magit.vc][Magit]] is a ~git~ ``porcelain'' essential to my Emacs experience and arguably one
 of Emacs's killer apps.
 
+For Emacs 29.3; see [[https://www.reddit.com/r/emacs/comments/174frnc/comment/kg4m0sb/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button][Psionikus's solution | Magit hiccup : transient-setup:
+Suffix | /r/emacs]]
+
 #+begin_src emacs-lisp
+  ;; (use-package magit
+  ;;   :straight t
+  ;;   :bind ("C-c 0" . magit-status))
+
+  ;; use this form for Emacs 29.3
+  (use-package transient
+    :straight (transient
+               :type git
+               :host github
+               :repo "magit/transient"
+               :version 0.4.1))
   (use-package magit
-    :straight t
+    :straight (magit
+               :type git
+               :host github
+               :repo "magit/magit"
+               :version 3.2.1)
     :bind ("C-c 0" . magit-status))
   (use-package magit-filenotify
     :straight t)
