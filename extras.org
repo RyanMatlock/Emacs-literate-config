@@ -16,8 +16,6 @@ in Emacs  | System Crafters | YouTube]] ([[https://systemcrafters.net/build-a-se
     :straight t
     :init
     (setq org-roam-v2-ack t)
-
-
     :bind (("C-c n l" . org-roam-buffer-toggle)
            ("C-c n f" . org-roam-node-find)
            ("C-c n i" . org-roam-node-insert)
@@ -127,7 +125,7 @@ where
                   categories)))
 #+end_src
 
-**** DONE updated programmatic version
+**** updated programmatic version
 
 #+begin_src emacs-lisp
   (defun org-roam--create-basic-capture-template (name &optional key links)
@@ -186,6 +184,91 @@ org-roam-node~ warning.
   (setq org-roam-node-display-template
         (concat "${type:15} ${title:*} "
                 (propertize "${tags:10}" 'face 'org-tag)))
+#+end_src
+
+*** TODO COMMENT =*org-roam*= buffer: show titles only (maybe headings too?)
+By default, the =*org-roam*= buffer shows the contents of backlinked nodes (or,
+in the case that there are contents before the first top-level heading, those
+are folded, and the first top-level heading, and everything beyond that is
+displayed). This makes it relatively difficult to actually see the node links,
+which are in bold, whereas the contents are full of underlined orange (for me)
+Org hyperlinks. I want to reduce the visual clutter and see the titles only.
+
+I just noticed that by pressing =1= in the =*org-roam*= buffer, everything
+disappears under =Backlinks=, pressing =2= (almost) gives the behavior I want (node
+titles only, followed by the first top level heading or "Top" in parentheses),
+and =3= gives the default behavior. This explains ~magit-section-show-level-2~ in
+the code below.
+
+[[https://org-roam.discourse.group/t/solved-i-want-to-see-only-backlinks-in-side-buffer-nothing-else-possible/3404/7][bkstrm's 2024-03-27 post | I want to see ONLY backlinks in side buffer, nothing
+else. Possible? | Org-Roam | Discourse]] seems to offer a solution.
+
+#+begin_src emacs-lisp
+  ;; direct copy & paste
+  (defun cb/org-roam-buffer-stuff ()
+    "check if we're in an org buffer, then make sure the org-roam buffer is visible, then refresh it, collapse the V to >, turn on olivetti mode to fix weird formatting"
+    (interactive)
+    (if (org-roam-file-p)
+        ;; if it's an org-roam buffer...
+        (progn
+          ;; make sure the buffer is visible
+          (if (eq (org-roam-buffer--visibility) 'visible)
+                  ;; if the buffer is visible, great
+                  (with-current-buffer "*org-roam*"
+                          (org-roam-buffer-refresh)
+                          (olivetti-mode 1)
+                          (magit-section-show-level-2))
+                  ;; if it's not visible, make it visible
+                 (org-roam-buffer-toggle)
+                  (with-current-buffer "*org-roam*"
+                          (org-roam-buffer-refresh)
+                          (olivetti-mode 1)
+                          (magit-section-show-level-2))))))
+
+  ;; auto pretty-printing applied
+  (defun cb/org-roam-buffer-stuff ()
+    "check if we're in an org buffer, then make sure the org-roam buffer is visible, then refresh it, collapse the V to >, turn on olivetti mode to fix weird formatting"
+    (interactive)
+    (if (org-roam-file-p)
+        ;; if it's an org-roam buffer...
+        (progn
+          ;; make sure the buffer is visible
+          (if (eq (org-roam-buffer--visibility) 'visible)
+              ;; if the buffer is visible, great
+              (with-current-buffer "*org-roam*"
+                (org-roam-buffer-refresh)
+                (olivetti-mode 1)
+                (magit-section-show-level-2))
+            ;; if it's not visible, make it visible
+            (org-roam-buffer-toggle)
+            (with-current-buffer "*org-roam*"
+              (org-roam-buffer-refresh)
+              (olivetti-mode 1)
+              (magit-section-show-level-2))))))
+
+  ;; what I think the above actually means (DRY principles applied)
+  (defun org-roam--customized-org-roam-buffer-preview ()
+    "write a docstring, dingus"
+    (interactive)
+    (when (org-roam-file-p)
+      (progn
+        (unless (eq (org-roam-buffer--visibility) :visible)
+          (org-roam-buffer-toggle))
+        (with-current-buffer org-roam-buffer
+          (org-roam-buffer-refresh)
+          ;; (olivetti-mode 1)
+          (magit-section-show-level-2)))))
+
+  ;; apparently not working
+  ;; (setq org-roam-preview-function
+  ;;       org-roam--customized-org-roam-buffer-preview)
+
+  ;; (setq org-roam-preview-function 'org-roam-preview-default-function)
+
+  ;; ;; ensure roam links are still clickable.
+  ;; (advice-add #'org-roam-fontify-like-in-org-mode
+  ;;             :around (lambda (fn &rest args)
+  ;;                       (save-excursion (apply fn args))))
 #+end_src
 
 ** Org Tree Slide
