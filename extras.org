@@ -186,7 +186,7 @@ org-roam-node~ warning.
                 (propertize "${tags:10}" 'face 'org-tag)))
 #+end_src
 
-*** TODO COMMENT =*org-roam*= buffer: show titles only (maybe headings too?)
+*** =*org-roam*= buffer: show titles only +(maybe headings too?)+
 By default, the =*org-roam*= buffer shows the contents of backlinked nodes (or,
 in the case that there are contents before the first top-level heading, those
 are folded, and the first top-level heading, and everything beyond that is
@@ -200,6 +200,7 @@ titles only, followed by the first top level heading or "Top" in parentheses),
 and =3= gives the default behavior. This explains ~magit-section-show-level-2~ in
 the code below.
 
+**** BROKEN COMMENT First attempt
 [[https://org-roam.discourse.group/t/solved-i-want-to-see-only-backlinks-in-side-buffer-nothing-else-possible/3404/7][bkstrm's 2024-03-27 post | I want to see ONLY backlinks in side buffer, nothing
 else. Possible? | Org-Roam | Discourse]] seems to offer a solution.
 
@@ -269,6 +270,85 @@ else. Possible? | Org-Roam | Discourse]] seems to offer a solution.
   ;; (advice-add #'org-roam-fontify-like-in-org-mode
   ;;             :around (lambda (fn &rest args)
   ;;                       (save-excursion (apply fn args))))
+#+end_src
+
+Let's see what the default looks like:
+
+#+begin_src emacs-lisp :eval no
+  ;; from org-roam-mode.el
+  (defun org-roam-preview-default-function ()
+    "Return the preview content at point.
+
+  This function returns the all contents under the current
+  headline, up to the next headline."
+    (let ((beg (save-excursion
+                 (org-roam-end-of-meta-data t)
+                 (point)))
+          (end (save-excursion
+                 (org-next-visible-heading 1)
+                 (point))))
+      (string-trim (buffer-substring-no-properties beg end))))
+
+  (defun org-roam-preview-get-contents (file pt)
+    "Get preview content for FILE at PT."
+    (save-excursion
+      (org-roam-with-temp-buffer file
+        (org-with-wide-buffer
+         (goto-char pt)
+         (let ((s (funcall org-roam-preview-function)))
+           (dolist (fn org-roam-preview-postprocess-functions)
+             (setq s (funcall fn s)))
+           s)))))
+#+end_src
+
+**** BROKEN COMMENT Alternate solution idea
+=C-c n l= is bound to ~org-roam-buffer-toggle~. What if I bind =C-c n L= to a
+function that calls ~org-roam-buffer-toggle~ + 「the magit(?) function bound to
+=2=​」 (~magit-section-show-level-2~)?
+
+#+begin_src emacs-lisp :eval no
+  (defun org-roam--buffer-toggle-show-level-2 ()
+    "Toggle display of the persistent `org-roam-buffer', and if opening it."
+    (interactive)
+    (progn
+      (org-roam-buffer-toggle)
+      (when (eq (org-roam-buffer--visibility) 'visible)
+        (progn
+          (switch-to-buffer-other-frame org-roam-buffer)
+          ;; ;; collapse everything
+          ;; (magit-section-show-level-1)
+          ;; ;; then show level 2
+          (magit-section-show-level-2)))))
+#+end_src
+
++This isn't quite working. I'm getting the following message:+
+
+#+begin_example
+  eieio-oref: Wrong type argument: (or eieio-object cl-structure-object oclosure), nil
+  Auto-saving...done
+#+end_example
+
+Never mind; added ~(switch-to-buffer org-roam-buffer)~, and it almost works, but
+then there are two =*org-roam*= buffers open. I want to switch focus to the
+=*org-roam*= buffer.
+
+**** Working solution
+Now you can type =C-c n L= to get the behavior you're looking for.
+
+#+begin_src emacs-lisp
+  (defun org-roam--buffer-toggle-show-level-2 ()
+    "Toggle display of the persistent `org-roam-buffer', and if it is open,
+  switch to that buffer and show level 2 sections."
+    (interactive)
+    (progn
+      (org-roam-buffer-toggle)
+      (when (eq (org-roam-buffer--visibility) 'visible)
+        (progn
+          (switch-to-buffer-other-frame org-roam-buffer)
+          (magit-section-show-level-2)))))
+
+  (define-key
+   org-mode-map (kbd "C-c n L") 'org-roam--buffer-toggle-show-level-2)
 #+end_src
 
 ** Org Tree Slide
