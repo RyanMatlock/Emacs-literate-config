@@ -618,6 +618,26 @@ I don't know why this isn't working
                :branch "master")
     :mode ("\\.ly\\'" . LilyPond-mode))
 #+end_src
+
+** =web-mode=
+https://web-mode.org/
+
+Per [[https://stackoverflow.com/a/42631327][this stackoverflow response]], =web-mode= is useful for editing unspecified XML
+and support node folding.
+
+#+begin_src emacs-lisp
+  (use-package web-mode
+    :straight t
+    :mode
+    (("\\.html?\\'" . web-mode)
+     ("\\.css\\'" . web-mode)
+     ("\\.xml\\'" . web-mode)
+     ("\\.svg\\'" . web-mode)))
+#+end_src
+
+My initial impression is that it's a little slow at folding nodes on a longer
+XML (SVG) file.
+
 * Minor modes
 ** TempEL
 [[https://github.com/minad/tempel][TempEl]] is a modern Emacs templating library.
