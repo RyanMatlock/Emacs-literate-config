@@ -555,6 +555,69 @@ something from a corporate account in my Emacs config?)
     :straight t)
 #+end_src
 
+** Lilypond
+[[https://lilypond.org/][Lilypond]] is a FOSS program for "engraving" musical scores from plaintext source
+files.
+
+*** COMMENT Not working
+https://www.reddit.com/r/emacs/comments/k0mld2/using_lilypond_in_emacs/
+
+https://lilypond.org/doc/v2.25/Documentation/usage/emacs-mode
+
+https://issues.guix.gnu.org/72924
+
+https://francopasut.netlify.app/post/emacs_write_lilypond/
+
+#+begin_src emacs-lisp :eval no
+  ;; (let (lilypond-dir "/opt/homebrew/share/emacs/site-lisp/lilypond") (when
+  ;;   (file-directory-p lilypond-dir) (setq load-path (append (list
+  ;;   lilypond-dir)) load-path))) (setq load-path (append (list
+  ;;   (expand-file-name "/opt/homebrew/share/emacs/site-lisp/")) load-path))
+  ;;   (require 'lilypond)
+
+  ;; (let ((lp (list (expand-file-name "~/.emacs.d/site-lisp/"))))
+  ;;   (use-package lilypond-mode
+  ;;     ;; :straight t
+  ;;     :load-path lp
+  ;;     ;; :ensure t
+  ;;     :mode ("\\.ly\\'" . LilyPond-mode)))
+
+  ;; (autoload 'LilyPond-mode "lilypond-mode")
+  ;; (setq auto-mode-alist
+  ;;       (cons '("\\.ly$" . LilyPond-mode) auto-mode-alist))
+
+  ;; (add-hook 'LilyPond-mode-hook (lambda () (turn-on-font-lock)))
+
+  (let ((site-lisp-dir (expand-file-name "~/.emacs.d/site-lisp/")))
+    (when (file-directory-p site-lisp-dir)
+      (setq load-path (append (list site-lisp-dir) load-path))))
+
+  ;; (use-package LilyPond-mode
+  ;;   :ensure t
+  ;;   :mode ("\\.ly\\'" . LilyPond-mode))
+
+  ;; (use-package lilypond-mode
+  ;;   :ensure t
+  ;;   :mode ("\\.ly\\'" . lilypond-mode))
+
+  (require 'LilyPond-mode)
+  (require 'lilypond-mode)
+#+end_src
+
+I don't know why this isn't working
+
+*** Bad solution---but it works ¯\_(ツ)_/¯
+[[https://github.com/benide/lilypond-mode][lilypond-mode | benide | GitHub]]
+
+#+begin_src emacs-lisp
+  (use-package lilypond-mode
+    :straight (lilypond-mode
+               :type git
+               :host github
+               :repo "benide/lilypond-mode"
+               :branch "master")
+    :mode ("\\.ly\\'" . LilyPond-mode))
+#+end_src
 * Minor modes
 ** TempEL
 [[https://github.com/minad/tempel][TempEl]] is a modern Emacs templating library.
@@ -637,70 +700,6 @@ See also [[https://www.gnu.org/software/emacs/manual/html_mono/ert.html][ERT: Em
   (eval-after-load 'emacs-lisp-mode
     (define-key emacs-lisp-mode-map (kbd "C-c t")
       'exercism-eval-and-run-all-tests-in-buffer))
-#+end_src
-
-** Lilypond
-[[https://lilypond.org/][Lilypond]] is a FOSS program for "engraving" musical scores from plaintext source
-files.
-
-** COMMENT Not working
-https://www.reddit.com/r/emacs/comments/k0mld2/using_lilypond_in_emacs/
-
-https://lilypond.org/doc/v2.25/Documentation/usage/emacs-mode
-
-https://issues.guix.gnu.org/72924
-
-https://francopasut.netlify.app/post/emacs_write_lilypond/
-
-#+begin_src emacs-lisp :eval no
-  ;; (let (lilypond-dir "/opt/homebrew/share/emacs/site-lisp/lilypond") (when
-  ;;   (file-directory-p lilypond-dir) (setq load-path (append (list
-  ;;   lilypond-dir)) load-path))) (setq load-path (append (list
-  ;;   (expand-file-name "/opt/homebrew/share/emacs/site-lisp/")) load-path))
-  ;;   (require 'lilypond)
-
-  ;; (let ((lp (list (expand-file-name "~/.emacs.d/site-lisp/"))))
-  ;;   (use-package lilypond-mode
-  ;;     ;; :straight t
-  ;;     :load-path lp
-  ;;     ;; :ensure t
-  ;;     :mode ("\\.ly\\'" . LilyPond-mode)))
-
-  ;; (autoload 'LilyPond-mode "lilypond-mode")
-  ;; (setq auto-mode-alist
-  ;;       (cons '("\\.ly$" . LilyPond-mode) auto-mode-alist))
-
-  ;; (add-hook 'LilyPond-mode-hook (lambda () (turn-on-font-lock)))
-
-  (let ((site-lisp-dir (expand-file-name "~/.emacs.d/site-lisp/")))
-    (when (file-directory-p site-lisp-dir)
-      (setq load-path (append (list site-lisp-dir) load-path))))
-
-  ;; (use-package LilyPond-mode
-  ;;   :ensure t
-  ;;   :mode ("\\.ly\\'" . LilyPond-mode))
-
-  ;; (use-package lilypond-mode
-  ;;   :ensure t
-  ;;   :mode ("\\.ly\\'" . lilypond-mode))
-
-  (require 'LilyPond-mode)
-  (require 'lilypond-mode)
-#+end_src
-
-I don't know why this isn't working
-
-** Bad solution---but it works ¯\_(ツ)_/¯
-[[https://github.com/benide/lilypond-mode][lilypond-mode | benide | GitHub]]
-
-#+begin_src emacs-lisp
-  (use-package lilypond-mode
-    :straight (lilypond-mode
-               :type git
-               :host github
-               :repo "benide/lilypond-mode"
-               :branch "master")
-    :mode ("\\.ly\\'" . LilyPond-mode))
 #+end_src
 
 * Sanity check
