@@ -638,6 +638,66 @@ and support node folding.
 My initial impression is that it's a little slow at folding nodes on a longer
 XML (SVG) file.
 
+** BROKEN =spice-mode=
+https://lifeofpenguin.blogspot.com/2021/10/spice-simulation-in-gnu-emacs.html
+
+First, ensure =gnuplot= is installed:
+
+#+begin_src emacs-lisp
+  (let ((gnuplot-exit-code (shell-command "gnuplot --version")))
+    (unless (zerop gnuplot-exit-code)
+      (message "Warning: gnuplot not properly installed/configured. May cause issues for SPICE simulation.")))
+#+end_src
+
+
+*** COMMENT first attempt at =spice-mode= installation/config
+Then configure =spice-mode=:
+
+#+begin_src emacs-lisp :eval no
+  (use-package spice-mode
+    :straight (spice-mode
+               :type git
+               :host github
+               :repo "emacsmirror/spice-mode"
+               :branch "master")
+    :config (setq spice-simulator "Ngspice"
+                  spice-waveform-viewer "ngplot")
+    :mode (("\\.cir\\'" . spice-mode)))
+#+end_src
+
+Ok, to be fair, I'm not using the =spice-mode.el= found at
+https://gitlab.com/atamariya/emacs/-/tree/dev/lisp as the blog post author
+above suggested.
+
+**** Issues
+Attempting =C-c C-r= (~spice-compile~):
+
+#+begin_example
+  Compile command: eldo -i example.cir
+#+end_example
+
+I want =eldo= to be =ngspice=. Also, the
+
+*** COMMENT trying it again
+
+#+begin_src emacs-lisp
+  (use-package spice-mode
+    :straight (spice-mode
+               :type git
+               :host gitlab
+               :repo "atamariya/emacs/-/raw/dev/lisp"
+               :branch "master")
+    :config (setq spice-simulator "Ngspice"
+                  spice-waveform-viewer "ngplot")
+    :mode (("\\.cir\\'" . spice-mode)))
+#+end_src
+
+https://gitlab.com/atamariya/emacs/-/blob/dev/lisp/spice-mode.el and
+https://gitlab.com/atamariya/emacs/-/raw/dev/lisp/spice-mode.el if you want to
+directly see the source, but it's buried in some weird way that straight can't
+really handle.
+
+
 * Minor modes
 ** TempEL
 [[https://github.com/minad/tempel][TempEl]] is a modern Emacs templating library.
