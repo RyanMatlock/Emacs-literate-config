@@ -697,6 +697,14 @@ https://gitlab.com/atamariya/emacs/-/raw/dev/lisp/spice-mode.el if you want to
 directly see the source, but it's buried in some weird way that straight can't
 really handle.
 
+** =fish-mode=
+[[https://github.com/wwwjfy/emacs-fish][fish-mode | GitHub]]
+
+#+begin_src emacs-lisp
+  (use-package fish-mode
+    :straight t
+    :mode (("\\.fish\\'" . fish-mode)))
+#+end_src
 
 * Minor modes
 ** TempEL
