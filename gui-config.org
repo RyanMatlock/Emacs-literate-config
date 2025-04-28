@@ -17,6 +17,8 @@ really a /core/ set of features anyway, so it's getting moved here.
   [[https://www.emacswiki.org/emacs/FillColumnIndicator][fill-column-indicator.el | Emacs Wiki]])+
 - disable =C-z=, which minimizes Emacs in GUI mode
 - disable ~visible-bell~; see [[http://stackoverflow.com/questions/36805713/emacs-blank-square-on-mac-os-x/36813418#36813418][Emacs blank square on Mac OS X | stackoverflow]]
+- add relative line numbers (useful for vim-style editing---yes, it's
+  happening); see [[https://stackoverflow.com/a/54392862][Relative Line Numbers In Emacs | stackoverflow]]
 
 Update: I think you've been doing this (sort of) incorrectly because you
 haven't been taking full advantage of =default-frame-alist=.
@@ -35,7 +37,9 @@ haven't been taking full advantage of =default-frame-alist=.
     (add-to-list 'default-frame-alist `(alpha ,gui-config-frame-transparency
                                               ,gui-config-frame-transparency))
 
-    (setq visible-bell nil))
+    (setq visible-bell nil)
+    (global-display-line-numbers-mode)
+    (setq display-line-numbers-type 'relative))
 #+end_src
 
 ** Solarized Dark theme
@@ -130,9 +134,10 @@ See [[https://www.gnu.org/software/emacs/manual/html_node/efaq/Turning-on-auto_0
     (setq gui-std-frame-height 45)
     (setq gui-frame-width-padding 4)
     (setq gui-frame-separation 2)
+    (setq gui-frame-line-number-width 5)
     (setq gui-std-frame-width (1+ (+ fill-column
                                      gui-frame-width-padding)))
-    (setq gui-treemacs-frame-width 35)
+    (setq gui-treemacs'-frame-width 35)
 
     (let ((scale-factor 1.3))
       (setq gui-wide-frame-width
@@ -145,7 +150,7 @@ See [[https://www.gnu.org/software/emacs/manual/html_node/efaq/Turning-on-auto_0
 
     (defun gui--calculate-frame-width (num-windows base-width)
       "Calculate width of frame given NUM-WINDOWS and BASE-WIDTH."
-      (+ (* base-width num-windows)
+      (+ (* (+ base-width gui-frame-line-number-width) num-windows)
          (* gui-frame-separation (1- num-windows))))
 
     (defun gui--resize-frame
@@ -772,7 +777,10 @@ See [[https://zzamboni.org/post/beautifying-org-mode-in-emacs/][Step 4 | Beautif
    '(org-tag ((t (:inherit (shadow fixed-pitch) :weight bold :height 0.8)))))
 #+end_src
 
-** ~mode-line~: prettier mode line
+** TODO ~mode-line~: prettier mode line
+TODO: change cursor format to =[x]:[y]/[total # lines]=; I'm not convinced I need
+the percentage; maybe check out other mode line options
+
 [[https://gitlab.com/jessieh/mood-line][mood-line | GitLab]]
 
 Note that the glyphs must be of type char, /not/ string.
