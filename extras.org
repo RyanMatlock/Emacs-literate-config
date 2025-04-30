@@ -27,11 +27,19 @@ in Emacs  | System Crafters | YouTube]] ([[https://systemcrafters.net/build-a-se
     :bind-keymap
     ("C-c n d" . org-roam-dailies-map)
     :config
-    (let* ((roam-dir "~/Dropbox/org/roam")
+    (let* ((hostname (replace-regexp-in-string "\\.local$" "" (system-name)))
+           (roam-dir "~/Dropbox/org/roam")
+           (db-dir (file-name-concat roam-dir "db"))
+           (db-file
+            (file-truename
+             (file-name-concat db-dir (concat "org-roam." hostname ".db"))))
            (full-roam-dir (file-truename roam-dir)))
       (cond ((file-directory-p full-roam-dir)
              (setq org-roam-directory full-roam-dir))
-            (t (warn (format "Org roam directory not found at %s." roam-dir)))))
+            (t (warn (format "Org roam directory not found at %s." roam-dir))))
+      (unless (file-directory-p db-dir) (make-directory db-dir))
+      (setq org-roam-db-location db-file)
+      (unless (file-exists-p db-file) (org-roam-db-sync)))
     (require 'org-roam-dailies)
     (setq org-roam-dailies-directory "journal")
     (setq org-roam-completion-everywhere t)
