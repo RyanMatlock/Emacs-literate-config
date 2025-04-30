@@ -50,6 +50,13 @@ in Emacs  | System Crafters | YouTube]] ([[https://systemcrafters.net/build-a-se
     (org-roam-db-autosync-mode))
 #+end_src
 
+I think I know what it's useful to build the org-roam databases on a per-device
+basis: since you're storing everything on Dropbox, some of the files may not be
+available locally, and if you try re-build the database with missing files,
+it'll hang. This way every device can build a database around what it has
+(although you still get the most utility out of having all the files locally
+available).
+
 *** Capture templates
 Ideas for capture templates: [[https://jethrokuan.github.io/org-roam-guide/][How I Take Notes with Org-roam | jethrokuan]].
 
