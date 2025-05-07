@@ -761,6 +761,17 @@ on a large file like this one), so maybe there's a better way?
   (font-lock-flush)
 #+end_src
 
+*** TODO Org inline image display
+https://orgmode.org/manual/Images.html
+
+For some reason, =C-h v org-image-max-width= doesn't match anything, so I'll just
+try =setq='ing it.
+
+#+begin_src emacs-lisp
+  (setq org-image-max-width fill-column)
+  ;; (setq org-image-max-width window)
+#+end_src
+
 **** TODO fix =verbatim= behavior
 ~verbatim~ font is rendered in the headline font---but only on my MacBook for
 some reason. Its ~:inherit~ value is ~shadow~, whereas on my Mac Mini, the
