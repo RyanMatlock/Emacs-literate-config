@@ -811,6 +811,10 @@ Note that the glyphs must be of type char, /not/ string.
             ;; buffer status
             (:buffer-read-only . ?✖) ;; Heavy Multiplication X
             ))
+    ;; customize cursor position display
+    (defun mood-line-alt-segment-cursor-position ()
+      "Return 「col : line # / total #lines」 of the cursor in the current buffer."
+      (format-mode-line "%c:%l/%n" (count-lines (point-min) (point-max))))
     ;; update mood-line-glyph-alist
     (seq-do
      #'(lambda (symbol-char-cons-cell)
