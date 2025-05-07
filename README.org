@@ -41,6 +41,7 @@ Includes configuration for
 - Python
 - Rust
 - TeX/LaTeX/AUCTeX
+- Scheme
 
 *** ~extras.org~
 - Org roam
