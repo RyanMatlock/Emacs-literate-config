@@ -712,6 +712,38 @@ https://gitlab.com/atamariya/emacs/-/raw/dev/lisp/spice-mode.el if you want to
 directly see the source, but it's buried in some weird way that straight can't
 really handle.
 
+*** let's try the first way again since I'm actually using =ngspice= now
+Then configure =spice-mode=:
+
+#+begin_src emacs-lisp :eval no
+  (use-package spice-mode
+    :straight (spice-mode
+               :type git
+               :host github
+               :repo "emacsmirror/spice-mode"
+               :branch "master")
+    :config (setq spice-simulator "ngspice"
+                  spice-waveform-viewer "ngplot")
+    :mode (("\\.cir\\'" . spice-mode)))
+
+  ;; (require 'compile)
+  ;; (defun spice-compile ()
+  ;;   "Spice wrapper function for compile."
+  ;;   (interactive)
+  ;;   (spice-set-simulator-command)
+  ;;   (call-interactively 'compile nil)
+  ;;   )
+
+  (defun spice-compile-ngspice ()
+    "use in place of spice-mode.el's spice-compile command"
+    (interactive)
+    ;;
+    )
+#+end_src
+
+Ok, looking through =spice-mode.el=, it seems like maybe I can do my own
+~spice-compile~ command that uses =ngspice=.
+
 ** =fish-mode=
 [[https://github.com/wwwjfy/emacs-fish][fish-mode | GitHub]]
 
