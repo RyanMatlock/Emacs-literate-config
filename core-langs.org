@@ -806,6 +806,34 @@ on setting key bindings.
 +Ok, well, that's kinda weird. Anyway, =outshine= stuff will have to wait.+
 Never mind, ~outshine-cycle~ is working already.
 
+* TODO Scheme
+** =geiser=: REPL for Scheme/Racket
+[[https://github.com/emacsmirror/geiser][geiser | github]], +[[https://gitlab.com/emacs-geiser/mit][geiser-mit | gitlab]] (MIT/GNU geiser)+
+
+As of [2025-05-06 Tue], [[https://www.gnu.org/software/mit-scheme/][MIT/GNU Scheme | GNU]] says that there are issues
+supporting Apple silicon, and you don't need that sort of annoyance in your
+life. Per the [[https://geiser.nongnu.org/Installation.html#Installation][geiser installation documentation | nongnu]], geiser supports
+multiple REPLs, so we'll ignore geiser-mit on MacOS.
+
+[[https://news.ycombinator.com/item?id=39183316][Hacker News]] suggests Racket is the way to go for MacOS.
+
+#+begin_src emacs-lisp
+  ;; (unless (eq system-type 'darwin)
+  ;;   (use-package geiser-mit
+  ;;     :straight t))
+
+  ;; refactor this out somewhere better and use it where you need it
+  (defun warn-missing-executable (exec-name)
+    "Warn if `exec-name` is missing."
+    (unless (executable-find exec-name)
+      (warn (format "`%s` executable not found." exec-name))))
+
+  (use-package geiser-racket
+    :straight t
+    :config
+    (warn-missing-executable "racket"))
+#+end_src
+
 * Sanity check
 Check that bottom of this file was reached and evaluated successfully.
 
