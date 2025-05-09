@@ -1018,6 +1018,29 @@ bandaid.
     (beacon-mode 1))
 #+end_src
 
+*** Insert date when creating new file
+This seems like a quality of life upgrade that I should've thought to do ages
+ago.
+
+[[https://www.reddit.com/r/emacs/comments/ju0alh/comment/gc8v6o7/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button][/r/emacs]] has a helpful tip for enabling recursive minibuffers in order to make
+this possible.
+
+#+begin_src emacs-lisp
+  (setq enable-recursive-minibuffers t)
+
+  (defun insert-iso-8601-date ()
+    "Insert ISO 8601 date at point."
+    (interactive)
+    (let* ((now (decode-time))
+           (year (decoded-time-year now))
+           (month (decoded-time-month now))
+           (day (decoded-time-day now))
+           (today-iso-8601 (format "%i-%02i-%02i" year month day)))
+      (insert today-iso-8601)))
+
+  (global-set-key (kbd "C-c d") 'insert-iso-8601-date)
+#+end_src
+
 ** TODO Silly stuff
 *** Shrug emoticon
 #+begin_src emacs-lisp
