@@ -753,6 +753,15 @@ Ok, looking through =spice-mode.el=, it seems like maybe I can do my own
     :mode (("\\.fish\\'" . fish-mode)))
 #+end_src
 
+** =nix-mode=
+[[https://github.com/NixOS/nix-mode][nix-mode | GitHub]]
+
+#+begin_src emacs-lisp
+  (use-package nix-mode
+    :straight t
+    :mode "\\.nix\\'")
+#+end_src
+
 * Minor modes
 ** TempEL
 [[https://github.com/minad/tempel][TempEl]] is a modern Emacs templating library.
