@@ -822,12 +822,6 @@ multiple REPLs, so we'll ignore geiser-mit on MacOS.
   ;;   (use-package geiser-mit
   ;;     :straight t))
 
-  ;; refactor this out somewhere better and use it where you need it
-  (defun warn-missing-executable (exec-name)
-    "Warn if `exec-name` is missing."
-    (unless (executable-find exec-name)
-      (warn (format "`%s` executable not found." exec-name))))
-
   (use-package geiser-racket
     :straight t
     :config

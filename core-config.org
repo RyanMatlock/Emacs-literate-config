@@ -1377,6 +1377,33 @@ like your bash prompt, or even do some cool things like fish.
   (setq eshell-prompt-function 'custom-eshell-prompt-function)
 #+end_src
 
+** Helper functions
+*** TODO ~warn-missing-executable~
+[[https://www.gnu.org/software/emacs/manual/html_node/elisp/Warning-Basics.html][Warning Basics | GNU Emacs Manual]].
+
+#+begin_aside
+While looking up information on warnings, I came across this info on [[https://emacsdocs.org/docs/elisp/Errors][errors]] at
+what looks to be a great resource that I haven't come across before: [[https://emacsdocs.org/][Emacs
+Docs]]: "The modern documentation website Emacs deserves," which has
+documentation on [[https://emacsdocs.org/docs/emacs/The-Emacs-Editor][Emacs]], [[https://emacsdocs.org/docs/elisp/Emacs-Lisp][Emacs lisp]], [[https://emacsdocs.org/docs/org/The-Org-Manual][Org mode]], [[https://emacsdocs.org/docs/auctex/Top][AUCTeX]], and [[https://emacsdocs.org/docs/Magit/Top][Magit]].
+#+end_aside
+
+#+begin_src emacs-lisp
+  ;; (display-warning 'file-missing
+  ;;                  (format-message "missing `something'")
+  ;;                  :warn
+  ;;                  "*Warnings*")
+
+  ;; (warn "missing executable: `foobar'")
+
+  ;; (message "this is still evaluated")
+
+  (defun warn-missing-executable (exec-name)
+    "Warn if EXEC-NAME is missing."
+    (unless (executable-find exec-name)
+      (message (format-message "missing executable: `%s'" exec-name))))
+#+end_src
+
 * TODO Org mode
 ** Main config
 Per [[https://panadestein.github.io/emacsd/#org55146ca][Panadestein's Emacs's config | Org mode]], it seems like I can put this all
