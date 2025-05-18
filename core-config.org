@@ -78,6 +78,11 @@ configuration on a new machine.
 - [ ] [[https://github.com/emacs-circe/circe][circe | GitHub]]: an IRC client for Emacs (you know you only want this
   because of the [[https://www.goodreads.com/book/show/35959740-circe][Madeline Miller book]])
 
+*** TODO Use =use-package= the right way? (with =straight=??)
+See [[https://batsov.com/articles/2025/04/17/using-use-package-the-right-way/][Using use-package the right way | Bozhidar Batsov]]. He includes a lot of
+~:defer t~ instances in uses of ~(use-package ...)~ in order to speed up the loading
+time of Emacs, and he deprecates the use of ~:config~ and ~:init~.
+
 ** Features to add [2/4]
 - [X] complete the switch from ~package.el~ to ~straight.el~
   - [X] automatically install missing packages on startup (finding out the hard
