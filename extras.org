@@ -370,6 +370,18 @@ Now you can type =C-c n L= to get the behavior you're looking for.
 [[https://github.com/takaxp/org-tree-slide][Org Tree Slide]] makes for quick and easy presentations with your Org mode files
 (similar to [[https://github.com/yjwen/org-reveal][org-reveal]] + [[https://revealjs.com][reveal.js]], but lighter weight).
 
+** =org-make-toc=
+[[https://github.com/alphapapa/org-make-toc][org-make-toc | GitHub]]: create up-to-date table of contents for Org files, which
+you can [[https://github.com/alphapapa/org-make-toc?tab=readme-ov-file#automatically-update-on-save][automatically update on save]]. (I was inspired to start using a TOC
+generator by [[https://github.com/idlip/d-nix/blob/gol-d/d-setup.org?plain=1][idlip's literate NixOS config]].)
+
+#+begin_src emacs-lisp
+  (use-package org-make-toc
+    :straight t
+    :hook
+    (org-mode . org-make-toc))
+#+end_src
+
 * Major modes
 ** YAML
 *** ~yaml-mode~
