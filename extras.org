@@ -379,8 +379,23 @@ generator by [[https://github.com/idlip/d-nix/blob/gol-d/d-setup.org?plain=1][id
   (use-package org-make-toc
     :straight t
     :hook
-    (org-mode . org-make-toc))
+    ;; (org-mode . org-make-toc)
+    )
 #+end_src
+
+This is great for
+READMEs and literate Org configs that end up on GitHub, but for vanilla Org
+files that may get exported to HTML and LaTeX, you get a nicer TOC out of the
+box, so it seems like you want to use this on a per-file basis:
+
+#+begin_example
+  # -*- before-save-hook: org-make-toc; org-make-toc-insert-custom-ids: t; -*-
+#+end_example
+
+Even including ~toc: nil~ with the above didn't suppress the standard TOC when
+exporting to HTML, so there's something going on that I'm too lazy to figure
+out right now. The point is you've got this, and it's cool, but you probably
+don't need it all the time.
 
 * Major modes
 ** YAML
