@@ -858,6 +858,23 @@ See also [[https://www.gnu.org/software/emacs/manual/html_mono/ert.html][ERT: Em
       'exercism-eval-and-run-all-tests-in-buffer))
 #+end_src
 
+** Lorem Ipsum
+[[https://github.com/jschaf/emacs-lorem-ipsum][emacs-lorem-ipsum | GitHub]] --- hey, sometimes it's handy to insert gibberish
+text for testing purposes; after all, you do it in LaTeX sometimes.
+
+#+begin_src emacs-lisp
+  (use-package lorem-ipsum
+    :straight t
+    :bind (:map global-map
+                ("C-c l s" . lorem-ipsum-insert-sentences)
+                ("C-c l p" . lorem-ipsum-insert-paragraphs)
+                ("C-c l l" . lorem-ipsum-insert-list)))
+#+end_src
+
+Ok, after using it a little bit, it's slightly annoying that it inserts two
+spaces after a period and always inserts spaces at the end of a sentence or
+paragraph, but I can live with it.
+
 * Sanity check
 Check that bottom of this file was reached and evaluated successfully.
 
