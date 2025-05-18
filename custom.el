@@ -70,6 +70,7 @@
      ("" "siunitx" nil nil)))
  '(pos-tip-background-color "#073642")
  '(pos-tip-foreground-color "#93a1a1")
+ '(safe-local-variable-values '((org-make-toc-insert-custom-ids . t)))
  '(show-trailing-whitespace t)
  '(smartrep-mode-line-active-bg (solarized-color-blend "#859900" "#073642" 0.2))
  '(term-default-bg-color "#002b36")
@@ -107,4 +108,5 @@
  ;; If there is more than one, they won't work right.
  '(org-level-1 ((t (:inherit default :foreground "#cb4b16" :weight bold))))
  '(org-level-2 ((t (:inherit default :foreground "#859900" :weight semi-bold))))
- '(org-level-3 ((t (:inherit default :foreground "#268bd2" :weight semi-bold)))))
+ '(org-level-3 ((t (:inherit default :foreground "#268bd2" :weight semi-bold))))
+ '(org-tag ((t (:inherit (shadow fixed-pitch) :weight bold :height 0.8)))))
