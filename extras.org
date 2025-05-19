@@ -378,7 +378,7 @@ generator by [[https://github.com/idlip/d-nix/blob/gol-d/d-setup.org?plain=1][id
 #+begin_src emacs-lisp
   (use-package org-make-toc
     :straight t
-    :hook
+    ;; :hook
     ;; (org-mode . org-make-toc)
     )
 #+end_src
