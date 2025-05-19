@@ -1595,7 +1595,8 @@ in =define-key= or =local-set-key=, but now everything works as it should.
               ("sh"  . "shell")
               ("esh" . "eshell")
               ("yaml" . "yaml")
-              ("json" . "json")))
+              ("json" . "json")
+              ("nix" . "nix")))
 
       (seq-do
        #'(lambda (src-cell)
@@ -1604,7 +1605,6 @@ in =define-key= or =local-set-key=, but now everything works as it should.
                   (entry (cons key name)))
              (add-to-list 'org-structure-template-alist entry)))
        org-structure-template-src-alist-extensions)))
-
 #+end_src
 
 [Note: for Rust support, use [[https://github.com/brotzeit/rustic][rustic]]; see [[https://stackoverflow.com/a/62934702][Literate Programming with rust and org
