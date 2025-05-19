@@ -121,8 +121,9 @@ org-mode
 
 (cap "#+caption: ")
 (drawer ":" p ":" n r ":end:")
-;; (begin "#+begin_" (s name) n> r> n "#+end_" name)
-;; (quote "#+begin_quote" n> r> n "#+end_quote")
+(begin "#+begin_" (s name) n> r> n "#+end_" name)
+;; (quote "#+begin_quote" n> r> n "#+end_quote") ;; <q expansion already works
+(aside "#+begin_aside" n> r> n "#+end_aside")
 ;; (sidenote "#+begin_sidenote" n> r> n "#+end_sidenote")
 ;; (marginnote "#+begin_marginnote" n> r> n "#+end_marginnote")
 ;; (example "#+begin_example" n> r> n "#+end_example")
