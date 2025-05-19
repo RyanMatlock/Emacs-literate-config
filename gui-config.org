@@ -128,46 +128,7 @@ See [[https://www.gnu.org/software/emacs/manual/html_node/efaq/Turning-on-auto_0
 #+end_src
 
 ** TODO Frame sizing
-*** BROKEN Frame variables and functions
-**** [2025-05-19 Mon] config bug
-System crashed; restarted Emacs and came across this:
-
-#+begin_example
-Debugger entered--Lisp error: (wrong-number-of-arguments setq 3)
-  signal(wrong-number-of-arguments (setq 3))
-  (progn (setq gui-std-frame-height 45) (setq gui-frame-width-padding 4) (setq gui-frame-separation 2) (setq gui-frame-line-number-width 5) (setq gui-std-frame-width (1+ (+ fill-column gui-frame-width-padding))) (signal 'wrong-number-of-arguments '(setq 3)) (let ((scale-factor 1.3)) (setq gui-wide-frame-width (ceiling (* scale-factor gui-std-frame-width))) (setq gui-tall-frame-height (ceiling (* scale-factor gui-std-frame-height)))) (add-to-list 'default-frame-alist (cons 'width gui-std-frame-width)) (add-to-list 'default-frame-alist (cons 'height gui-std-frame-height)) (defalias 'gui--calculate-frame-width #'(lambda (num-windows base-width) "Calculate width of frame given NUM-WINDOWS and BAS..." (+ (* (+ base-width gui-frame-line-number-width) num-windows) (* gui-frame-separation (1- num-windows))))) (defalias 'gui--resize-frame #'(lambda (num-windows width height &optional treemacs-frame-p) "Resize current frame based on NUM-WINDOWS, WIDTH, ..." (let* ((frame-width (gui--calculate-frame-width num-windows width)) (total-width (if treemacs-frame-p ... frame-width))) (set-frame-size (selected-frame) total-width height) (message (format "Set frame size to %dw × %d." total-width height))))) (defalias 'std-frame #'(lambda (&optional treemacs-frame-p) "Resize current frome to 'gui-std-frame-width' x 'g..." (interactive "P") (gui--resize-frame 1 gui-std-frame-width gui-std-frame-height treemacs-frame-p))) (defalias 'wide-frame #'(lambda (&optional treemacs-frame-p) "Resize current frame to 'gui-wide-frame-width' x '..." (interactive "P") (gui--resize-frame 1 gui-wide-frame-width gui-std-frame-height treemacs-frame-p))) (defalias 'lrg-frame #'(lambda (&optional treemacs-frame-p) "Resize current frame to accommodate side-by-side w..." (interactive "P") (gui--resize-frame 2 gui-std-frame-width gui-std-frame-height treemacs-frame-p))) (defalias 'xl-frame #'(lambda nil "Resize current frame for 3 adjacent windows + extr..." (interactive) (gui--resize-frame 3 gui-std-frame-width gui-tall-frame-height))) (std-frame))
-  (if window-system (progn (setq gui-std-frame-height 45) (setq gui-frame-width-padding 4) (setq gui-frame-separation 2) (setq gui-frame-line-number-width 5) (setq gui-std-frame-width (1+ (+ fill-column gui-frame-width-padding))) (signal 'wrong-number-of-arguments '(setq 3)) (let ((scale-factor 1.3)) (setq gui-wide-frame-width (ceiling (* scale-factor gui-std-frame-width))) (setq gui-tall-frame-height (ceiling (* scale-factor gui-std-frame-height)))) (add-to-list 'default-frame-alist (cons 'width gui-std-frame-width)) (add-to-list 'default-frame-alist (cons 'height gui-std-frame-height)) (defalias 'gui--calculate-frame-width #'(lambda (num-windows base-width) "Calculate width of frame given NUM-WINDOWS and BAS..." (+ (* (+ base-width gui-frame-line-number-width) num-windows) (* gui-frame-separation (1- num-windows))))) (defalias 'gui--resize-frame #'(lambda (num-windows width height &optional treemacs-frame-p) "Resize current frame based on NUM-WINDOWS, WIDTH, ..." (let* ((frame-width ...) (total-width ...)) (set-frame-size (selected-frame) total-width height) (message (format "Set frame size to %dw × %d." total-width height))))) (defalias 'std-frame #'(lambda (&optional treemacs-frame-p) "Resize current frome to 'gui-std-frame-width' x 'g..." (interactive "P") (gui--resize-frame 1 gui-std-frame-width gui-std-frame-height treemacs-frame-p))) (defalias 'wide-frame #'(lambda (&optional treemacs-frame-p) "Resize current frame to 'gui-wide-frame-width' x '..." (interactive "P") (gui--resize-frame 1 gui-wide-frame-width gui-std-frame-height treemacs-frame-p))) (defalias 'lrg-frame #'(lambda (&optional treemacs-frame-p) "Resize current frame to accommodate side-by-side w..." (interactive "P") (gui--resize-frame 2 gui-std-frame-width gui-std-frame-height treemacs-frame-p))) (defalias 'xl-frame #'(lambda nil "Resize current frame for 3 adjacent windows + extr..." (interactive) (gui--resize-frame 3 gui-std-frame-width gui-tall-frame-height))) (std-frame)))
-  eval-buffer(#<buffer  *load*-903771> nil "$HOME/config/emacs/gui-config.el" nil t)  ; Reading at buffer position 5549
-  load-with-code-conversion("$HOME/config/emacs/gui-config.el" "$HOME/config/emacs/gui-config.el" nil nil)
-  load("$HOME/config/emacs/gui-config.el" nil nil t)
-  load-file("$HOME/config/emacs/gui-config.el")
-  org-babel-load-file("$HOME/config/emacs/gui-config.org")
-  (cond ((file-readable-p path) (org-babel-load-file path) (message "%s loaded." name)) (t (warn (format "%s NOT loaded ('%s' missing or unreadable)." name path))))
-  (progn (cond ((file-readable-p path) (org-babel-load-file path) (message "%s loaded." name)) (t (warn (format "%s NOT loaded ('%s' missing or unreadable)." name path)))))
-  (if enable (progn (cond ((file-readable-p path) (org-babel-load-file path) (message "%s loaded." name)) (t (warn (format "%s NOT loaded ('%s' missing or unreadable)." name path))))))
-  (let* ((file (car ccell)) (name (upcase-initials (replace-regexp-in-string "-" " " (file-name-base file)))) (path (expand-file-name file emacs-config-directory)) (enable (cdr ccell))) (if enable (progn (cond ((file-readable-p path) (org-babel-load-file path) (message "%s loaded." name)) (t (warn (format "%s NOT loaded ('%s' missing or unreadable)." name path)))))))
-  (lambda (ccell) (let* ((file (car ccell)) (name (upcase-initials (replace-regexp-in-string "-" " " (file-name-base file)))) (path (expand-file-name file emacs-config-directory)) (enable (cdr ccell))) (if enable (progn (cond ((file-readable-p path) (org-babel-load-file path) (message "%s loaded." name)) (t (warn ...)))))))(("gui-config.org" . t))
-  mapc((lambda (ccell) (let* ((file (car ccell)) (name (upcase-initials (replace-regexp-in-string "-" " " (file-name-base file)))) (path (expand-file-name file emacs-config-directory)) (enable (cdr ccell))) (if enable (progn (cond ((file-readable-p path) (org-babel-load-file path) (message "%s loaded." name)) (t (warn ...))))))) (("core-langs.org" . t) ("gui-config.org" . t) ("extras.org" . t) ("experimental.org")))
-  seq-do((lambda (ccell) (let* ((file (car ccell)) (name (upcase-initials (replace-regexp-in-string "-" " " (file-name-base file)))) (path (expand-file-name file emacs-config-directory)) (enable (cdr ccell))) (if enable (progn (cond ((file-readable-p path) (org-babel-load-file path) (message "%s loaded." name)) (t (warn ...))))))) (("core-langs.org" . t) ("gui-config.org" . t) ("extras.org" . t) ("experimental.org")))
-  eval-buffer(#<buffer  *load*-302372> nil "$HOME/config/emacs/core-config.el" nil t)  ; Reading at buffer position 28248
-  load-with-code-conversion("$HOME/config/emacs/core-config.el" "$HOME/config/emacs/core-config.el" nil nil)
-  load("$HOME/config/emacs/core-config.el" nil nil t)
-  load-file("$HOME/config/emacs/core-config.el")
-  org-babel-load-file("$HOME/config/emacs/core-config.org")
-  eval-buffer(#<buffer  *load*> nil "$HOME/.emacs" nil t)  ; Reading at buffer position 1655
-  load-with-code-conversion("$HOME/.emacs" "$HOME/.emacs" t t)
-  load("~/.emacs" noerror nomessage)
-  startup--load-user-init-file(#f(compiled-function () #<bytecode 0x15520924c95bd1>) #f(compiled-function () #<bytecode -0x1f3c61addc0da035>) t)
-  command-line()
-  normal-top-level()
-#+end_example
-
-It's probably the same error I encountered on the M1 Mac Mini but didn't bother
-to fix---that was dumb.
-
-I think I found the culprit: ~(setq gui-treemacs'-frame-width 35)~ (a stray
-='=). I bet I fat-fingered it.
-
+*** Frame variables and functions
 #+begin_src emacs-lisp
   (when window-system
     (setq gui-std-frame-height 45)
